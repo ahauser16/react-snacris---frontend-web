@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import Alert from "../common/Alert";
-import JoblyApi from "../api/api";
+import SnacrisApi from "../api/api";
 import UserContext from "../auth/UserContext";
 import "./ProfileForm.css";
 
@@ -68,7 +68,7 @@ function ProfileForm() {
     let updatedUser;
 
     try {
-      updatedUser = await JoblyApi.saveProfile(username, profileData);
+      updatedUser = await SnacrisApi.saveProfile(username, profileData);
     } catch (errors) {
       setFormErrors(errors);
       return;

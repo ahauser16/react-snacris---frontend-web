@@ -3,14 +3,14 @@ import useLocalStorage from "./hooks/useLocalStorage";
 import Navigation from "./routes-nav/Navigation";
 import RoutesList from "./routes-nav/RoutesList";
 import LoadingSpinner from "./common/LoadingSpinner";
-import JoblyApi from "./api/api";
+import SnacrisApi from "./api/api";
 import UserContext from "./auth/UserContext";
 import decode from "jwt-decode";
 
 // Key name for storing token in localStorage for "remember me" re-login
-export const TOKEN_STORAGE_ID = "jobly-token";
+export const TOKEN_STORAGE_ID = "snacris-token";
 
-/** Jobly application.
+/** Snacris application.
  *
  * - applicationIds: for logged in users, this is a set of application Ids
  *   for applied jobs.
@@ -58,8 +58,8 @@ function App() {
           try {
             let { username } = decode(token);
             // put the token on the Api class so it can use it to call the API.
-            JoblyApi.token = token;
-            let currentUser = await JoblyApi.getCurrentUser(username);
+            SnacrisApi.token = token;
+            let currentUser = await SnacrisApi.getCurrentUser(username);
 
             setCurrentUser({
               infoLoaded: true,
@@ -102,7 +102,7 @@ function App() {
    * Make sure you await this function to see if any error happens.
    */
   async function signup(signupData) {
-    let token = await JoblyApi.signup(signupData);
+    let token = await SnacrisApi.signup(signupData);
     setToken(token);
   }
 
@@ -113,7 +113,7 @@ function App() {
    * Make sure you await this function to see if any error happens.
    */
   async function login(loginData) {
-    let token = await JoblyApi.login(loginData);
+    let token = await SnacrisApi.login(loginData);
     setToken(token);
   }
 
@@ -123,13 +123,14 @@ function App() {
   }
 
   /** Apply to a job: make API call and update set of application IDs. */
+  
   async function applyToJob(id) {
     if (hasAppliedToJob(id)) return;
     //NB--> as part of debugging it was suggested to add the `await` keyword to the `applyToJob` function below (see notes in `README.MD` for context)
-    console.debug("applyToJob called with:", currentUser.data.username, id);
+    //console.debug("applyToJob called with:", currentUser.data.username, id);
     //NB--> as part of debugging it was suggested to change the reference to `username` below from `currentUser.username` to `currentUser.data.username`.
-    // await JoblyApi.applyToJob(currentUser.username, id);
-    await JoblyApi.applyToJob(currentUser.data.username, id);
+    // await SnacrisApi.applyToJob(currentUser.username, id);
+    await SnacrisApi.applyToJob(currentUser.data.username, id);
     setApplicationIds(new Set([...applicationIds, id]));
   }
 
