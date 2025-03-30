@@ -4,7 +4,7 @@ This README will document my refactor of the React Jobly frontend to work as the
 
 ## To Do List
 
-**`api` folder**
+### `api` folder
 - [x] Update the `BASE_URL` in `api.js` to point to your backend server.
 - Verify that the backend API routes match the ones used in `api.js` and remove Jobly-specific endpoints & add Snacris-specific endpoints:
   - [ ] `POST /auth/token` for the `login` route (Ensure Match)
@@ -65,14 +65,142 @@ This README will document my refactor of the React Jobly frontend to work as the
       - 4. Used in the frontend `JobCard` component when a user clicks the "Apply" button.
       - 5. Used in the backend route `POST /users/:username/jobs/:id`
 
-**`auth` folder**
+### `auth` folder
 no refactor required
 
-**`common` folder**
+### `common` folder
 - [ ] study and refactor `SearchForm.js` to use with this application and maybe refactor the input fields.  You could just copy the format you used in the chrome extension.
 
 - Refactor the `RoutesList.js` and `Navigation.js` components keeping the `user` and `authentication` related routes and replacing Jobly routes such as `/companies`, `/jobs` and `/companies/:handle` with Snacris routes such as `/bblAddressLookup`, `/partyName`, `/parcelIdentifier`, `/documentType`, `/documentIdCrfn`, `/transactionNumber`, `/reelPage` and `/uccFedLienFileNumber`.
 - Refactor the `CompanyList`, `JobList` and `CompanyDetail` components to render ACRIS data
+
+### `companies` folder
+- [ ] Review the `CompanyList.js`, `CompanyDetail.js` and `CompanyCard.js` components to see how they can be refactored to fit the ACRIS data.
+
+- `CompanyList.js` is responsible for displaying a list of companies. It fetches the company data from the backend and renders a list of `CompanyCard` components, one for each company.
+  - How It Works:
+    - 1. State Management: `companies` is a state variable that holds the list of companies fetched from the backend which is initially set to `null`.
+    - 2. Fetching Data on Mount: the `useEffect` hook runs when the component mounts which calls the `search()` function to fetch all companies from the backend using the `JoblyApi.getCompanies()` method.
+    - 3. Search Functionality: the `SearchForm` component allows users to filter companies by name.  When the search form is submitted, the `search()` function is called with the search term, and the list of companies is updated.
+    - 4. Rendering: If `companies` is `null`, a `LoadingSpinner` is displayed while data is being fetched.  If companies are found, a list of `CompanyCard` components is rendered.  If no companies match the search, a message is displayed: "Sorry, no results were found!"
+  - Interaction with other components:
+    - `SearchForm`: 
+      - Provides the search functionality.
+      - Calls the `search()` function in `CompanyList` with the search term.
+    - `CompanyCard`:
+      - Each company in the list is rendered as a `CompanyCard` component.
+
+- `CompanyCard.js` is a presentational component that displays a summary of a single company. It is rendered by `CompanyList.js` for each company in the list.
+  - How It Works:
+    - 1. Props: Receives `name`, `description`, `logoUrl`, and `handle` as props from `CompanyList.js`.
+    - 2. Rendering: Displays the company’s `name`, `description`, and `logo` (if available) and wraps the content in a `Link` component from `react-router-dom`, which navigates to the `CompanyDetail` page for the specific company when clicked.
+    - 3. Dynamic Routing: The `to` prop of the `Link` component is set to `/companies/${handle}` which ensures that clicking on a company card navigates to the `CompanyDetail` page for that company.
+  - Interaction with Other Components:
+    - `CompanyList`: `CompanyCard` is rendered by `CompanyList` for each company in the list.
+    - `CompanyDetail`: Clicking on a `CompanyCard` navigates to the `CompanyDetail` page for the selected company.
+
+- `CompanyDetail.js` displays detailed information about a single company, including its associated jobs. It is rendered when the user navigates to `/companies/:handle`.
+  - How It Works:
+    - 1. Dynamic Routing: Uses the `useParams` hook from `react-router-dom` to extract the `handle` parameter from the URL which is used to fetch the details of the specific company from the backend.
+    - 2. State Management: `company` is a state variable that holds the details of the company fetched from the backend which is initially set to `null`.
+    - 3. Fetching Data: the `useEffect` hook runs when the component mounts or when the `handle` changes and calls `JoblyApi.getCompany(handle)` to fetch the company details, including its associated jobs.
+    - 4. Rendering: if `company` is `null`, a `LoadingSpinner` is displayed while data is being fetched.  Once the data is loaded, the company’s name and description are displayed.  The `JobCardList` component is used to render a list of jobs associated with the company.
+  - Interaction with Other Components: 
+    - JobCardList displays a list of jobs associated with the company and each job is rendered as a `JobCard` component.
+  - Interaction with the Backend:
+    - Calls `JoblyApi.getCompany(handle)` to fetch the details of the company, including its jobs.
+    - The backend responds with an object containing: `name` (the name of the company), `description` (description of the company) and `jobs` (an array of job objects associated with the company).
+
+- How `CompanyList.js`, `CompanyDetail.js` and `CompanyCard.js` work together:
+  - 1. Flow of Data:
+    - `CompanyList.js` fetches a list of companies from the backend and renders a `CompanyCard` for each company.
+    - Each `CompanyCard` links to the `CompanyDetail` page for the specific company.
+    - `CompanyDetail.js` fetches detailed information about the selected company, including its jobs, and displays it.
+  - 2. Routing:
+    - `CompanyList.js` is rendered at `/companies`.
+    - Clicking on a `CompanyCard` navigates to `/companies/:handle`, where `CompanyDetail.js` is rendered.
+  - 3. Backend Interaction:
+    - `CompanyList.js` calls `JoblyApi.getCompanies()` to fetch the list of companies.
+    - `CompanyDetail.js` calls `JoblyApi.getCompany(handle)` to fetch the details of a specific company.
+  - 4. User Experience:
+    - The user sees a list of companies on the `/companies` page.
+    - They can search for companies using the `SearchForm`.
+    - Clicking on a company card navigates to a detailed view of the company, including its jobs.
+
+- Database Interaction
+  - 1. `JoblyApi.getCompanies(name)`:
+    - Sends a `GET` request to `/companies`.
+    - If a `name` is provided, it is sent as a query parameter (e.g., `/companies?name=tech`).
+    - The backend responds with a list of companies matching the filter.
+  - 2. `JoblyApi.getCompany(handle)`:
+    - Sends a `GET` request to `/companies/:handle`.
+    - The backend responds with the details of the company, including its associated jobs.
+  - 3. Data Presentation:
+    - The data fetched from the backend is passed down as props to the components (`CompanyCard` and `JobCardList`) for rendering.
+
+- Summary
+  - `CompanyList.js`: Fetches and displays a list of companies using `CompanyCard` components.
+  - `CompanyCard.js`: Displays a summary of a single company and links to its detailed view.
+  - `CompanyDetail.js`: Fetches and displays detailed information about a single company, including its jobs.
+
+### `homepage` folder
+
+### `jobs` folder
+
+*for now skip because it won't be necessary for how SNACRIS will behave*
+
+Know that the relationship between companies and jobs is a one-to-many relationship.
+
+### `profiles` folder
+
+*you shouldn't need to refactor this since you have a `users` table on the backend with the matching information*
+
+- `ProfileForm.js` is a component responsible for allowing a logged-in user to update their profile information (e.g., first name, last name, email) and saving these changes to the database. Here's a detailed breakdown of how it works in the context of the application.
+  - 1. Context and State Management
+    - React Context (`UserContext`): 
+      - The `UserContext` provides access to the `currentUser` object and the `setCurrentUser` function.
+      - `currentUser` contains the currently logged-in user's data (e.g., `username`, `firstName`, `lastName`, `email`).
+      - `setCurrentUser` is used to update the global user state after a successful profile update.
+    - Local State (`formData`, `formErrors`, `saveConfirmed`)
+      - `formData`:
+        - Holds the values of the form fields (`firstName`, `lastName`, `email`, `username`).
+        - Initialized with the current user's data from `UserContext`.
+      - `formErrors`:
+        - Stores any validation or API errors that occur during form submission.
+      - `saveConfirmed`:
+        - A boolean that indicates whether the profile update was successful. Used to display a success message.
+  - 2. Form Rendering
+    - The form includes fields for `firstName`, `lastName`, and `email`, which are editable.
+    - The `username` field is displayed but disabled, as it cannot be changed.
+    - The form dynamically displays:
+      - An error alert (`Alert` component) if there are validation errors.
+      - A success alert if the profile update is successful.
+  - 3. Handling Form Changes
+    - `handleChange` Function
+    - Triggered whenever the user types into a form field.
+    - Updates the corresponding field in the `formData` state:
+    - Clears any previous errors (`formErrors`) when the user starts typing.
+  - 4. Submitting the Form
+    - `handleSubmit` Function
+      - Triggered when the user clicks the "Save Changes" button.
+      - Prevents the default form submission behavior: `evt.preventDefault();`
+    - Preparing Data
+      - Extracts the updated `firstName`, `lastName`, and `email` from `formData` to send to the backend:
+    - Calling the API
+      - Calls the `SnacrisApi.saveProfile` method to send the updated data to the backend: `updatedUser = await SnacrisApi.saveProfile(username, profileData);`
+    - Updating State
+      - If the API call is successful:
+        - Clears any previous errors.
+        - Sets `saveConfirmed` to `true` to display a success message.
+        - Updates the global `currentUser` state using `setCurrentUser`
+    - 5. Interaction with the Backend
+      - API Call (`SnacrisApi.saveProfile`)
+        - Sends a `PATCH` request to the backend endpoint `/users/:username` with the updated profile data.
+        - The backend updates the user's information in the database and responds with the updated user object.
+      - Backend Response
+        - If the update is successful, the backend returns the updated user data.
+        - If there are validation errors (e.g., invalid email format), the backend responds with an error message, which is displayed in the form.
+
 
 
 ## `App.js` Overview
