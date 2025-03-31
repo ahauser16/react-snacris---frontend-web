@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import JoblyApi from "../api/api";
+import JoblyApi from "../../api/api";
 import JobCardList from "../jobs/JobCardList";
-import LoadingSpinner from "../common/LoadingSpinner";
+import LoadingSpinner from "../../common/LoadingSpinner";
 import "./CompanyDetail.css";
 
 /** Company Detail page.

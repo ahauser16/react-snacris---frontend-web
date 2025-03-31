@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import "./JobCard.css";
-import UserContext from "../auth/UserContext";
+import UserContext from "../../auth/UserContext";
 
 /** Show limited information about a job.
  *

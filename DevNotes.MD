@@ -2,6 +2,9 @@
 
 This README will document my refactor of the React Jobly frontend to work as the frontend for my SNACRIS website.  I need to refamiliarize myself with how the React Jobly frontend is configured to work with th ebackend so I will research how `App.js`, `index.js` and `api.js` work and make notes below.
 
+first test user & pw:
+march31testuser
+
 ## To Do List
 
 ### `api` folder
