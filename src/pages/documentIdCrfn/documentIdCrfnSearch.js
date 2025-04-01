@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import SearchForm from "../SearchForm";
+import SearchForm from "../../common/SearchForm";
 import JoblyApi from "../../api/api";
 // import CompanyCard from "./CompanyCard";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../../common/LoadingSpinner";
 
 /** Show page with list of companies.
  *
@@ -14,7 +14,7 @@ import LoadingSpinner from "../LoadingSpinner";
  * Routes -> { CompanyCard, SearchForm }
  */
 
-function PartyNameSearch() {
+function DocumentIdCrfnSearch() {
   //console.debug("CompanyList");
 
   //`companies` is a state variable that holds the list of companies fetched from the backend which is initially set to null.
@@ -40,9 +40,12 @@ function PartyNameSearch() {
   return (
     <div className="container text-center">
       {/* Provides the search functionality and calls the search() function in CompanyList with the search term. */}
-      <h1 className="mb-4 fw-bold">Search By Party Name</h1>
+      <h1 className="mb-4 fw-bold">Search By Document ID or CRFN</h1>
       <h2 className="mb-4 fw-bold">Recorded Documents Only</h2>
+      <p>Please fill in only one number (Document ID Number or CityRegister File Number "CRFN")</p>
       <hr />
+      <SearchForm searchFor={search} />
+      <h2>OR</h2>
       <SearchForm searchFor={search} />
       {/* Rendering: If companies are found, a list of CompanyCard components is rendered.  */}
       {/* {companies.length ? (
@@ -66,4 +69,4 @@ function PartyNameSearch() {
   );
 }
 
-export default PartyNameSearch;
+export default DocumentIdCrfnSearch;

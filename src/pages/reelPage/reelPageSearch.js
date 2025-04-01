@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
-import SearchForm from "../SearchForm";
+import SearchForm from "../../common/SearchForm";
 import JoblyApi from "../../api/api";
 // import CompanyCard from "./CompanyCard";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../../common/LoadingSpinner";
 
 /** Show page with list of companies.
+ *
  * On mount, loads companies from API.
  * Re-loads filtered companies on submit from search form.
+ *
  * This is routed to at /companies
+ *
  * Routes -> { CompanyCard, SearchForm }
  */
 
-function AddressParcelLookup() {
-  console.debug("CompanyList");
+function ReelPageSearch() {
+  //console.debug("CompanyList");
 
   //`companies` is a state variable that holds the list of companies fetched from the backend which is initially set to null.
   //const [companies, setCompanies] = useState(null);
@@ -37,14 +40,7 @@ function AddressParcelLookup() {
   return (
     <div className="container text-center">
       {/* Provides the search functionality and calls the search() function in CompanyList with the search term. */}
-      <h1 className="mb-4 fw-bold">Lookup Address or Parcel</h1>
-      <hr />
-      <h2 className="mb-4 fw-bold">Property Address:</h2>
-      <p>If you know the property address, complete the fields below and press "Find BBL" to find the Borough/Block/Lot of the property. Address fields indicated by an asterisk (*) are required. If an address is found. the fields in the Property Borough/Block/Lot section will be populated.</p>
-      <SearchForm searchFor={search} />
-      <hr />
-      <h2 className="mb-4 fw-bold">Property Borough, Block & Lot:</h2>
-      <p>	If you know the Borough, Block and Lot of the property, complete the fields below and press the "Find Address" button to find the address of the property. Fields indicated by an asterisk (* ) are required. If the BBL is found. the fields in the Property Address section will be populated.</p>
+      <h1 className="mb-4 fw-bold">Search By Reel & Page</h1>
       <SearchForm searchFor={search} />
       {/* Rendering: If companies are found, a list of CompanyCard components is rendered.  */}
       {/* {companies.length ? (
@@ -68,4 +64,4 @@ function AddressParcelLookup() {
   );
 }
 
-export default AddressParcelLookup;
+export default ReelPageSearch;
