@@ -87,7 +87,7 @@ Background: First, `CompanyList` has (i) a state variable and setter function: `
 
 New Behavior: I want to create a new display component called "addressParcelLookup.js", based on the `CompanyList.js` component, and another new form component called "addressParcelLookupForm.js", based on the `SearchForm.js` component. The `addressParcelLookup` component will (i) create a state variable and setter function called `[results, setResults]` with the `useState` hook, (ii) define an asynchronous function called `search` (and pass it to the `addressParcelLookupForm` component) that (a) makes a call to `await SnacrisApi.queryAcrisAddressParcel` by passing in either the parameters `borough`, `street_number`, `street_name` and `unit` or the parameters `borough`, `block` and `lot` (b) assigns the results to a variable called `results` and (c) passes `results` into the `setResults` function. The `addressParcelLookup` component will render the same container div that includes the `addressParcelLookupForm` component and the results from the `SnacrisApi.queryAcrisAddressParcel` API call if there are any but if not it will display the message: "Sorry, no results were found!". The `addressParcelLookupForm` component will (i) define a state object called "searchTerms" that contains the data to be passed to the `queryAcrisAddressParcel` method including: `borough`, `street_number`, `street_name` and `unit` and `borough`, `block` and `lot` and a setter function called "setSearchTerms" and assigns each of them to the `useState("")` hook, (ii) define a `handleSubmit` function that (a) prevents the default behavior, (b) passes the each of the `searchTerms` while using the same .trim() || undefined syntax to the `searchFor` method and (c)passes the `searchTerms.trim()` to the `setSearchTerms` function, (iii) define a `handleChange` function that executes the equivalent `setSearchTerms(evt.target.value);` for each of the `borough`, `street_number`, `street_name` and `unit` data and the `borough`, `block` and `lot` data. Keep in mind I want to keep all the same bootstrap formatting div elements and styling with the following new behaviors. The `addressParcelLookupForm` component will render (1) a container div with class `AddressParcelLookupForm`, (2) a `form` element with `onSubmit` assigned to the `handleSubmit` method, (3) a `div` with bootstrap classes containing a `h2`, `p` tag and `input` fields for each of the `borough`, `street_number`, `street_name` and `unit`, which represents one of the two groups of user's data that will be passed to the `SnacrisApi.queryAcrisAddressParcel` API call, (4) a `div` with bootstrap classes containing a `h2`, `p` tag and `input` fields for each of the `borough`, `block` and `lot`, which represents the second of the two groups of user's data that will be passed to the `SnacrisApi.queryAcrisAddressParcel` API call and (5) a `div` containing a `button` element that submits the form's data. Keep in mind I want the form to only submit one of the two groups of data to the API call but not both.
 
-#### Refator Plan
+#### Refactor Plan - Frontend
 
 I. Refactor `addressParcelLookup.js`
 
@@ -332,7 +332,154 @@ IV. Summary of Changes
   - Updated `handleChange` and `handleSubmit` to handle multiple input fields and submit only one group of data.
   - Rendered two groups of input fields (address and BBL).
 
+#### Refactor Plan - Backend
 
+**1. Backend: Ensure the `/queryAcrisAddressParcel` Route Works**
+Your backend already has a route defined in `queryAcrisAddressParcel.js` for fetching data from the ACRIS API. Here's what you need to verify:
+
+**Step 1.1: Test the Backend Route**
+- [x] Start your backend server with the command `npm start`.
+- [ ] Use Postman to test the `/queryAcrisAddressParcel/fetchRecord`endpoint, such as with the http request: `http://localhost:3001/queryAcrisAddressParcel/fetchRecord?borough=MANHATTAN&block=1000&lot=1`
+- [ ] Ensure the endpoint returns the expected JSON response:
+
+```json
+{
+  "records": [
+    {
+      "document_id": "12345",
+      "record_type": "Deed",
+      "borough": "MANHATTAN",
+      "block": "1000",
+      "lot": "1",
+      "street_number": "123",
+      "street_name": "Main St",
+      "unit": "1A",
+      "good_through_date": "2023-12-31"
+    }
+  ]
+}
+```
+
+**Step 1.1.1 DEBUG REQUIRED**
+
+error received in VSC terminal: 
+```
+Constructed URL: https://data.cityofnewyork.us/resource/8h5j-fqxa.json?borough=MANHATTAN&block=1000&lot=1
+AxiosError: Request failed with status code 400
+    at settle (/home/haus/springboard_bootcamp_dec_2023/snacris--backend/Backend/node_modules/axios/dist/node/axios.cjs:2026:12)
+    at IncomingMessage.handleStreamEnd (/home/haus/springboard_bootcamp_dec_2023/snacris--backend/Backend/node_modules/axios/dist/node/axios.cjs:3142:11)
+    at IncomingMessage.emit (node:events:531:35)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (/home/haus/springboard_bootcamp_dec_2023/snacris--backend/Backend/node_modules/axios/dist/node/axios.cjs:4252:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async LegalsRealPropApi.fetchFromAcris (/home/haus/springboard_bootcamp_dec_2023/snacris--backend/Backend/api/acris/real-property/LegalsRealPropApi.js:21:26)
+    at async /home/haus/springboard_bootcamp_dec_2023/snacris--backend/Backend/routes/api/snacrisForms/queryAcrisAddressParcel.js:26:25
+GET /queryAcrisAddressParcel/fetchRecord?borough=MANHATTAN&block=1000&lot=1 400 72 - 245.754 ms
+```
+
+error assessment:
+I tried testing the `queryAcrisAddressParcel` route in Postman using this link: `http://localhost:3001/queryAcrisAddressParcel/fetchRecord?document_id=2013100700087001` which returned the correct output, however, it would not make the request using the `borough`, `block` and `lot` parameters.  The following changes need to be made:
+
+
+
+
+**Step 1.2: Confirm the Route is Included in app.js**
+Ensure the `queryAcrisAddressParcel` route is correctly registered in your `app.js` file:
+
+```js
+app.use("/queryAcrisAddressParcel", queryAcrisAddressParcel);
+```
+
+**2. Frontend: Update the API Integration**
+Your frontend's `AddressParcelLookup` component uses the `SnacrisApi.queryAcrisAddressParcel` method to fetch data. You need to ensure this method is implemented correctly in `api.js`.
+
+**Step 2.1: Add `queryAcrisAddressParcel` to `api.js`**
+
+Open `api.js` and add the following method to the `SnacrisApi` class:
+
+```js
+static async queryAcrisAddressParcel(searchTerms) {
+  console.debug("API queryAcrisAddressParcel called with:", searchTerms);
+
+  // Make a GET request to the backend's `/queryAcrisAddressParcel/fetchRecord` endpoint
+  const res = await this.request("queryAcrisAddressParcel/fetchRecord", searchTerms);
+  return res.records; // Return the records array from the response
+}
+```
+
+**Step 2.2: Test the API Integration**
+- Ensure the `queryAcrisAddressParcel` method is called correctly from the `AddressParcelLookup` component.
+- Add a `console.debug` statement in the `search` function of `AddressParcelLookup` to verify the API call:
+
+```js
+async function search(searchTerms) {
+  try {
+    console.debug("AddressParcelLookup search called with:", searchTerms);
+    const results = await SnacrisApi.queryAcrisAddressParcel(searchTerms);
+    setResults(results);
+  } catch (err) {
+    console.error("Error fetching results:", err);
+    setResults([]);
+  }
+}
+```
+
+**3. Frontend: Test the /addressParcelLookup Route**
+**Step 3.1: Start the Frontend**
+- Start your frontend development server: `npm start`.
+
+**Step 3.2: Navigate to /addressParcelLookup**
+Open your browser and navigate to `http://localhost:3000/addressParcelLookup`.
+Verify that the `AddressParcelLookup` component renders correctly.
+
+**Step 3.3: Submit the Form**
+- Fill out the form in the `AddressParcelLookupForm` component with valid data (e.g., `borough`, `block`, and `lot`).
+- Submit the form and verify that:
+  - The `search` function in `AddressParcelLookup` is called.
+  - The `queryAcrisAddressParcel` method in `api.js` is called.
+  - The results are displayed on the page.
+
+**4. Debugging and Validation**
+If the integration does not work as expected, follow these steps to debug:
+
+**Step 4.1: Check the Network Tab**
+- Open your browser's developer tools and go to the "Network" tab.
+- Submit the form and check the network request to `http://localhost:3001/queryAcrisAddressParcel/fetchRecord`.
+- Verify that the request is sent with the correct query parameters and that the response contains the expected data.
+
+**Step 4.2: Check the Console Logs**
+- Look for `console.debug` and `console.error` logs in both the frontend and backend to identify any issues.
+
+**Step 4.3: Handle Errors Gracefully**
+- Update the `AddressParcelLookup` component to handle errors gracefully:
+
+```js
+async function search(searchTerms) {
+  try {
+    const results = await SnacrisApi.queryAcrisAddressParcel(searchTerms);
+    setResults(results);
+  } catch (err) {
+    console.error("Error fetching results:", err);
+    setResults([]);
+  }
+}
+```
+
+**5. Summary of Steps**
+1. Backend:
+- Test the `/queryAcrisAddressParcel/fetchRecord` endpoint to ensure it works as expected.
+- Confirm the route is registered in `app.js`.
+
+2. Frontend:
+- Add the `queryAcrisAddressParcel` method to `api.js`.
+- Update the `AddressParcelLookup` component to call this method.
+
+3. Testing:
+- Start both the backend and frontend servers.
+- Navigate to `/addressParcelLookup` and test the form submission.
+
+---
 
 - [x] Refactor the `RoutesList.js` and `Navigation.js` components keeping the `user` and `authentication` related routes and replacing Jobly routes such as `/companies`, `/jobs` and `/companies/:handle` with Snacris routes such as `/bblAddressLookup`, `/partyName`, `/parcelIdentifier`, `/documentType`, `/documentIdCrfn`, `/transactionNumber`, `/reelPage` and `/uccFedLienFileNumber`.
 - Refactor the `CompanyList`, `JobList` and `CompanyDetail` components to render ACRIS data
