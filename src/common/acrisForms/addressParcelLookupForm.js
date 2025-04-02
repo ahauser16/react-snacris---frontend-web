@@ -15,6 +15,7 @@ function AddressParcelLookupForm({ searchFor }) {
 
   function handleSubmit(evt) {
     evt.preventDefault();
+    console.debug("AddressParcelLookupForm: handleSubmit called with:", searchTerms);
     const { borough, street_number, street_name, unit, block, lot } = searchTerms;
 
     // Determine which group of data to submit
@@ -73,7 +74,7 @@ function AddressParcelLookupForm({ searchFor }) {
           </div>
           <hr />
           <h2 className="mb-4 fw-bold">Property Borough, Block & Lot:</h2>
-          <p>	If you know the Borough, Block and Lot of the property, complete the fields below and press the "Find Address" button to find the address of the property. Fields indicated by an asterisk (* ) are required. If the BBL is found. the fields in the Property Address section will be populated.</p>
+          <p>	If you know the Borough, Block and Lot of the property, complete the fields below and press the "Find Address" button to find the address of the property. Fields indicated by an asterisk (*) are required. If the BBL is found. the fields in the Property Address section will be populated.</p>
           <div className="col-6">
             <input
               className="form-control form-control-lg"

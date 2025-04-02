@@ -19,7 +19,7 @@ class SnacrisApi {
 
     //there are multiple ways to pass an authorization token, this is how you pass it in the header.
     //this has been provided to show you another way to pass the token. you are only expected to read this code for this project.
-    
+
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${SnacrisApi.token}` };
     const params = method === "get" ? data : {};
@@ -69,6 +69,20 @@ class SnacrisApi {
     console.debug("API applyToJob called with:", username, id);
     //NB--> as part of debugging it was suggested to add the `await` keyword to the implementation of this function in `App.js` and `JobCard.js`
     await this.request(`users/${username}/jobs/${id}`, {}, "post");
+  }
+
+
+
+
+  static async queryAcrisAddressParcel(searchTerms) {
+    console.debug("API queryAcrisAddressParcel called with:", searchTerms);
+
+    // Make a GET request to the backend's [fetchRecord](http://_vscodecontentref_/14) endpoint
+    const res = await this.request("queryAcrisAddressParcel/fetchRecord", searchTerms);
+
+    console.debug("API queryAcrisAddressParcel response:", res);
+
+    return res.records; // Return the records array from the response
   }
 
   /** Get token for login from username, password. */

@@ -242,7 +242,10 @@ return (
     <form onSubmit={handleSubmit}>
       <div className="row justify-content-center justify-content-lg-start gx-0">
         <h2 className="mb-4 fw-bold">Property Address:</h2>
-        <p>If you know the property address, complete the fields below and press "Find BBL".</p>
+        <p>
+          If you know the property address, complete the fields below and press
+          "Find BBL".
+        </p>
         <div className="col-6">
           {/* Address Fields */}
           <input
@@ -276,7 +279,10 @@ return (
         </div>
         <hr />
         <h2 className="mb-4 fw-bold">Property Borough, Block & Lot:</h2>
-        <p>If you know the Borough, Block, and Lot, complete the fields below and press "Find Address".</p>
+        <p>
+          If you know the Borough, Block, and Lot, complete the fields below and
+          press "Find Address".
+        </p>
         <div className="col-6">
           {/* BBL Fields */}
           <input
@@ -310,19 +316,23 @@ III. Test The Components
 **To Dos**
 
 1. Test the `addressParcelLookup` component:
+
 - [x] Verify that it renders the `AddressParcelLookupForm` component.
 - [ ] Verify that it displays results or the "no results" message based on the API response.
 
 2. Test the `AddressParcelLookupForm` component:
+
 - [x] Verify that it correctly updates the `searchTerms` state when input fields are changed.
 - [ ] Verify that it submits only one group of data (address or BBL) to the searchFor function.
 
 3. Test the API integration:
+
 - [ ] Verify that the `SnacrisApi.queryAcrisAddressParcel` method is called with the correct parameters.
 
 IV. Summary of Changes
 
 - `addressParcelLookup.js`:
+
   - Replaced `companies` with `results`.
   - Updated the `search` function to call `SnacrisApi.queryAcrisAddressParcel`.
   - Rendered results dynamically.
@@ -338,6 +348,7 @@ IV. Summary of Changes
 Your backend already has a route defined in `queryAcrisAddressParcel.js` for fetching data from the ACRIS API. Here's what you need to verify:
 
 **Step 1.1: Test the Backend Route**
+
 - [x] Start your backend server with the command `npm start`.
 - [ ] Use Postman to test the `/queryAcrisAddressParcel/fetchRecord`endpoint, such as with the http request: `http://localhost:3001/queryAcrisAddressParcel/fetchRecord?borough=MANHATTAN&block=1000&lot=1`
 - [ ] Ensure the endpoint returns the expected JSON response:
@@ -362,7 +373,8 @@ Your backend already has a route defined in `queryAcrisAddressParcel.js` for fet
 
 **Step 1.1.1 DEBUG REQUIRED**
 
-error received in VSC terminal: 
+error received in VSC terminal:
+
 ```
 Constructed URL: https://data.cityofnewyork.us/resource/8h5j-fqxa.json?borough=MANHATTAN&block=1000&lot=1
 AxiosError: Request failed with status code 400
@@ -379,12 +391,313 @@ GET /queryAcrisAddressParcel/fetchRecord?borough=MANHATTAN&block=1000&lot=1 400 
 ```
 
 error assessment:
-I tried testing the `queryAcrisAddressParcel` route in Postman using this link: `http://localhost:3001/queryAcrisAddressParcel/fetchRecord?document_id=2013100700087001` which returned the correct output, however, it would not make the request using the `borough`, `block` and `lot` parameters.  The following changes need to be made:
+I tried testing the `queryAcrisAddressParcel` route in Postman using this link: `http://localhost:3001/queryAcrisAddressParcel/fetchRecord?document_id=2013100700087001` which returned the correct output, however, it would not make the request using the `borough`, `block` and `lot` parameters. The following changes were made to `LegalsRealPropApi.js` and `queryAcrisAddressParcel.js`.
 
+1. The `LegalsRealPropApi` should be flexible enough to handle all possible query parameters for the Real Property Legals dataset. It already uses URLSearchParams to construct the query string dynamically, so no major changes are needed here. However, we can improve error handling and ensure that the API token is properly included.
 
+**Updated LegalsRealPropApi.js**
 
+```js
+"use strict";
 
-**Step 1.2: Confirm the Route is Included in app.js**
+/** Routes for ACRIS Real Property Legals API calls. */
+
+const express = require("express");
+const LegalsRealPropApi = require("../../../api/acris/real-property/LegalsRealPropApi");
+
+const router = new express.Router();
+
+/**
+ * GET /fetchRecord => { records: [...] }
+ *
+ * Fetch data from the NYC Open Data Real Property Legals dataset based on query parameters.
+ *
+ * Query Parameters:
+ * - borough
+ * - block
+ * - lot
+ * - street_number
+ * - street_name
+ * - unit
+ *
+ * Returns:
+ * - [{ document_id, record_type, borough, block, lot, ... }]
+ *
+ * Authorization required: registered user
+ */
+router.get("/fetchRecord", async function (req, res, next) {
+  try {
+    // Extract query parameters from the request
+    const { borough, block, lot, street_number, street_name, unit } = req.query;
+
+    // Validate and construct query parameters
+    const queryParams = {};
+    if (borough) queryParams.borough = borough;
+    if (block) queryParams.block = block;
+    if (lot) queryParams.lot = lot;
+    if (street_number) queryParams.street_number = street_number;
+    if (street_name) queryParams.street_name = street_name;
+    if (unit) queryParams.unit = unit;
+
+    // Ensure at least one valid parameter is provided
+    if (Object.keys(queryParams).length === 0) {
+      return res
+        .status(400)
+        .json({ error: "At least one query parameter is required." });
+    }
+
+    // Fetch data from the ACRIS API
+    const records = await LegalsRealPropApi.fetchFromAcris(queryParams);
+    return res.json({ records });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+module.exports = router;
+```
+
+2. Refactor queryAcrisAddressParcel.js
+   The `queryAcrisAddressParcel.js` file should validate and process the incoming query parameters from the frontend, ensuring that only valid parameters are sent to the `LegalsRealPropApi.fetchFromAcris` method.
+
+**Updated queryAcrisAddressParcel.js**
+
+```js
+"use strict";
+
+/** Routes for ACRIS Real Property Legals API calls. */
+
+const express = require("express");
+const LegalsRealPropApi = require("../../../api/acris/real-property/LegalsRealPropApi");
+
+const router = new express.Router();
+
+/**
+ * GET /fetchRecord => { records: [...] }
+ *
+ * Fetch data from the NYC Open Data Real Property Legals dataset based on query parameters.
+ *
+ * Query Parameters:
+ * - borough
+ * - block
+ * - lot
+ * - street_number
+ * - street_name
+ * - unit
+ *
+ * Returns:
+ * - [{ document_id, record_type, borough, block, lot, ... }]
+ *
+ * Authorization required: registered user
+ */
+router.get("/fetchRecord", async function (req, res, next) {
+  try {
+    // Extract query parameters from the request
+    const { borough, block, lot, street_number, street_name, unit } = req.query;
+
+    // Validate and construct query parameters
+    const queryParams = {};
+    if (borough) queryParams.borough = borough;
+    if (block) queryParams.block = block;
+    if (lot) queryParams.lot = lot;
+    if (street_number) queryParams.street_number = street_number;
+    if (street_name) queryParams.street_name = street_name;
+    if (unit) queryParams.unit = unit;
+
+    // Ensure at least one valid parameter is provided
+    if (Object.keys(queryParams).length === 0) {
+      return res
+        .status(400)
+        .json({ error: "At least one query parameter is required." });
+    }
+
+    // Fetch data from the ACRIS API
+    const records = await LegalsRealPropApi.fetchFromAcris(queryParams);
+    return res.json({ records });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+module.exports = router;
+```
+
+3. Test the Backend Route
+   1. Start the Backend Server: `npm start`.
+   2. - [x] Test the `\queryAcrisAddressParcel\fetchRecord` Endpoint using Postman to test the endpoint with different combinations of query parameters:
+      - Query by `borough`, `block`, and `lot`: `http://localhost:3001/queryAcrisAddressParcel/fetchRecord?borough=1&block=835&lot=41`
+      - Result: `200 Status Code`
+      - Response:
+
+```json
+{
+  "records": [
+    {
+      "document_id": "2024062700832001",
+      "record_type": "L",
+      "borough": "1",
+      "block": "835",
+      "lot": "41",
+      "easement": "N",
+      "partial_lot": "E",
+      "air_rights": "N",
+      "subterranean_rights": "N",
+      "property_type": "CC",
+      "street_number": "33",
+      "street_name": "W 33RD ST",
+      "unit": "1801",
+      "good_through_date": "2024-07-31T00:00:00.000"
+    },
+    {
+      "document_id": "2018121901035001",
+      "record_type": "L",
+      "borough": "1",
+      "block": "835",
+      "lot": "41",
+      "easement": "N",
+      "partial_lot": "P",
+      "air_rights": "N",
+      "subterranean_rights": "N",
+      "property_type": "OF",
+      "street_number": "350",
+      "street_name": "FIFTH AVE",
+      "good_through_date": "2019-04-30T00:00:00.000"
+    },
+    {
+      "document_id": "2017071900208001",
+      "record_type": "L",
+      "borough": "1",
+      "block": "835",
+      "lot": "41",
+      "easement": "N",
+      "partial_lot": "E",
+      "air_rights": "N",
+      "subterranean_rights": "N",
+      "property_type": "CR",
+      "street_number": "338",
+      "street_name": "5 AVENUE",
+      "good_through_date": "2017-07-31T00:00:00.000"
+    },
+    {"[intentionally omitted hundreds of objects]"},
+    {
+      "document_id": "2011080600090001",
+      "record_type": "L",
+      "borough": "1",
+      "block": "835",
+      "lot": "41",
+      "easement": "N",
+      "partial_lot": "E",
+      "air_rights": "N",
+      "subterranean_rights": "N",
+      "property_type": "CR",
+      "street_number": "350",
+      "street_name": "FIFTH AVENUE",
+      "good_through_date": "2015-07-31T00:00:00.000"
+    }
+  ]
+}
+```
+
+3.  - [x] Test the `\queryAcrisAddressParcel\fetchRecord` Endpoint using Postman to test the endpoint with different combinations of query parameters:
+    - Query by `borough`, `street_number` and `street_name`: `http://localhost:3001/queryAcrisAddressParcel/fetchRecord?borough=1&street_number=350&street_name=5TH%20AVENUE`.
+    - Result: `200 Status Code`
+    - Response:
+
+```json
+{
+  "records": [
+    {
+      "document_id": "2013100700087001",
+      "record_type": "L",
+      "borough": "1",
+      "block": "835",
+      "lot": "41",
+      "easement": "N",
+      "partial_lot": "E",
+      "air_rights": "N",
+      "subterranean_rights": "N",
+      "property_type": "OF",
+      "street_number": "350",
+      "street_name": "5TH AVENUE",
+      "good_through_date": "2015-07-31T00:00:00.000"
+    },
+    {
+      "document_id": "2013101801311001",
+      "record_type": "L",
+      "borough": "1",
+      "block": "835",
+      "lot": "41",
+      "easement": "N",
+      "partial_lot": "E",
+      "air_rights": "N",
+      "subterranean_rights": "N",
+      "property_type": "OF",
+      "street_number": "350",
+      "street_name": "5TH AVENUE",
+      "good_through_date": "2015-07-31T00:00:00.000"
+    },
+    {
+      "document_id": "2013092000883001",
+      "record_type": "L",
+      "borough": "1",
+      "block": "835",
+      "lot": "41",
+      "easement": "N",
+      "partial_lot": "E",
+      "air_rights": "N",
+      "subterranean_rights": "N",
+      "property_type": "OF",
+      "street_number": "350",
+      "street_name": "5TH AVENUE",
+      "good_through_date": "2015-07-31T00:00:00.000"
+    },
+    {
+      "document_id": "2013100700087002",
+      "record_type": "L",
+      "borough": "1",
+      "block": "835",
+      "lot": "41",
+      "easement": "N",
+      "partial_lot": "E",
+      "air_rights": "N",
+      "subterranean_rights": "N",
+      "property_type": "OF",
+      "street_number": "350",
+      "street_name": "5TH AVENUE",
+      "good_through_date": "2015-07-31T00:00:00.000"
+    }
+  ]
+}
+```
+
+4.  Comparison of searching by Address vs searching by BBL: - Searching by BBL produced hundreds of records that all had matching `borough`, `block` and `lot` values, however, there were discrepancies in their `street_number` and `street_name` values. For example, when searching for `"borough": "1"`, `"block": "835"` and `"lot": "41"` the response contained records with varying `street_number` and `street_name` values such as (a) `"33", "W 33RD ST"`, (b) `"350", "FIFTH AVE"`, (c) `"338", "5 AVENUE"` and (d) `"350", "FIFTH AVENUE"`. This proves there is a "one to many" relationship with property BBL references and property street address references. In other words when searching for records with only the BBL and street addresses in mind, querying the dataset using `borough`, `block` and `lot` could return conflicting `street_number` and `street_name` values whereas querying the dataset using `street_number` and `street_name` **should** return the same `borough`, `block` and `lot`, however, there are edge cases where this is not the case. For example, querying the dataset using the `street_number` and `street_name` values `"33", "W 33RD ST"` (result "a" from the BBL search first mentioned above) returns the BBL: `"borough": "1"`, `"block": "835"` and `"lot": "56"` which is incompatible with the record below which has conflicing BBL and Street Address information.  For these reasons it would be helpful to show the returned records even if they conflict with each other in a way that informs the user and allows them to find the correct property information they are looking for (e.g. "what is the BBL of this street address?" or "what is the street address of this BBL?")
+
+```json
+{
+  "document_id": "2024062700832001",
+  "record_type": "L",
+  "borough": "1",
+  "block": "835",
+  "lot": "41",
+  "easement": "N",
+  "partial_lot": "E",
+  "air_rights": "N",
+  "subterranean_rights": "N",
+  "property_type": "CC",
+  "street_number": "33",
+  "street_name": "W 33RD ST",
+  "unit": "1801",
+  "good_through_date": "2024-07-31T00:00:00.000"
+}
+```
+
+---
+
+---
+
+---
+
+- [x] **Step 1.2: Confirm the Route is Included in app.js**
 Ensure the `queryAcrisAddressParcel` route is correctly registered in your `app.js` file:
 
 ```js
@@ -394,7 +707,7 @@ app.use("/queryAcrisAddressParcel", queryAcrisAddressParcel);
 **2. Frontend: Update the API Integration**
 Your frontend's `AddressParcelLookup` component uses the `SnacrisApi.queryAcrisAddressParcel` method to fetch data. You need to ensure this method is implemented correctly in `api.js`.
 
-**Step 2.1: Add `queryAcrisAddressParcel` to `api.js`**
+- [x] **Step 2.1: Add `queryAcrisAddressParcel` to `api.js`**
 
 Open `api.js` and add the following method to the `SnacrisApi` class:
 
@@ -409,6 +722,7 @@ static async queryAcrisAddressParcel(searchTerms) {
 ```
 
 **Step 2.2: Test the API Integration**
+
 - Ensure the `queryAcrisAddressParcel` method is called correctly from the `AddressParcelLookup` component.
 - Add a `console.debug` statement in the `search` function of `AddressParcelLookup` to verify the API call:
 
@@ -427,6 +741,7 @@ async function search(searchTerms) {
 
 **3. Frontend: Test the /addressParcelLookup Route**
 **Step 3.1: Start the Frontend**
+
 - Start your frontend development server: `npm start`.
 
 **Step 3.2: Navigate to /addressParcelLookup**
@@ -434,24 +749,60 @@ Open your browser and navigate to `http://localhost:3000/addressParcelLookup`.
 Verify that the `AddressParcelLookup` component renders correctly.
 
 **Step 3.3: Submit the Form**
+
 - Fill out the form in the `AddressParcelLookupForm` component with valid data (e.g., `borough`, `block`, and `lot`).
 - Submit the form and verify that:
   - The `search` function in `AddressParcelLookup` is called.
   - The `queryAcrisAddressParcel` method in `api.js` is called.
   - The results are displayed on the page.
 
+**FRONTEND TESTING NOTES**
+Submitting the `AddressParcelLookupForm` with the `borough`, `block` and `lot` data created and sent the constructed URL from the backend: `https://data.cityofnewyork.us/resource/8h5j-fqxa.json?borough=1&block=835&lot=41` returned data with a `200` status code, however, submitting the same form with the `borough`, `street_number` and `street_name` data created and sent the constructed URL form the backend: `https://data.cityofnewyork.us/resource/8h5j-fqxa.json?borough=1&street_number=338&street_name=5+avenue` returned an error with a `500` status code (see below).
+
+error: 
+"Constructed URL: https://data.cityofnewyork.us/resource/8h5j-fqxa.json?borough=1&street_number=338&street_name=5+avenue
+Error fetching data from ACRIS API: No records found for query: {"borough":"1","street_number":"338","street_name":"5 avenue"}
+Error: Failed to fetch data from ACRIS API
+    at LegalsRealPropApi.fetchFromAcris (/home/haus/springboard_bootcamp_dec_2023/snacris--backend/Backend/api/acris/real-property/LegalsRealPropApi.js:43:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/haus/springboard_bootcamp_dec_2023/snacris--backend/Backend/routes/api/snacrisForms/queryAcrisAddressParcel.js:70:25"
+
+fixed error: 
+the issue was that the text was lower case and Socrata QL requires uppercase.  I added a function that ensures that the text is uppercase beore the API call is made on the back end.
+
+Also, when searching with the `addressParcelLookupForm` component the results are handled so that only unique property values are shown (e.g. `{"borough":"3","block":"962","lot":"36","street_number":"240","street_name":"6 AVENUE"}`).  Searching by BBL: `"borough":"3","block":"962","lot":"36"` returns results below (results A) whereas searching by street address `"borough":"3","street_number":"240","street_name":"6 AVENUE"` returns the results B below.  So there is discrepancy with the street address information but the BBL, with limited testing, seems to be more consistent.  There are edge cases I've found that show a record to have street address information that does not match the BBL information (the "un-match" being verified by a reverse-search)
+
+results A:
+```
+{"borough":"3","block":"962","lot":"36","street_number":"240","street_name":"6TH AVENUE"}
+{"borough":"3","block":"962","lot":"36","street_number":"240","street_name":"6 AVENUE"}
+{"borough":"3","block":"962","lot":"36"}
+{"borough":"3","block":"962","lot":"36","street_number":"240","street_name":"SIXTH AVE"}
+{"borough":"3","block":"962","lot":"36","street_number":"240","street_name":"SIXTH AVENUE"}
+```
+
+results B: 
+
+```
+{"borough":"3","block":"962","lot":"36","street_number":"240","street_name":"6 AVENUE"}
+```
+
+
 **4. Debugging and Validation**
 If the integration does not work as expected, follow these steps to debug:
 
 **Step 4.1: Check the Network Tab**
+
 - Open your browser's developer tools and go to the "Network" tab.
 - Submit the form and check the network request to `http://localhost:3001/queryAcrisAddressParcel/fetchRecord`.
 - Verify that the request is sent with the correct query parameters and that the response contains the expected data.
 
 **Step 4.2: Check the Console Logs**
+
 - Look for `console.debug` and `console.error` logs in both the frontend and backend to identify any issues.
 
 **Step 4.3: Handle Errors Gracefully**
+
 - Update the `AddressParcelLookup` component to handle errors gracefully:
 
 ```js
@@ -467,15 +818,19 @@ async function search(searchTerms) {
 ```
 
 **5. Summary of Steps**
+
 1. Backend:
+
 - Test the `/queryAcrisAddressParcel/fetchRecord` endpoint to ensure it works as expected.
 - Confirm the route is registered in `app.js`.
 
-2. Frontend:
+1. Frontend:
+
 - Add the `queryAcrisAddressParcel` method to `api.js`.
 - Update the `AddressParcelLookup` component to call this method.
 
-3. Testing:
+1. Testing:
+
 - Start both the backend and frontend servers.
 - Navigate to `/addressParcelLookup` and test the form submission.
 
