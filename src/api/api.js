@@ -71,18 +71,18 @@ class SnacrisApi {
     await this.request(`users/${username}/jobs/${id}`, {}, "post");
   }
 
-
-
-
   static async queryAcrisAddressParcel(searchTerms) {
     console.debug("API queryAcrisAddressParcel called with:", searchTerms);
-
-    // Make a GET request to the backend's [fetchRecord](http://_vscodecontentref_/14) endpoint
     const res = await this.request("queryAcrisAddressParcel/fetchRecord", searchTerms);
-
     console.debug("API queryAcrisAddressParcel response:", res);
+    return res.records;
+  }
 
-    return res.records; // Return the records array from the response
+  static async queryAcrisDocIdCrfn(searchTerms) {
+    console.debug("API queryAcrisDocIdCrfn called with:", searchTerms);
+    const res = await this.request("queryAcrisDocIdCrfn/fetchRecord", searchTerms);
+    console.debug("API queryAcrisDocIdCrfn response:", res);
+    return res.records;
   }
 
   /** Get token for login from username, password. */
