@@ -73,7 +73,6 @@ function RealPropertyMasterCard({ document_id, record_type, crfn, recorded_borou
                     <h6 className="card-text">Document Recorded in: {decodedBoroughName}</h6>
                     <h6 className="card-text">Document Class: {docTypeName.class_code_description}</h6>
                     <h6 className="card-text">Document Type: {docTypeName.doc__type_description}</h6>
-
                     <h6 className="card-text">Party 1 Role: {docTypeName.party1_type}</h6>
 
                     {docTypeName.party2_type ? (
@@ -90,11 +89,9 @@ function RealPropertyMasterCard({ document_id, record_type, crfn, recorded_borou
 
                     <h6 className="card-text">Document Amount: {convertedDocAmt}</h6>
                     <h6 className="card-text">Property Interest Transferred: {convertedPercentTrans}</h6>
-
                     <h6 className="card-text">Document Date: {convertedDocumentDate}</h6>
                     <h6 className="card-text">Date Recorded: {convertedRecordedDate}</h6>
                     <h6 className="card-text">Date Last Modified: {convertedModifiedDate}</h6>
-
                     <h6 className="card-text">API Data Source: Real Property {decodedRecordTypeName} Dataset</h6>
                     <h6 className="card-text">Good Through Date: {convertedGoodThroughDate}</h6>
 

@@ -52,7 +52,7 @@ function AddressParcelLookupForm({ searchFor }) {
               value={searchTerms.borough}
               onChange={handleChange}
             >
-              <option value="">Select Borough...</option>
+              <option value="">Select Borough</option>
               <option value="1">Manhattan</option>
               <option value="2">Bronx</option>
               <option value="3">Brooklyn</option>

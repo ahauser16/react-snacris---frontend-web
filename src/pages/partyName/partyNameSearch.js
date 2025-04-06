@@ -1,41 +1,28 @@
-import React, { useState, useEffect } from "react";
-import SearchForm from "../../common/SearchForm";
-import JoblyApi from "../../api/api";
-// import CompanyCard from "./CompanyCard";
-import LoadingSpinner from "../../common/LoadingSpinner";
-
-/** Show page with list of companies.
- *
- * On mount, loads companies from API.
- * Re-loads filtered companies on submit from search form.
- *
- * This is routed to at /companies
- *
- * Routes -> { CompanyCard, SearchForm }
- */
+import React, { useState } from "react";
+import PartyNameSearchForm from "./PartyNameSearchForm";
+import SnacrisApi from "../../api/api";
+import RealPropertyMasterCard from "../../components/acris/RealPropertyMasterCard";
+import RealPropertyLegalsCard from "../../components/acris/RealPropertyLegalsCard";
+import RealPropertyPartiesCard from "../../components/acris/RealPropertyPartiesCard";
+import RealPropertyRefsCard from "../../components/acris/RealPropertyRefsCard";
+import RealPropertyRemarksCard from "../../components/acris/RealPropertyRemarksCard";
 
 function PartyNameSearch() {
-  //console.debug("CompanyList");
+  console.debug("PartyNameSearch");
 
-  //`companies` is a state variable that holds the list of companies fetched from the backend which is initially set to null.
-  //const [companies, setCompanies] = useState(null);
+  const [results, setResults] = useState(null);
 
-  //the useEffect hook runs when the component mounts which calls the `search()` function to fetch all companies from the backend using the `JoblyApi.getCompanies()` method
-  /*useEffect(function getCompaniesOnMount() {
-    console.debug("CompanyList useEffect getCompaniesOnMount");
-    search();
-  }, []);*/
-
-  /** Triggered by search form submit; reloads companies. 
-   * the SearchForm component allows users to filter companies by name. When the search form is submitted, the `search()` function is called with the search term, and the list of companies is updated.
-  */
-  async function search(name) {
-    //let companies = await JoblyApi.getCompanies(name);
-    //setCompanies(companies);
+  async function search(searchTerms, apiSearchSources) {
+    console.debug("DocumentIdCrfnSearch: search called with:", searchTerms, apiSearchSources);
+    try {
+      const results = await SnacrisApi.queryAcrisDocIdCrfn(searchTerms, apiSearchSources);
+      console.log("DocumentIdCrfnSearch: search results:", results);
+      setResults(results);
+    } catch (err) {
+      console.error("Error fetching results:", err);
+      setResults([]);
+    }
   }
-
-  //Rendering: If companies is null, a LoadingSpinner is displayed while data is being fetched.
-  //if (!companies) return <LoadingSpinner />;
 
   return (
     <div className="container text-center">
@@ -43,25 +30,117 @@ function PartyNameSearch() {
       <h1 className="mb-4 fw-bold">Search By Party Name</h1>
       <h2 className="mb-4 fw-bold">Recorded Documents Only</h2>
       <hr />
-      <SearchForm searchFor={search} />
-      {/* Rendering: If companies are found, a list of CompanyCard components is rendered.  */}
-      {/* {companies.length ? (
-        <div className="CompanyList-list">
-          {companies.map((c) => (
-            //Each company in the list is rendered as a CompanyCard component.
-            <CompanyCard
-              key={c.handle}
-              handle={c.handle}
-              name={c.name}
-              description={c.description}
-              logoUrl={c.logoUrl}
-            />
-          ))}
-        </div>
-      ) : (
-        //Rendering: If no companies match the search, a message is displayed.
-        <p className="lead">Sorry, no results were found!</p>
-      )} */}
+      <PartyNameSearchForm searchFor={search} />
+      {results && (
+        <>
+          {/* Check for "dataFound: false" objects */}
+          {results.some((result) => result.dataFound === false) && (
+            results
+              .filter((result) => result.dataFound === false)
+              .map((errorResult, index) => (
+                <h1 key={`error-${index}`} className="text-danger">
+                  Dataset: {errorResult.dataset}, Error: {errorResult.error}
+                </h1>
+              ))
+          )}
+          {/* Render other results */}
+          {results
+            .filter((result) => result.dataFound !== false)
+            .map((result, index) => {
+              switch (result.record_type) {
+                case "A":
+                  return (
+                    <RealPropertyMasterCard
+                      key={`master-${index}`}
+                      document_id={result.document_id}
+                      record_type={result.record_type}
+                      crfn={result.crfn}
+                      recorded_borough={result.recorded_borough}
+                      doc_type={result.doc_type}
+                      document_date={result.document_date}
+                      document_amt={result.document_amt}
+                      recorded_datetime={result.recorded_datetime}
+                      modified_date={result.modified_date}
+                      reel_yr={result.reel_yr}
+                      reel_nbr={result.reel_nbr}
+                      reel_pg={result.reel_pg}
+                      percent_trans={result.percent_trans}
+                      good_through_date={result.good_through_date}
+                    />
+                  );
+                case "L":
+                  return (
+                    <RealPropertyLegalsCard
+                      key={`legals-${index}`}
+                      document_id={result.document_id}
+                      record_type={result.record_type}
+                      borough={result.borough}
+                      block={result.block}
+                      lot={result.lot}
+                      easement={result.easement}
+                      partial_lot={result.partial_lot}
+                      air_rights={result.air_rights}
+                      subterranean_rights={result.subterranean_rights}
+                      property_type={result.property_type}
+                      street_number={result.street_number}
+                      street_name={result.street_name}
+                      unit_address={result.unit_address}
+                      good_through_date={result.good_through_date}
+                    />
+                  );
+                case "P":
+                  const docTypeForParties = results.find(
+                    (res) => res.record_type === "A" && res.document_id === result.document_id
+                  )?.doc_type;
+                  return (
+                    <RealPropertyPartiesCard
+                      key={`parties-${index}`}
+                      document_id={result.document_id}
+                      record_type={result.record_type}
+                      name={result.name}
+                      party_type={result.party_type}
+                      address_1={result.address_1}
+                      address_2={result.address_2}
+                      country={result.country}
+                      city={result.city}
+                      state={result.state}
+                      zip={result.zip}
+                      good_through_date={result.good_through_date}
+                      doc_type={docTypeForParties}
+                    />
+                  );
+                case "X":
+                  return (
+                    <RealPropertyRefsCard
+                      key={`refs-${index}`}
+                      document_id={result.document_id}
+                      record_type={result.record_type}
+                      reference_by_crfn_={result.reference_by_crfn_}
+                      reference_by_doc_id={result.reference_by_doc_id}
+                      reference_by_reel_year={result.reference_by_reel_year}
+                      reference_by_reel_borough={result.reference_by_reel_borough}
+                      reference_by_reel_nbr={result.reference_by_reel_nbr}
+                      reference_by_reel_page={result.reference_by_reel_page}
+                      good_through_date={result.good_through_date}
+                    />
+                  );
+                case "R":
+                  return (
+                    <RealPropertyRemarksCard
+                      key={`remarks-${index}`}
+                      document_id={result.document_id}
+                      record_type={result.record_type}
+                      sequence_number={result.sequence_number}
+                      remark_text={result.remark_text}
+                      good_through_date={result.good_through_date}
+                    />
+                  );
+                default:
+                  return null;
+              }
+            })}
+        </>
+      )}
     </div>
   );
 }

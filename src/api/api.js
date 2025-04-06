@@ -56,6 +56,8 @@ class SnacrisApi {
     return res.company;
   }
 
+
+
   /** Get list of jobs (filtered by title if not undefined) */
 
   static async getJobs(title) {
@@ -80,16 +82,38 @@ class SnacrisApi {
 
   static async queryAcrisDocIdCrfn(searchTerms, apiSearchSources) {
     console.debug("API queryAcrisDocIdCrfn called with:", searchTerms, apiSearchSources);
-  
+
     // Combine `searchTerms` and `apiSearchSources` into a single object
     const params = { ...searchTerms, ...apiSearchSources };
-  
+
     // Make a GET request with all parameters serialized into the URL
     const res = await this.request("queryAcrisDocIdCrfn/fetchRecord", params);
     console.debug("API queryAcrisDocIdCrfn response:", res);
     return res.records;
   }
 
+  static async queryPartyName(searchTerms, apiSearchSources) {
+    console.debug("API queryPartyName called with:", searchTerms, apiSearchSources);
+
+    // Combine `searchTerms` and `apiSearchSources` into a single object
+    const params = { ...searchTerms, ...apiSearchSources };
+
+    // Make a GET request with all parameters serialized into the URL
+    const res = await this.request("queryPartyName/fetchRecord", params);
+    console.debug("API queryPartyName response:", res);
+    return res.records;
+  }
+
+  static async getDocControlCodes() {
+    console.debug("API getDocControlCodes called");
+
+    // Make a GET request to the backend's `/db/code-map-documents/getDocTypeCodeMap` endpoint
+    const res = await this.request("db/code-map-documents/getDocTypeCodeMap");
+    console.debug("API getDocControlCodes response:", res);
+
+    // Return the data from the response
+    return res;
+  }
   /** Get token for login from username, password. */
 
   static async login(data) {
