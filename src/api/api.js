@@ -78,9 +78,14 @@ class SnacrisApi {
     return res.records;
   }
 
-  static async queryAcrisDocIdCrfn(searchTerms) {
-    console.debug("API queryAcrisDocIdCrfn called with:", searchTerms);
-    const res = await this.request("queryAcrisDocIdCrfn/fetchRecord", searchTerms);
+  static async queryAcrisDocIdCrfn(searchTerms, apiSearchSources) {
+    console.debug("API queryAcrisDocIdCrfn called with:", searchTerms, apiSearchSources);
+  
+    // Combine `searchTerms` and `apiSearchSources` into a single object
+    const params = { ...searchTerms, ...apiSearchSources };
+  
+    // Make a GET request with all parameters serialized into the URL
+    const res = await this.request("queryAcrisDocIdCrfn/fetchRecord", params);
     console.debug("API queryAcrisDocIdCrfn response:", res);
     return res.records;
   }

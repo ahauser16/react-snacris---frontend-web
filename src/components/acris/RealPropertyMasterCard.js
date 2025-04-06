@@ -50,23 +50,52 @@ function RealPropertyMasterCard({ document_id, record_type, crfn, recorded_borou
         <div className="card mb-3 shadow-sm col-6 mx-auto">
             <div className="card-body row">
                 <h4 className="card-title text-primary mb-3 row">
-                    Real Property Master Data for Document ID: {document_id} and CRFN: {crfn}
+                    Real Property Master Data
                 </h4>
+                <h5 className="card-title text-secondary mb-3 row">
+                    {document_id ? (
+                        `Document ID: ${document_id} `
+                    ) : (
+                        ""
+                    )}
+                </h5>
+                <h5 className="card-title text-secondary mb-3 row">
+                    {crfn ? (
+                        `CRFN: ${crfn}`
+                    ) : (
+                        ""
+                    )}
+                </h5>
+
                 <div className="text-start">
-                    <h6 className="card-text">Document ID: {document_id}</h6>
-                    <h6 className="card-text">Record Type: {decodedRecordTypeName}</h6>
-                    <h6 className="card-text">City Register File Number: {crfn}</h6>
-                    <h6 className="card-text">Recorded Borough (county): {decodedBoroughName}</h6>
+                    {/* <h6 className="card-text">Document ID: {document_id}</h6>
+                    <h6 className="card-text">City Register File Number ("CRFN"): {crfn}</h6> */}
+                    <h6 className="card-text">Document Recorded in: {decodedBoroughName}</h6>
                     <h6 className="card-text">Document Class: {docTypeName.class_code_description}</h6>
                     <h6 className="card-text">Document Type: {docTypeName.doc__type_description}</h6>
-                    <h6 className="card-text">Party 1 Type: {docTypeName.party1_type}</h6>
-                    <h6 className="card-text">Party 2 Type: {docTypeName.party2_type}</h6>
-                    <h6 className="card-text">Party 3 Type: {docTypeName.party3_type}</h6>
-                    <h6 className="card-text">Document Date: {convertedDocumentDate}</h6>
+
+                    <h6 className="card-text">Party 1 Role: {docTypeName.party1_type}</h6>
+
+                    {docTypeName.party2_type ? (
+                        <h6 className="card-text">Party 2 Role: {docTypeName.party2_type}</h6>
+                    ) : (
+                        <h6 className="card-text">* Party 2 Role Data is N/A</h6>
+                    )}
+
+                    {docTypeName.party3_type ? (
+                        <h6 className="card-text">Party 3 Role: {docTypeName.party3_type}</h6>
+                    ) : (
+                        <h6 className="card-text">Party 3 Role Data is N/A</h6>
+                    )}
+
                     <h6 className="card-text">Document Amount: {convertedDocAmt}</h6>
-                    <h6 className="card-text">Date/Time Recorded: {convertedRecordedDate}</h6>
-                    <h6 className="card-text">Date Modified: {convertedModifiedDate}</h6>
-                    <h6 className="card-text">Percent Transferred: {convertedPercentTrans}</h6>
+                    <h6 className="card-text">Property Interest Transferred: {convertedPercentTrans}</h6>
+
+                    <h6 className="card-text">Document Date: {convertedDocumentDate}</h6>
+                    <h6 className="card-text">Date Recorded: {convertedRecordedDate}</h6>
+                    <h6 className="card-text">Date Last Modified: {convertedModifiedDate}</h6>
+
+                    <h6 className="card-text">API Data Source: Real Property {decodedRecordTypeName} Dataset</h6>
                     <h6 className="card-text">Good Through Date: {convertedGoodThroughDate}</h6>
 
                     {isReelApplicable ? (
