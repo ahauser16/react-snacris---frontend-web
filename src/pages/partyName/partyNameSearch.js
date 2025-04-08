@@ -13,10 +13,10 @@ function PartyNameSearch() {
   const [results, setResults] = useState(null);
 
   async function search(searchTerms, apiSearchSources) {
-    console.debug("DocumentIdCrfnSearch: search called with:", searchTerms, apiSearchSources);
+    console.debug("PartyNameSearch: search called with:", searchTerms, apiSearchSources);
     try {
-      const results = await SnacrisApi.queryAcrisDocIdCrfn(searchTerms, apiSearchSources);
-      console.log("DocumentIdCrfnSearch: search results:", results);
+      const results = await SnacrisApi.queryAcrisPartyName(searchTerms, apiSearchSources);
+      console.log("PartyNameSearch: search results:", results);
       setResults(results);
     } catch (err) {
       console.error("Error fetching results:", err);
