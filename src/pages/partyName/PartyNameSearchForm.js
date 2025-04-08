@@ -1,24 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./partyNameSearchForm.css";
-import SnacrisApi from "../../api/api";
+import DocClassTypePartySelect from "../../components/acris/DocClassTypePartySelect";
 
 function PartyNameSearchForm({ searchFor }) {
     console.debug("PartyNameSearchForm", "searchFor=", typeof searchFor);
-
-    const [docControlCodes, setDocControlCodes] = useState(null);
-    const [deedsAndOtherConveyances, setDeedsAndOtherConveyances] = useState([]);
-    const [mortgagesAndInstruments, setMortgagesAndInstruments] = useState([]);
-    const [uccAndFederalLiens, setUccAndFederalLiens] = useState([]);
-    const [otherDocuments, setOtherDocuments] = useState([]);
-    const [selectedDocType, setSelectedDocType] = useState(null);
 
     const [searchTerms, setSearchTerms] = useState({
         name: "",
         document_date: "", //add input field for this as TODO
         recorded_borough: "", //add input field for this as TODO
         party_type: "",
-        doc_type: "",
-        doc_class: "",
+        doc_type: "doc-type-default",
+        doc_class: "all-classes-default",
     });
 
     const [apiSearchSources, setApiSearchSources] = useState({
@@ -31,45 +24,10 @@ function PartyNameSearchForm({ searchFor }) {
 
     const handleCheckboxChange = (datasetKey) => (event) => {
         setApiSearchSources((prev) => ({
-          ...prev,
-          [datasetKey]: event.target.checked,
+            ...prev,
+            [datasetKey]: event.target.checked,
         }));
-      };
-
-    useEffect(() => {
-        console.debug("PartyNameSearchForm useEffect getDocControlCodesOnMount");
-        getDocControlCodes();
-    }, []);
-
-    async function getDocControlCodes() {
-        let docControlCodes = await SnacrisApi.getDocControlCodes();
-        setDocControlCodes(docControlCodes);
-    }
-
-    useEffect(() => {
-        if (docControlCodes && Array.isArray(docControlCodes.docControlCodes)) {
-            setDeedsAndOtherConveyances(
-                docControlCodes.docControlCodes.filter(
-                    (docControlCode) => docControlCode.class_code_description === "DEEDS AND OTHER CONVEYANCES"
-                )
-            );
-            setMortgagesAndInstruments(
-                docControlCodes.docControlCodes.filter(
-                    (docControlCode) => docControlCode.class_code_description === "MORTGAGES & INSTRUMENTS"
-                )
-            );
-            setUccAndFederalLiens(
-                docControlCodes.docControlCodes.filter(
-                    (docControlCode) => docControlCode.class_code_description === "UCC AND FEDERAL LIENS"
-                )
-            );
-            setOtherDocuments(
-                docControlCodes.docControlCodes.filter(
-                    (docControlCode) => docControlCode.class_code_description === "OTHER DOCUMENTS"
-                )
-            );
-        }
-    }, [docControlCodes]);
+    };
 
     function handleSubmit(evt) {
         evt.preventDefault();
@@ -83,47 +41,7 @@ function PartyNameSearchForm({ searchFor }) {
             ...data,
             [name]: value,
         }));
-
-        // Handle changes for doc_type to update selectedDocType
-        if (name === "doc_type") {
-            const docTypeOptions = getDocTypeOptions();
-            const selectedDoc = docTypeOptions.find((doc) => doc.doc_type === value);
-            setSelectedDocType(selectedDoc || null);
-        }
     }
-
-    const getDocTypeOptions = () => {
-        switch (searchTerms.doc_class) {
-            case "DEEDS AND OTHER CONVEYANCES":
-                return deedsAndOtherConveyances;
-            case "MORTGAGES & INSTRUMENTS":
-                return mortgagesAndInstruments;
-            case "UCC AND FEDERAL LIENS":
-                return uccAndFederalLiens;
-            case "OTHER DOCUMENTS":
-                return otherDocuments;
-            default:
-                return [];
-        }
-    };
-
-    const getPartyTypeOptions = () => {
-        if (!selectedDocType) {
-            // Default options when no doc_type is selected
-            return [
-                { value: "1", label: "Party 1 (default)" },
-                { value: "2", label: "Party 2 (default)" },
-                { value: "3", label: "Party 3 (default)" },
-            ];
-        }
-        // Options based on the selected doc_type
-        const partyTypes = [
-            { value: "1", label: selectedDocType.party1_type },
-            { value: "2", label: selectedDocType.party2_type },
-            { value: "3", label: selectedDocType.party3_type },
-        ];
-        return partyTypes.filter((party) => party.label && party.label !== "null");
-    };
 
     return (
         <div className="PartyNameSearchForm mb-4">
@@ -139,49 +57,10 @@ function PartyNameSearchForm({ searchFor }) {
                             onChange={handleChange}
                         />
 
-                        <h3 className="mb-1 fw-bold">Select Document Class:</h3>
-                        <select
-                            className="form-select form-select-lg mb-1"
-                            name="doc_class"
-                            value={searchTerms.doc_class}
-                            onChange={handleChange}
-                        >
-                            <option value="">Select Document Class</option>
-                            <option value="DEEDS AND OTHER CONVEYANCES">DEEDS AND OTHER CONVEYANCES</option>
-                            <option value="MORTGAGES & INSTRUMENTS">MORTGAGES & INSTRUMENTS</option>
-                            <option value="UCC AND FEDERAL LIENS">UCC AND FEDERAL LIENS</option>
-                            <option value="OTHER DOCUMENTS">OTHER DOCUMENTS</option>
-                        </select>
-
-                        <h3 className="mb-1 fw-bold">Select Document Type:</h3>
-                        <select
-                            className="form-select form-select-lg mb-1"
-                            name="doc_type"
-                            value={searchTerms.doc_type}
-                            onChange={handleChange}
-                        >
-                            <option value="">Select Document Type</option>
-                            {getDocTypeOptions().map((doc) => (
-                                <option key={doc.doc_type} value={doc.doc_type}>
-                                    {doc.doc_type_description}
-                                </option>
-                            ))}
-                        </select>
-
-                        <h3 className="mb-1 fw-bold">Select Party Type:</h3>
-                        <select
-                            className="form-select form-select-lg mb-1"
-                            name="party_type"
-                            value={searchTerms.party_type}
-                            onChange={handleChange}
-                        >
-                            <option value="">Select Party Type</option>
-                            {getPartyTypeOptions().map((party) => (
-                                <option key={party.value} value={party.value}>
-                                    {party.label}
-                                </option>
-                            ))}
-                        </select>
+                        <DocClassTypePartySelect
+                            searchTerms={searchTerms}
+                            setSearchTerms={setSearchTerms}
+                        />
                     </fieldset>
                     <fieldset className="col-6">
                         <h3 className="mb-1 fw-bold">Select Datasets:</h3>

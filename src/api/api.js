@@ -104,7 +104,7 @@ class SnacrisApi {
     return res.records;
   }
 
-  static async getDocControlCodes() {
+  static async getDocControlCodesFromDb() {
     console.debug("API getDocControlCodes called");
 
     // Make a GET request to the backend's `/db/code-map-documents/getDocTypeCodeMap` endpoint
