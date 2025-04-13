@@ -48,6 +48,15 @@ function DocumentIdCrfnSearchForm({ searchFor }) {
     }));
   }
 
+  // Define which datasets should be disabled
+  const disabledDatasets = {
+    masterDataset: true, // Necessary dataset
+    lotDataset: false, // Supplemental dataset
+    partiesDataset: false, // Supplemental dataset
+    referencesDataset: false, // Supplemental dataset
+    remarksDataset: false, // Supplemental dataset
+  };
+
   return (
     <div className="DocumentIdCrfnSearchForm mb-4">
       <form onSubmit={handleSubmit}>
@@ -76,6 +85,7 @@ function DocumentIdCrfnSearchForm({ searchFor }) {
           <SelectDatasetsCheckboxes
             apiSearchSources={apiSearchSources}
             handleCheckboxChange={handleCheckboxChange}
+            disabledDatasets={disabledDatasets} // Pass disabled datasets as props
           />
           <button type="submit" className="btn btn-lg btn-primary mx-auto">
             Submit

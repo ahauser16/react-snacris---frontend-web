@@ -17,16 +17,19 @@ function PartyNameSearchForm({ searchFor }) {
         doc_class: "all-classes-default",
     });
 
-    const [apiSearchSources, setApiSearchSources] = useState({
+    const [primaryApiSources] = useState({
         masterDataset: true,
-        lotDataset: false,
         partiesDataset: true,
+    });
+
+    const [secondaryApiSources, setSecondaryApiSources] = useState({
+        lotDataset: false,
         referencesDataset: false,
         remarksDataset: false,
     });
 
     const handleCheckboxChange = (datasetKey) => (event) => {
-        setApiSearchSources((prev) => ({
+        setSecondaryApiSources((prev) => ({
             ...prev,
             [datasetKey]: event.target.checked,
         }));
@@ -34,8 +37,8 @@ function PartyNameSearchForm({ searchFor }) {
 
     function handleSubmit(evt) {
         evt.preventDefault();
-        console.debug("PartyNameSearchForm: handleSubmit called with:", searchTerms, apiSearchSources);
-        searchFor(searchTerms, apiSearchSources);
+        console.debug("PartyNameSearchForm: handleSubmit called with:", searchTerms, primaryApiSources, secondaryApiSources);
+        searchFor(searchTerms, primaryApiSources, secondaryApiSources);
     }
 
     function handleChange(evt) {
@@ -101,6 +104,15 @@ function PartyNameSearchForm({ searchFor }) {
         }
     }
 
+    // Define which datasets should be disabled
+    const disabledDatasets = {
+        masterDataset: true, // Necessary dataset
+        lotDataset: false, // Supplemental dataset
+        partiesDataset: true, // Necessary dataset
+        referencesDataset: false, // Supplemental dataset
+        remarksDataset: false, // Supplemental dataset
+    };
+
     return (
         <div className="PartyNameSearchForm mb-4">
             <form onSubmit={handleSubmit}>
@@ -108,7 +120,7 @@ function PartyNameSearchForm({ searchFor }) {
                     <fieldset className="col-6 justify-content-start text-start">
                         <h3 className="mb-1 fw-bold">Name:</h3>
                         <input
-                            className="form-control form-control-lg mb-4"
+                            className="form-control form-control-lg mb-1"
                             name="name"
                             placeholder="e.g. John Doe"
                             value={searchTerms.name}
@@ -180,8 +192,10 @@ function PartyNameSearchForm({ searchFor }) {
                         </select>
                     </fieldset>
                     <SelectDatasetsCheckboxes
-                        apiSearchSources={apiSearchSources}
+                        primaryApiSources={primaryApiSources}
+                        secondaryApiSources={secondaryApiSources}
                         handleCheckboxChange={handleCheckboxChange}
+                        disabledDatasets={disabledDatasets}
                     />
                     <button type="submit" className="btn btn-lg btn-primary mx-auto">
                         Submit
