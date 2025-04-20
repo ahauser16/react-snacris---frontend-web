@@ -92,13 +92,35 @@ class SnacrisApi {
     return res.records;
   }
 
-  static async queryAcrisPartyName(searchTerms,  primaryApiSources, secondaryApiSources) {
-    console.debug("API queryPartyName called with:", searchTerms,  primaryApiSources, secondaryApiSources);
+  static async queryAcrisPartyName(
+    masterSearchTerms,
+    partySearchTerms,
+    lotSearchTerms,
+    remarkSearchTerms,
+    referenceSearchTerms,
+    primaryApiSources,
+    secondaryApiSources
+  ) {
+    console.debug("API queryPartyName called with:", {
+      masterSearchTerms,
+      partySearchTerms,
+      lotSearchTerms,
+      remarkSearchTerms,
+      referenceSearchTerms,
+      primaryApiSources,
+      secondaryApiSources,
+    });
 
-    // Combine `searchTerms` and `apiSearchSources` into a single object
-    const params = { searchTerms, primaryApiSources, secondaryApiSources };
+    const params = {
+      masterSearchTerms,
+      partySearchTerms,
+      lotSearchTerms,
+      remarkSearchTerms,
+      referenceSearchTerms,
+      primaryApiSources,
+      secondaryApiSources,
+    };
 
-    // Make a GET request with all parameters serialized into the URL
     const res = await this.request("queryAcrisPartyName/fetchRecord", params);
     console.debug("API queryPartyName response:", res);
     return res.records;

@@ -21,8 +21,7 @@ function SelectDatasetsCheckboxes({ primaryApiSources, secondaryApiSources, hand
           type="checkbox"
           id="lot-record-checkbox"
           className="form-check-input me-2"
-          checked={secondaryApiSources.lotDataset}
-          onChange={handleCheckboxChange("lotDataset")}
+          checked={primaryApiSources.lotDataset}
           disabled={disabledDatasets.lotDataset}
         />
         <label htmlFor="lot-record-checkbox" className="form-check-label">

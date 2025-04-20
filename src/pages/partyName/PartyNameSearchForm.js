@@ -6,24 +6,33 @@ import SelectDatasetsCheckboxes from "../../components/acris/SelectDatasetsCheck
 function PartyNameSearchForm({ searchFor }) {
     console.debug("PartyNameSearchForm", "searchFor=", typeof searchFor);
 
-    const [searchTerms, setSearchTerms] = useState({
-        name: "",
-        document_date_range: "to-current-date-default", // Default value for date range
-        document_date_start: "", // For custom date range start
-        document_date_end: "", // For custom date range end
-        recorded_borough: "all-recorded-boroughs-default",
-        party_type: "all-party-types-default",
+    const [masterSearchTerms, setMasterSearchTerms] = useState({
+        document_date_range: "to-current-date-default",
+        document_date_start: "start-date-default",
+        document_date_end: "end-date-default",
         doc_type: "doc-type-default",
         doc_class: "all-classes-default",
     });
 
+    const [partySearchTerms, setPartySearchTerms] = useState({
+        name: "name-default",
+        party_type: "all-party-types-default",
+    });
+
+    const [lotSearchTerms, setLotSearchTerms] = useState({
+        borough: "all-boroughs-default",
+    });
+
+    const [remarkSearchTerms] = useState({});
+    const [referenceSearchTerms] = useState({});
+
     const [primaryApiSources] = useState({
         masterDataset: true,
         partiesDataset: true,
+        lotDataset: true,
     });
 
     const [secondaryApiSources, setSecondaryApiSources] = useState({
-        lotDataset: false,
         referencesDataset: false,
         remarksDataset: false,
     });
@@ -37,27 +46,41 @@ function PartyNameSearchForm({ searchFor }) {
 
     function handleSubmit(evt) {
         evt.preventDefault();
-        console.debug("PartyNameSearchForm: handleSubmit called with:", searchTerms, primaryApiSources, secondaryApiSources);
-        searchFor(searchTerms, primaryApiSources, secondaryApiSources);
+        console.debug(
+            "PartyNameSearchForm: handleSubmit called with:",
+            masterSearchTerms,
+            partySearchTerms,
+            lotSearchTerms,
+            remarkSearchTerms,
+            referenceSearchTerms,
+            primaryApiSources,
+            secondaryApiSources
+        );
+        searchFor(
+            masterSearchTerms,
+            partySearchTerms,
+            lotSearchTerms,
+            remarkSearchTerms,
+            referenceSearchTerms,
+            primaryApiSources,
+            secondaryApiSources
+        );
     }
 
-    function handleChange(evt) {
+    function handleMasterChange(evt) {
         const { name, value } = evt.target;
 
-        // Handle predefined date ranges
         if (name === "document_date_range") {
             if (value === "custom-date-range") {
-                // If "Choose Custom Date Range" is selected, clear the predefined range
-                setSearchTerms((data) => ({
+                setMasterSearchTerms((data) => ({
                     ...data,
                     document_date_range: value,
                     document_date_start: "",
                     document_date_end: "",
                 }));
             } else {
-                // Calculate the date range for predefined options
                 const dateRange = getPredefinedDateRange(value);
-                setSearchTerms((data) => ({
+                setMasterSearchTerms((data) => ({
                     ...data,
                     document_date_range: value,
                     document_date_start: dateRange.start,
@@ -65,26 +88,39 @@ function PartyNameSearchForm({ searchFor }) {
                 }));
             }
         } else {
-            // Update other fields
-            setSearchTerms((data) => ({
+            setMasterSearchTerms((data) => ({
                 ...data,
                 [name]: value,
             }));
         }
     }
 
-    // Helper function to calculate date ranges
+    function handlePartyChange(evt) {
+        const { name, value } = evt.target;
+        setPartySearchTerms((data) => ({
+            ...data,
+            [name]: value,
+        }));
+    }
+
+    function handleLotChange(evt) {
+        const { name, value } = evt.target;
+        setLotSearchTerms((data) => ({
+            ...data,
+            [name]: value,
+        }));
+    }
+
     function calculateDateRange(days) {
         const currentDate = new Date();
         const startDate = new Date();
         startDate.setDate(currentDate.getDate() - days);
         return {
-            start: startDate.toISOString().split("T")[0], // Format as YYYY-MM-DD
+            start: startDate.toISOString().split("T")[0],
             end: currentDate.toISOString().split("T")[0],
         };
     }
 
-    // Map predefined options to date ranges
     function getPredefinedDateRange(option) {
         switch (option) {
             case "last-7-days":
@@ -100,17 +136,16 @@ function PartyNameSearchForm({ searchFor }) {
             case "last-5-years":
                 return calculateDateRange(365 * 5);
             default:
-                return { start: "", end: "" }; // Default empty range
+                return { start: "", end: "" };
         }
     }
 
-    // Define which datasets should be disabled
     const disabledDatasets = {
-        masterDataset: true, // Necessary dataset
-        lotDataset: false, // Supplemental dataset
-        partiesDataset: true, // Necessary dataset
-        referencesDataset: false, // Supplemental dataset
-        remarksDataset: false, // Supplemental dataset
+        masterDataset: true,
+        lotDataset: true,
+        partiesDataset: true,
+        referencesDataset: false,
+        remarksDataset: false,
     };
 
     return (
@@ -123,16 +158,16 @@ function PartyNameSearchForm({ searchFor }) {
                             className="form-control form-control-lg mb-1"
                             name="name"
                             placeholder="e.g. John Doe"
-                            value={searchTerms.name}
-                            onChange={handleChange}
+                            value={partySearchTerms.name}
+                            onChange={handlePartyChange}
                         />
 
                         <h3 className="mb-1 fw-bold">Document Date Range:</h3>
                         <select
                             className="form-select form-select-lg mb-1"
                             name="document_date_range"
-                            value={searchTerms.document_date_range}
-                            onChange={handleChange}
+                            value={masterSearchTerms.document_date_range}
+                            onChange={handleMasterChange}
                         >
                             <option value="to-current-date-default">To Current Date</option>
                             <option value="last-7-days">Last 7 Days</option>
@@ -144,8 +179,7 @@ function PartyNameSearchForm({ searchFor }) {
                             <option value="custom-date-range">Choose Custom Date Range</option>
                         </select>
 
-                        {/* Render custom date range inputs if "Choose Custom Date Range" is selected */}
-                        {searchTerms.document_date_range === "custom-date-range" && (
+                        {masterSearchTerms.document_date_range === "custom-date-range" && (
                             <div className="mt-3">
                                 <label htmlFor="document_date_start" className="form-label">
                                     Start Date:
@@ -155,8 +189,8 @@ function PartyNameSearchForm({ searchFor }) {
                                     id="document_date_start"
                                     name="document_date_start"
                                     className="form-control mb-3"
-                                    value={searchTerms.document_date_start}
-                                    onChange={handleChange}
+                                    value={masterSearchTerms.document_date_start}
+                                    onChange={handleMasterChange}
                                 />
                                 <label htmlFor="document_date_end" className="form-label">
                                     End Date:
@@ -166,24 +200,26 @@ function PartyNameSearchForm({ searchFor }) {
                                     id="document_date_end"
                                     name="document_date_end"
                                     className="form-control"
-                                    value={searchTerms.document_date_end}
-                                    onChange={handleChange}
+                                    value={masterSearchTerms.document_date_end}
+                                    onChange={handleMasterChange}
                                 />
                             </div>
                         )}
 
                         <DocClassTypePartySelect
-                            searchTerms={searchTerms}
-                            setSearchTerms={setSearchTerms}
+                            masterSearchTerms={masterSearchTerms}
+                            setMasterSearchTerms={setMasterSearchTerms}
+                            partySearchTerms={partySearchTerms}
+                            setPartySearchTerms={setPartySearchTerms}
                         />
                         <h3 className="mb-1 fw-bold">Select Borough</h3>
                         <select
                             className="form-select form-select-lg mb-1"
-                            name="recorded_borough"
-                            value={searchTerms.recorded_borough}
-                            onChange={handleChange}
+                            name="borough"
+                            value={lotSearchTerms.borough}
+                            onChange={handleLotChange}
                         >
-                            <option value="all-recorded-boroughs-default">Select Borough</option>
+                            <option value="all-boroughs-default">Select Borough</option>
                             <option value="1">Manhattan</option>
                             <option value="2">Bronx</option>
                             <option value="3">Brooklyn</option>

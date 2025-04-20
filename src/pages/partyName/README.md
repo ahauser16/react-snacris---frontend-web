@@ -1,10 +1,8 @@
-# Dev Notes 4/8/25
-
-I'm spending more time than usual on the `PartyNameSearchForm.js` component due to its complexity and my desire to provide the best user experience based on the data retrieved from ACRIS which I seeded my database with and complex react form components. Below are my notes which are a mixture of AI prompts and responses and potential refactor solutions.
-
+# `partyNameSearch` and related code Dev Note
+I'm spending more time than usual on the `PartyNameSearchForm.js` component due to its complexity and my desire to provide the best user experience based on the data retrieved from ACRIS which I seeded my database with and complex react form components. Below are my notes which are a mixture of AI prompts and responses and potential refactor soluti
 # Table of Contents
 
-- [Dev Notes 4/8/25](#dev-notes-4825)
+- [`partyNameSearch` and related code Dev Note](#partynamesearch-and-related-code-dev-note)
 - [Table of Contents](#table-of-contents)
   - [Prompt A (PartyNameSearchForm Architecture)](#prompt-a-partynamesearchform-architecture)
   - [Response A (Refined Explanation)](#response-a-refined-explanation)
@@ -47,6 +45,7 @@ I'm spending more time than usual on the `PartyNameSearchForm.js` component due 
   - [Response E-1 (undesired behavior)](#response-e-1-undesired-behavior)
     - [Key Changes](#key-changes-2)
     - [Example Behavior](#example-behavior-1)
+  - [Prompt F (replacing `recorded_borough` with `borough` and refactoring `searchTerms`)](#prompt-f-replacing-recorded_borough-with-borough-and-refactoring-searchterms)
 
 ## Prompt A (PartyNameSearchForm Architecture)
 
@@ -3785,3 +3784,512 @@ export default PartyNameSearchForm;
 
 3. Custom Date Range:
 - Selecting "Choose Custom Date Range" renders two date inputs for the user to specify a custom range.
+
+## Prompt F (replacing `recorded_borough` with `borough` and refactoring `searchTerms`)
+
+@workspace I want to refactor my `partyNameSearch.js`, `api.js` and `PartyNameSearchForm.js` to achieve the following.  First, I want to replace the stateful object `searchTerms` with `masterSearchTerms`, `partySearchTerms`, `lotSearchTerms`, `remarkSearchTerms` and `referenceSearchTerms` to better organize the request body.  `name` and `party_type` will be associated with `partySearchTerms`.  `document_date_range`, `document_date_start`, `document_date_end`, `doc_type` and `doc_class` will be associated with `masterSearchTerms`.  `borough` will be associated with `lotSearchTerms` and for now the `remarkSearchTerms` and `referenceSearchTerms` objects will be empty but I think they should have a default value to indicate they are empty.  What do you think I should set their default vlaues to?  Also, I want to set the default value of `name` to `name-default`, `document_date_start` to `start-date-default`, `document_date_end` to `end-date-default` without disrupting the code's current functionality.  How do I refactor the code below to achieve the aforementioned criteria?
+
+```
+import React, { useState } from "react";
+import "./partyNameSearchForm.css";
+import DocClassTypePartySelect from "../../components/acris/DocClassTypePartySelect";
+import SelectDatasetsCheckboxes from "../../components/acris/SelectDatasetsCheckboxes";
+
+function PartyNameSearchForm({ searchFor }) {
+    console.debug("PartyNameSearchForm", "searchFor=", typeof searchFor);
+
+    const [searchTerms, setSearchTerms] = useState({
+        name: "",
+        document_date_range: "to-current-date-default", // Default value for date range
+        document_date_start: "", // For custom date range start
+        document_date_end: "", // For custom date range end
+        borough: "all-boroughs-default",
+        party_type: "all-party-types-default",
+        doc_type: "doc-type-default",
+        doc_class: "all-classes-default",
+    });
+
+    const [primaryApiSources] = useState({
+        masterDataset: true,
+        partiesDataset: true,
+        lotDataset: true,
+    });
+
+    const [secondaryApiSources, setSecondaryApiSources] = useState({
+        referencesDataset: false,
+        remarksDataset: false,
+    });
+
+    const handleCheckboxChange = (datasetKey) => (event) => {
+        setSecondaryApiSources((prev) => ({
+            ...prev,
+            [datasetKey]: event.target.checked,
+        }));
+    };
+
+    function handleSubmit(evt) {
+        evt.preventDefault();
+        console.debug("PartyNameSearchForm: handleSubmit called with:", searchTerms, primaryApiSources, secondaryApiSources);
+        searchFor(searchTerms, primaryApiSources, secondaryApiSources);
+    }
+
+    function handleChange(evt) {
+        const { name, value } = evt.target;
+
+        // Handle predefined date ranges
+        if (name === "document_date_range") {
+            if (value === "custom-date-range") {
+                // If "Choose Custom Date Range" is selected, clear the predefined range
+                setSearchTerms((data) => ({
+                    ...data,
+                    document_date_range: value,
+                    document_date_start: "",
+                    document_date_end: "",
+                }));
+            } else {
+                // Calculate the date range for predefined options
+                const dateRange = getPredefinedDateRange(value);
+                setSearchTerms((data) => ({
+                    ...data,
+                    document_date_range: value,
+                    document_date_start: dateRange.start,
+                    document_date_end: dateRange.end,
+                }));
+            }
+        } else {
+            // Update other fields
+            setSearchTerms((data) => ({
+                ...data,
+                [name]: value,
+            }));
+        }
+    }
+
+    // Helper function to calculate date ranges
+    function calculateDateRange(days) {
+        const currentDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(currentDate.getDate() - days);
+        return {
+            start: startDate.toISOString().split("T")[0], // Format as YYYY-MM-DD
+            end: currentDate.toISOString().split("T")[0],
+        };
+    }
+
+    // Map predefined options to date ranges
+    function getPredefinedDateRange(option) {
+        switch (option) {
+            case "last-7-days":
+                return calculateDateRange(7);
+            case "last-30-days":
+                return calculateDateRange(30);
+            case "last-90-days":
+                return calculateDateRange(90);
+            case "last-1-year":
+                return calculateDateRange(365);
+            case "last-2-years":
+                return calculateDateRange(365 * 2);
+            case "last-5-years":
+                return calculateDateRange(365 * 5);
+            default:
+                return { start: "", end: "" }; // Default empty range
+        }
+    }
+
+    // Define which datasets should be disabled
+    const disabledDatasets = {
+        masterDataset: true, // Necessary dataset
+        lotDataset: true, // Necessary dataset
+        partiesDataset: true, // Necessary dataset
+        referencesDataset: false, // Supplemental dataset
+        remarksDataset: false, // Supplemental dataset
+    };
+
+    return (
+        <div className="PartyNameSearchForm mb-4">
+            <form onSubmit={handleSubmit}>
+                <div className="row justify-content-center justify-content-lg-start gx-4 gy-4">
+                    <fieldset className="col-6 justify-content-start text-start">
+                        <h3 className="mb-1 fw-bold">Name:</h3>
+                        <input
+                            className="form-control form-control-lg mb-1"
+                            name="name"
+                            placeholder="e.g. John Doe"
+                            value={searchTerms.name}
+                            onChange={handleChange}
+                        />
+
+                        <h3 className="mb-1 fw-bold">Document Date Range:</h3>
+                        <select
+                            className="form-select form-select-lg mb-1"
+                            name="document_date_range"
+                            value={searchTerms.document_date_range}
+                            onChange={handleChange}
+                        >
+                            <option value="to-current-date-default">To Current Date</option>
+                            <option value="last-7-days">Last 7 Days</option>
+                            <option value="last-30-days">Last 30 Days</option>
+                            <option value="last-90-days">Last 90 Days</option>
+                            <option value="last-1-year">Last 1 Year</option>
+                            <option value="last-2-years">Last 2 Years</option>
+                            <option value="last-5-years">Last 5 Years</option>
+                            <option value="custom-date-range">Choose Custom Date Range</option>
+                        </select>
+
+                        {/* Render custom date range inputs if "Choose Custom Date Range" is selected */}
+                        {searchTerms.document_date_range === "custom-date-range" && (
+                            <div className="mt-3">
+                                <label htmlFor="document_date_start" className="form-label">
+                                    Start Date:
+                                </label>
+                                <input
+                                    type="date"
+                                    id="document_date_start"
+                                    name="document_date_start"
+                                    className="form-control mb-3"
+                                    value={searchTerms.document_date_start}
+                                    onChange={handleChange}
+                                />
+                                <label htmlFor="document_date_end" className="form-label">
+                                    End Date:
+                                </label>
+                                <input
+                                    type="date"
+                                    id="document_date_end"
+                                    name="document_date_end"
+                                    className="form-control"
+                                    value={searchTerms.document_date_end}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        )}
+
+                        <DocClassTypePartySelect
+                            searchTerms={searchTerms}
+                            setSearchTerms={setSearchTerms}
+                        />
+                        <h3 className="mb-1 fw-bold">Select Borough</h3>
+                        <select
+                            className="form-select form-select-lg mb-1"
+                            name="borough"
+                            value={searchTerms.borough}
+                            onChange={handleChange}
+                        >
+                            <option value="all-boroughs-default">Select Borough</option>
+                            <option value="1">Manhattan</option>
+                            <option value="2">Bronx</option>
+                            <option value="3">Brooklyn</option>
+                            <option value="4">Queens</option>
+                            <option value="5">Staten Island</option>
+                        </select>
+                    </fieldset>
+                    <SelectDatasetsCheckboxes
+                        primaryApiSources={primaryApiSources}
+                        secondaryApiSources={secondaryApiSources}
+                        handleCheckboxChange={handleCheckboxChange}
+                        disabledDatasets={disabledDatasets}
+                    />
+                    <button type="submit" className="btn btn-lg btn-primary mx-auto">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    );
+}
+
+export default PartyNameSearchForm;
+```
+
+```
+import React, { useState } from "react";
+import PartyNameSearchForm from "./PartyNameSearchForm";
+import SnacrisApi from "../../api/api";
+import RealPropertyMasterCard from "../../components/acris/RealPropertyMasterCard";
+import RealPropertyLegalsCard from "../../components/acris/RealPropertyLegalsCard";
+import RealPropertyPartiesCard from "../../components/acris/RealPropertyPartiesCard";
+import RealPropertyRefsCard from "../../components/acris/RealPropertyRefsCard";
+import RealPropertyRemarksCard from "../../components/acris/RealPropertyRemarksCard";
+
+function PartyNameSearch() {
+  console.debug("PartyNameSearch");
+
+  const [results, setResults] = useState(null);
+
+  async function search(searchTerms,  primaryApiSources, secondaryApiSources) {
+    console.debug("PartyNameSearch: search called with:", searchTerms,  primaryApiSources, secondaryApiSources);
+    try {
+      const results = await SnacrisApi.queryAcrisPartyName(searchTerms,  primaryApiSources, secondaryApiSources);
+      console.log("PartyNameSearch: search results:", results);
+      setResults(results);
+    } catch (err) {
+      console.error("Error fetching results:", err);
+      setResults([]);
+    }
+  }
+
+  return (
+    <div className="container text-center">
+      {/* Provides the search functionality and calls the search() function in CompanyList with the search term. */}
+      <h1 className="mb-4 fw-bold">Search By Party Name</h1>
+      <h2 className="mb-4 fw-bold">Recorded Documents Only</h2>
+      <hr />
+      <PartyNameSearchForm searchFor={search} />
+      {results && (
+        <>
+          {/* Check for "dataFound: false" objects */}
+          {results.some((result) => result.dataFound === false) && (
+            results
+              .filter((result) => result.dataFound === false)
+              .map((errorResult, index) => (
+                <h1 key={`error-${index}`} className="text-danger">
+                  Dataset: {errorResult.dataset}, Error: {errorResult.error}
+                </h1>
+              ))
+          )}
+          {/* Render other results */}
+          {results
+            .filter((result) => result.dataFound !== false)
+            .map((result, index) => {
+              switch (result.record_type) {
+                case "A":
+                  return (
+                    <RealPropertyMasterCard
+                      key={`master-${index}`}
+                      document_id={result.document_id}
+                      record_type={result.record_type}
+                      crfn={result.crfn}
+                      recorded_borough={result.recorded_borough}
+                      doc_type={result.doc_type}
+                      document_date={result.document_date}
+                      document_amt={result.document_amt}
+                      recorded_datetime={result.recorded_datetime}
+                      modified_date={result.modified_date}
+                      reel_yr={result.reel_yr}
+                      reel_nbr={result.reel_nbr}
+                      reel_pg={result.reel_pg}
+                      percent_trans={result.percent_trans}
+                      good_through_date={result.good_through_date}
+                    />
+                  );
+                case "L":
+                  return (
+                    <RealPropertyLegalsCard
+                      key={`legals-${index}`}
+                      document_id={result.document_id}
+                      record_type={result.record_type}
+                      borough={result.borough}
+                      block={result.block}
+                      lot={result.lot}
+                      easement={result.easement}
+                      partial_lot={result.partial_lot}
+                      air_rights={result.air_rights}
+                      subterranean_rights={result.subterranean_rights}
+                      property_type={result.property_type}
+                      street_number={result.street_number}
+                      street_name={result.street_name}
+                      unit_address={result.unit_address}
+                      good_through_date={result.good_through_date}
+                    />
+                  );
+                case "P":
+                  const docTypeForParties = results.find(
+                    (res) => res.record_type === "A" && res.document_id === result.document_id
+                  )?.doc_type;
+                  return (
+                    <RealPropertyPartiesCard
+                      key={`parties-${index}`}
+                      document_id={result.document_id}
+                      record_type={result.record_type}
+                      name={result.name}
+                      party_type={result.party_type}
+                      address_1={result.address_1}
+                      address_2={result.address_2}
+                      country={result.country}
+                      city={result.city}
+                      state={result.state}
+                      zip={result.zip}
+                      good_through_date={result.good_through_date}
+                      doc_type={docTypeForParties}
+                    />
+                  );
+                case "X":
+                  return (
+                    <RealPropertyRefsCard
+                      key={`refs-${index}`}
+                      document_id={result.document_id}
+                      record_type={result.record_type}
+                      reference_by_crfn_={result.reference_by_crfn_}
+                      reference_by_doc_id={result.reference_by_doc_id}
+                      reference_by_reel_year={result.reference_by_reel_year}
+                      reference_by_reel_borough={result.reference_by_reel_borough}
+                      reference_by_reel_nbr={result.reference_by_reel_nbr}
+                      reference_by_reel_page={result.reference_by_reel_page}
+                      good_through_date={result.good_through_date}
+                    />
+                  );
+                case "R":
+                  return (
+                    <RealPropertyRemarksCard
+                      key={`remarks-${index}`}
+                      document_id={result.document_id}
+                      record_type={result.record_type}
+                      sequence_number={result.sequence_number}
+                      remark_text={result.remark_text}
+                      good_through_date={result.good_through_date}
+                    />
+                  );
+                default:
+                  return null;
+              }
+            })}
+        </>
+      )}
+    </div>
+  );
+}
+
+export default PartyNameSearch;
+```
+
+```
+import axios from "axios";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
+
+/** API Class.
+ *
+ * Static class tying together methods used to get/send to to the API.
+ * There shouldn't be any frontend-specific stuff here, and there shouldn't
+ * be any API-aware stuff elsewhere in the frontend.
+ *
+ */
+
+class SnacrisApi {
+  // the token for interactive with the API will be stored here.
+  static token;
+
+  static async request(endpoint, data = {}, method = "get") {
+    console.debug("API Call:", endpoint, data, method);
+
+    //there are multiple ways to pass an authorization token, this is how you pass it in the header.
+    //this has been provided to show you another way to pass the token. you are only expected to read this code for this project.
+
+    const url = `${BASE_URL}/${endpoint}`;
+    const headers = { Authorization: `Bearer ${SnacrisApi.token}` };
+    const params = method === "get" ? data : {};
+
+    try {
+      return (await axios({ url, method, data, params, headers })).data;
+    } catch (err) {
+      console.error("API Error:", err.response);
+      let message = err.response.data.error.message;
+      throw Array.isArray(message) ? message : [message];
+    }
+  }
+
+  // Individual API routes
+
+  /** Get the current user. */
+
+  static async getCurrentUser(username) {
+    let res = await this.request(`users/${username}`);
+    return res.user;
+  }
+
+  /** Get companies (filtered by name if not undefined) */
+
+  static async getCompanies(name) {
+    let res = await this.request("companies", { name });
+    return res.companies;
+  }
+
+  /** Get details on a company by handle. */
+
+  static async getCompany(handle) {
+    let res = await this.request(`companies/${handle}`);
+    return res.company;
+  }
+
+
+
+  /** Get list of jobs (filtered by title if not undefined) */
+
+  static async getJobs(title) {
+    let res = await this.request("jobs", { title });
+    return res.jobs;
+  }
+
+  /** Apply to a job */
+
+  static async applyToJob(username, id) {
+    console.debug("API applyToJob called with:", username, id);
+    //NB--> as part of debugging it was suggested to add the `await` keyword to the implementation of this function in `App.js` and `JobCard.js`
+    await this.request(`users/${username}/jobs/${id}`, {}, "post");
+  }
+
+  static async queryAcrisAddressParcel(searchTerms) {
+    console.debug("API queryAcrisAddressParcel called with:", searchTerms);
+    const res = await this.request("queryAcrisAddressParcel/fetchRecord", searchTerms);
+    console.debug("API queryAcrisAddressParcel response:", res);
+    return res.records;
+  }
+
+  static async queryAcrisDocIdCrfn(searchTerms, apiSearchSources) {
+    console.debug("API queryAcrisDocIdCrfn called with:", searchTerms, apiSearchSources);
+
+    // Combine `searchTerms` and `apiSearchSources` into a single object
+    const params = { ...searchTerms, ...apiSearchSources };
+
+    // Make a GET request with all parameters serialized into the URL
+    const res = await this.request("queryAcrisDocIdCrfn/fetchRecord", params);
+    console.debug("API queryAcrisDocIdCrfn response:", res);
+    return res.records;
+  }
+
+  static async queryAcrisPartyName(searchTerms,  primaryApiSources, secondaryApiSources) {
+    console.debug("API queryPartyName called with:", searchTerms,  primaryApiSources, secondaryApiSources);
+
+    // Combine `searchTerms` and `apiSearchSources` into a single object
+    const params = { searchTerms, primaryApiSources, secondaryApiSources };
+
+    // Make a GET request with all parameters serialized into the URL
+    const res = await this.request("queryAcrisPartyName/fetchRecord", params);
+    console.debug("API queryPartyName response:", res);
+    return res.records;
+  }
+
+  static async getDocControlCodesFromDb() {
+    console.debug("API getDocControlCodes called");
+
+    // Make a GET request to the backend's `/db/code-map-documents/getDocTypeCodeMap` endpoint
+    const res = await this.request("db/code-map-documents/getDocTypeCodeMap");
+    console.debug("API getDocControlCodes response:", res);
+
+    // Return the data from the response
+    return res;
+  }
+  /** Get token for login from username, password. */
+
+  static async login(data) {
+    let res = await this.request(`auth/token`, data, "post");
+    return res.token;
+  }
+
+  /** Signup for site. */
+
+  static async signup(data) {
+    let res = await this.request(`auth/register`, data, "post");
+    return res.token;
+  }
+
+  /** Save user profile page. */
+
+  static async saveProfile(username, data) {
+    let res = await this.request(`users/${username}`, data, "patch");
+    return res.user;
+  }
+}
+
+export default SnacrisApi;
+```
