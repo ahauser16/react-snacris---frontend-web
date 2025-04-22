@@ -95,7 +95,7 @@ class SnacrisApi {
   static async queryAcrisPartyName(
     masterSearchTerms,
     partySearchTerms,
-    lotSearchTerms,
+    legalsSearchTerms,
     remarkSearchTerms,
     referenceSearchTerms,
     primaryApiSources,
@@ -104,7 +104,7 @@ class SnacrisApi {
     console.debug("API queryPartyName called with:", {
       masterSearchTerms,
       partySearchTerms,
-      lotSearchTerms,
+      legalsSearchTerms,
       remarkSearchTerms,
       referenceSearchTerms,
       primaryApiSources,
@@ -114,7 +114,7 @@ class SnacrisApi {
     const params = {
       masterSearchTerms,
       partySearchTerms,
-      lotSearchTerms,
+      legalsSearchTerms,
       remarkSearchTerms,
       referenceSearchTerms,
       primaryApiSources,

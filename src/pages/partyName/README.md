@@ -1,5 +1,7 @@
 # `partyNameSearch` and related code Dev Note
+
 I'm spending more time than usual on the `PartyNameSearchForm.js` component due to its complexity and my desire to provide the best user experience based on the data retrieved from ACRIS which I seeded my database with and complex react form components. Below are my notes which are a mixture of AI prompts and responses and potential refactor soluti
+
 # Table of Contents
 
 - [`partyNameSearch` and related code Dev Note](#partynamesearch-and-related-code-dev-note)
@@ -3122,150 +3124,170 @@ import "./partyNameSearchForm.css";
 import DocClassTypePartySelect from "../../components/acris/DocClassTypePartySelect";
 
 function PartyNameSearchForm({ searchFor }) {
-    console.debug("PartyNameSearchForm", "searchFor=", typeof searchFor);
+  console.debug("PartyNameSearchForm", "searchFor=", typeof searchFor);
 
-    const [searchTerms, setSearchTerms] = useState({
-        name: "",
-        document_date_range: "to-current-date-default", //add input field for this as TODO
-        recorded_borough: "", //add input field for this as TODO
-        party_type: "all-party-types-default",
-        doc_type: "doc-type-default",
-        doc_class: "all-classes-default",
-    });
+  const [searchTerms, setSearchTerms] = useState({
+    name: "",
+    document_date_range: "to-current-date-default", //add input field for this as TODO
+    recorded_borough: "", //add input field for this as TODO
+    party_type: "all-party-types-default",
+    doc_type: "doc-type-default",
+    doc_class: "all-classes-default",
+  });
 
-    const [apiSearchSources, setApiSearchSources] = useState({
-        masterDataset: true,
-        lotDataset: false,
-        partiesDataset: true,
-        referencesDataset: false,
-        remarksDataset: false,
-    });
+  const [apiSearchSources, setApiSearchSources] = useState({
+    masterDataset: true,
+    lotDataset: false,
+    partiesDataset: true,
+    referencesDataset: false,
+    remarksDataset: false,
+  });
 
-    const handleCheckboxChange = (datasetKey) => (event) => {
-        setApiSearchSources((prev) => ({
-            ...prev,
-            [datasetKey]: event.target.checked,
-        }));
-    };
+  const handleCheckboxChange = (datasetKey) => (event) => {
+    setApiSearchSources((prev) => ({
+      ...prev,
+      [datasetKey]: event.target.checked,
+    }));
+  };
 
-    function handleSubmit(evt) {
-        evt.preventDefault();
-        console.debug("PartyNameSearchForm: handleSubmit called with:", searchTerms, apiSearchSources);
-        searchFor(searchTerms, apiSearchSources);
-    }
-
-    function handleChange(evt) {
-        const { name, value } = evt.target;
-        setSearchTerms((data) => ({
-            ...data,
-            [name]: value,
-        }));
-    }
-
-    return (
-        <div className="PartyNameSearchForm mb-4">
-            <form onSubmit={handleSubmit}>
-                <div className="row justify-content-center justify-content-lg-start gx-4 gy-4">
-                    <fieldset className="col-6 justify-content-start text-start">
-                        <h3 className="mb-1 fw-bold">Name:</h3>
-                        <input
-                            className="form-control form-control-lg mb-4"
-                            name="name"
-                            placeholder="e.g. John Doe"
-                            value={searchTerms.name}
-                            onChange={handleChange}
-                        />
-                        <h3 className="mb-1 fw-bold">Document Date Range:</h3>
-                        <select
-                            className="form-select form-select-lg mb-1"
-                            name="document_date"
-                            value={searchTerms.document_date}
-                            onChange={handleChange}
-                        >
-                            <option value="doc-date-range-default">Select Document Date Range</option>
-                            <option value={searchTerms.document_date}>Last 7 Days</option>
-                            <option value={searchTerms.document_date}>Last 30 Days</option>
-                            <option value={searchTerms.document_date}>Last 90 Days</option>
-                            <option value={searchTerms.document_date}>Last 1 Years</option>
-                            <option value={searchTerms.document_date}>Last 2 Years</option>
-                            <option value={searchTerms.document_date}>Last 5 Years</option>
-                            <option value={searchTerms.document_date}>Custom Date Range</option>
-                        </select>
-                        <DocClassTypePartySelect
-                            searchTerms={searchTerms}
-                            setSearchTerms={setSearchTerms}
-                        />
-                    </fieldset>
-                    <fieldset className="col-6">
-                        <h3 className="mb-1 fw-bold">Select Datasets:</h3>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="master-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.masterDataset}
-                                onChange={handleCheckboxChange("masterDataset")}
-                            />
-                            <label htmlFor="master-record-checkbox" className="form-check-label">
-                                Master Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="lot-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.lotDataset}
-                                onChange={handleCheckboxChange("lotDataset")}
-                            />
-                            <label htmlFor="lot-record-checkbox" className="form-check-label">
-                                Lot Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="parties-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.partiesDataset}
-                                onChange={handleCheckboxChange("partiesDataset")}
-                            />
-                            <label htmlFor="parties-record-checkbox" className="form-check-label">
-                                Parties Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="references-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.referencesDataset}
-                                onChange={handleCheckboxChange("referencesDataset")}
-                            />
-                            <label htmlFor="references-record-checkbox" className="form-check-label">
-                                References Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="remarks-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.remarksDataset}
-                                onChange={handleCheckboxChange("remarksDataset")}
-                            />
-                            <label htmlFor="remarks-record-checkbox" className="form-check-label">
-                                Remarks Record
-                            </label>
-                        </div>
-                    </fieldset>
-                    <button type="submit" className="btn btn-lg btn-primary mx-auto">
-                        Submit
-                    </button>
-                </div>
-            </form>
-        </div>
+  function handleSubmit(evt) {
+    evt.preventDefault();
+    console.debug(
+      "PartyNameSearchForm: handleSubmit called with:",
+      searchTerms,
+      apiSearchSources
     );
+    searchFor(searchTerms, apiSearchSources);
+  }
+
+  function handleChange(evt) {
+    const { name, value } = evt.target;
+    setSearchTerms((data) => ({
+      ...data,
+      [name]: value,
+    }));
+  }
+
+  return (
+    <div className="PartyNameSearchForm mb-4">
+      <form onSubmit={handleSubmit}>
+        <div className="row justify-content-center justify-content-lg-start gx-4 gy-4">
+          <fieldset className="col-6 justify-content-start text-start">
+            <h3 className="mb-1 fw-bold">Name:</h3>
+            <input
+              className="form-control form-control-lg mb-4"
+              name="name"
+              placeholder="e.g. John Doe"
+              value={searchTerms.name}
+              onChange={handleChange}
+            />
+            <h3 className="mb-1 fw-bold">Document Date Range:</h3>
+            <select
+              className="form-select form-select-lg mb-1"
+              name="document_date"
+              value={searchTerms.document_date}
+              onChange={handleChange}
+            >
+              <option value="doc-date-range-default">
+                Select Document Date Range
+              </option>
+              <option value={searchTerms.document_date}>Last 7 Days</option>
+              <option value={searchTerms.document_date}>Last 30 Days</option>
+              <option value={searchTerms.document_date}>Last 90 Days</option>
+              <option value={searchTerms.document_date}>Last 1 Years</option>
+              <option value={searchTerms.document_date}>Last 2 Years</option>
+              <option value={searchTerms.document_date}>Last 5 Years</option>
+              <option value={searchTerms.document_date}>
+                Custom Date Range
+              </option>
+            </select>
+            <DocClassTypePartySelect
+              searchTerms={searchTerms}
+              setSearchTerms={setSearchTerms}
+            />
+          </fieldset>
+          <fieldset className="col-6">
+            <h3 className="mb-1 fw-bold">Select Datasets:</h3>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="master-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.masterDataset}
+                onChange={handleCheckboxChange("masterDataset")}
+              />
+              <label
+                htmlFor="master-record-checkbox"
+                className="form-check-label"
+              >
+                Master Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="lot-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.lotDataset}
+                onChange={handleCheckboxChange("lotDataset")}
+              />
+              <label htmlFor="lot-record-checkbox" className="form-check-label">
+                Lot Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="parties-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.partiesDataset}
+                onChange={handleCheckboxChange("partiesDataset")}
+              />
+              <label
+                htmlFor="parties-record-checkbox"
+                className="form-check-label"
+              >
+                Parties Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="references-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.referencesDataset}
+                onChange={handleCheckboxChange("referencesDataset")}
+              />
+              <label
+                htmlFor="references-record-checkbox"
+                className="form-check-label"
+              >
+                References Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="remarks-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.remarksDataset}
+                onChange={handleCheckboxChange("remarksDataset")}
+              />
+              <label
+                htmlFor="remarks-record-checkbox"
+                className="form-check-label"
+              >
+                Remarks Record
+              </label>
+            </div>
+          </fieldset>
+          <button type="submit" className="btn btn-lg btn-primary mx-auto">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default PartyNameSearchForm;
@@ -3283,231 +3305,262 @@ import "./partyNameSearchForm.css";
 import DocClassTypePartySelect from "../../components/acris/DocClassTypePartySelect";
 
 function PartyNameSearchForm({ searchFor }) {
-    console.debug("PartyNameSearchForm", "searchFor=", typeof searchFor);
+  console.debug("PartyNameSearchForm", "searchFor=", typeof searchFor);
 
-    const [searchTerms, setSearchTerms] = useState({
-        name: "",
-        document_date_range: "to-current-date-default", // Default value for date range
-        document_date_start: "", // For custom date range start
-        document_date_end: "", // For custom date range end
-        recorded_borough: "",
-        party_type: "all-party-types-default",
-        doc_type: "doc-type-default",
-        doc_class: "all-classes-default",
-    });
+  const [searchTerms, setSearchTerms] = useState({
+    name: "",
+    document_date_range: "to-current-date-default", // Default value for date range
+    document_date_start: "", // For custom date range start
+    document_date_end: "", // For custom date range end
+    recorded_borough: "",
+    party_type: "all-party-types-default",
+    doc_type: "doc-type-default",
+    doc_class: "all-classes-default",
+  });
 
-    const [apiSearchSources, setApiSearchSources] = useState({
-        masterDataset: true,
-        lotDataset: false,
-        partiesDataset: true,
-        referencesDataset: false,
-        remarksDataset: false,
-    });
+  const [apiSearchSources, setApiSearchSources] = useState({
+    masterDataset: true,
+    lotDataset: false,
+    partiesDataset: true,
+    referencesDataset: false,
+    remarksDataset: false,
+  });
 
-    const handleCheckboxChange = (datasetKey) => (event) => {
-        setApiSearchSources((prev) => ({
-            ...prev,
-            [datasetKey]: event.target.checked,
-        }));
-    };
+  const handleCheckboxChange = (datasetKey) => (event) => {
+    setApiSearchSources((prev) => ({
+      ...prev,
+      [datasetKey]: event.target.checked,
+    }));
+  };
 
-    function handleSubmit(evt) {
-        evt.preventDefault();
-        console.debug("PartyNameSearchForm: handleSubmit called with:", searchTerms, apiSearchSources);
-        searchFor(searchTerms, apiSearchSources);
-    }
-
-    function handleChange(evt) {
-        const { name, value } = evt.target;
-
-        // Reset custom date range fields if the user selects a predefined range
-        if (name === "document_date_range" && value !== "custom-date-range") {
-            setSearchTerms((data) => ({
-                ...data,
-                document_date_range: value,
-                document_date_start: "",
-                document_date_end: "",
-            }));
-        } else {
-            setSearchTerms((data) => ({
-                ...data,
-                [name]: value,
-            }));
-        }
-    }
-
-    // Helper function to calculate date ranges
-    function calculateDateRange(days) {
-        const currentDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(currentDate.getDate() - days);
-        return {
-            start: startDate.toISOString().split("T")[0], // Format as YYYY-MM-DD
-            end: currentDate.toISOString().split("T")[0],
-        };
-    }
-
-    return (
-        <div className="PartyNameSearchForm mb-4">
-            <form onSubmit={handleSubmit}>
-                <div className="row justify-content-center justify-content-lg-start gx-4 gy-4">
-                    <fieldset className="col-6 justify-content-start text-start">
-                        <h3 className="mb-1 fw-bold">Name:</h3>
-                        <input
-                            className="form-control form-control-lg mb-4"
-                            name="name"
-                            placeholder="e.g. John Doe"
-                            value={searchTerms.name}
-                            onChange={handleChange}
-                        />
-
-                        <h3 className="mb-1 fw-bold">Document Date Range:</h3>
-                        <select
-                            className="form-select form-select-lg mb-1"
-                            name="document_date_range"
-                            value={searchTerms.document_date_range}
-                            onChange={handleChange}
-                        >
-                            <option value="to-current-date-default">To Current Date</option>
-                            <option value="last-7-days">Last 7 Days</option>
-                            <option value="last-30-days">Last 30 Days</option>
-                            <option value="last-90-days">Last 90 Days</option>
-                            <option value="last-1-year">Last 1 Year</option>
-                            <option value="last-2-years">Last 2 Years</option>
-                            <option value="last-5-years">Last 5 Years</option>
-                            <option value="custom-date-range">Choose Custom Date Range</option>
-                        </select>
-
-                        {/* Render custom date range inputs if "Choose Custom Date Range" is selected */}
-                        {searchTerms.document_date_range === "custom-date-range" && (
-                            <div className="mt-3">
-                                <label htmlFor="document_date_start" className="form-label">
-                                    Start Date:
-                                </label>
-                                <input
-                                    type="date"
-                                    id="document_date_start"
-                                    name="document_date_start"
-                                    className="form-control mb-3"
-                                    value={searchTerms.document_date_start}
-                                    onChange={handleChange}
-                                />
-                                <label htmlFor="document_date_end" className="form-label">
-                                    End Date:
-                                </label>
-                                <input
-                                    type="date"
-                                    id="document_date_end"
-                                    name="document_date_end"
-                                    className="form-control"
-                                    value={searchTerms.document_date_end}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        )}
-
-                        <DocClassTypePartySelect
-                            searchTerms={searchTerms}
-                            setSearchTerms={setSearchTerms}
-                        />
-                    </fieldset>
-                    <fieldset className="col-6">
-                        <h3 className="mb-1 fw-bold">Select Datasets:</h3>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="master-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.masterDataset}
-                                onChange={handleCheckboxChange("masterDataset")}
-                            />
-                            <label htmlFor="master-record-checkbox" className="form-check-label">
-                                Master Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="lot-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.lotDataset}
-                                onChange={handleCheckboxChange("lotDataset")}
-                            />
-                            <label htmlFor="lot-record-checkbox" className="form-check-label">
-                                Lot Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="parties-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.partiesDataset}
-                                onChange={handleCheckboxChange("partiesDataset")}
-                            />
-                            <label htmlFor="parties-record-checkbox" className="form-check-label">
-                                Parties Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="references-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.referencesDataset}
-                                onChange={handleCheckboxChange("referencesDataset")}
-                            />
-                            <label htmlFor="references-record-checkbox" className="form-check-label">
-                                References Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="remarks-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.remarksDataset}
-                                onChange={handleCheckboxChange("remarksDataset")}
-                            />
-                            <label htmlFor="remarks-record-checkbox" className="form-check-label">
-                                Remarks Record
-                            </label>
-                        </div>
-                    </fieldset>
-                    <button type="submit" className="btn btn-lg btn-primary mx-auto">
-                        Submit
-                    </button>
-                </div>
-            </form>
-        </div>
+  function handleSubmit(evt) {
+    evt.preventDefault();
+    console.debug(
+      "PartyNameSearchForm: handleSubmit called with:",
+      searchTerms,
+      apiSearchSources
     );
+    searchFor(searchTerms, apiSearchSources);
+  }
+
+  function handleChange(evt) {
+    const { name, value } = evt.target;
+
+    // Reset custom date range fields if the user selects a predefined range
+    if (name === "document_date_range" && value !== "custom-date-range") {
+      setSearchTerms((data) => ({
+        ...data,
+        document_date_range: value,
+        document_date_start: "",
+        document_date_end: "",
+      }));
+    } else {
+      setSearchTerms((data) => ({
+        ...data,
+        [name]: value,
+      }));
+    }
+  }
+
+  // Helper function to calculate date ranges
+  function calculateDateRange(days) {
+    const currentDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(currentDate.getDate() - days);
+    return {
+      start: startDate.toISOString().split("T")[0], // Format as YYYY-MM-DD
+      end: currentDate.toISOString().split("T")[0],
+    };
+  }
+
+  return (
+    <div className="PartyNameSearchForm mb-4">
+      <form onSubmit={handleSubmit}>
+        <div className="row justify-content-center justify-content-lg-start gx-4 gy-4">
+          <fieldset className="col-6 justify-content-start text-start">
+            <h3 className="mb-1 fw-bold">Name:</h3>
+            <input
+              className="form-control form-control-lg mb-4"
+              name="name"
+              placeholder="e.g. John Doe"
+              value={searchTerms.name}
+              onChange={handleChange}
+            />
+
+            <h3 className="mb-1 fw-bold">Document Date Range:</h3>
+            <select
+              className="form-select form-select-lg mb-1"
+              name="document_date_range"
+              value={searchTerms.document_date_range}
+              onChange={handleChange}
+            >
+              <option value="to-current-date-default">To Current Date</option>
+              <option value="last-7-days">Last 7 Days</option>
+              <option value="last-30-days">Last 30 Days</option>
+              <option value="last-90-days">Last 90 Days</option>
+              <option value="last-1-year">Last 1 Year</option>
+              <option value="last-2-years">Last 2 Years</option>
+              <option value="last-5-years">Last 5 Years</option>
+              <option value="custom-date-range">
+                Choose Custom Date Range
+              </option>
+            </select>
+
+            {/* Render custom date range inputs if "Choose Custom Date Range" is selected */}
+            {searchTerms.document_date_range === "custom-date-range" && (
+              <div className="mt-3">
+                <label htmlFor="document_date_start" className="form-label">
+                  Start Date:
+                </label>
+                <input
+                  type="date"
+                  id="document_date_start"
+                  name="document_date_start"
+                  className="form-control mb-3"
+                  value={searchTerms.document_date_start}
+                  onChange={handleChange}
+                />
+                <label htmlFor="document_date_end" className="form-label">
+                  End Date:
+                </label>
+                <input
+                  type="date"
+                  id="document_date_end"
+                  name="document_date_end"
+                  className="form-control"
+                  value={searchTerms.document_date_end}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
+
+            <DocClassTypePartySelect
+              searchTerms={searchTerms}
+              setSearchTerms={setSearchTerms}
+            />
+          </fieldset>
+          <fieldset className="col-6">
+            <h3 className="mb-1 fw-bold">Select Datasets:</h3>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="master-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.masterDataset}
+                onChange={handleCheckboxChange("masterDataset")}
+              />
+              <label
+                htmlFor="master-record-checkbox"
+                className="form-check-label"
+              >
+                Master Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="lot-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.lotDataset}
+                onChange={handleCheckboxChange("lotDataset")}
+              />
+              <label htmlFor="lot-record-checkbox" className="form-check-label">
+                Lot Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="parties-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.partiesDataset}
+                onChange={handleCheckboxChange("partiesDataset")}
+              />
+              <label
+                htmlFor="parties-record-checkbox"
+                className="form-check-label"
+              >
+                Parties Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="references-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.referencesDataset}
+                onChange={handleCheckboxChange("referencesDataset")}
+              />
+              <label
+                htmlFor="references-record-checkbox"
+                className="form-check-label"
+              >
+                References Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="remarks-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.remarksDataset}
+                onChange={handleCheckboxChange("remarksDataset")}
+              />
+              <label
+                htmlFor="remarks-record-checkbox"
+                className="form-check-label"
+              >
+                Remarks Record
+              </label>
+            </div>
+          </fieldset>
+          <button type="submit" className="btn btn-lg btn-primary mx-auto">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default PartyNameSearchForm;
 ```
 
 ### Key Features of the Refactor
+
 1. Dynamic Date Range Calculation:
+
 - The `calculateDateRange` function calculates date ranges based on the current date.
 - This function can be extended or reused for other date-related logic.
 
 2. Custom Date Range Inputs:
+
 - When the user selects "Choose Custom Date Range," two `<input type="date">` fields are rendered for the user to specify a start and end date.
 
 3. Reset Behavior:
+
 - When the user selects a predefined date range, the custom date range fields (`document_date_start` and `document_date_end`) are cleared.
 
 4. Default Option:
+
 - The default option is "To Current Date," which sets the `document_date_range` to `"to-current-date-default"`.
 
 ### Example Behavior
+
 1. Default State:
+
 - The Document Date Range select input defaults to "To Current Date."
+
 2. Predefined Date Ranges:
+
 - Selecting "Last 7 Days" sets `searchTerms.document_date_range` to `"last-7-days"` and calculates the date range.
+
 3. Custom Date Range:
+
 - Selecting "Choose Custom Date Range" renders two date inputs for the user to specify a custom range.
+
 4. Reset Custom Fields:
+
 - If the user switches back to a predefined range, the custom date range fields are cleared.
 
 ## Prompt E-1 (undesired behavior)
@@ -3528,266 +3581,291 @@ import "./partyNameSearchForm.css";
 import DocClassTypePartySelect from "../../components/acris/DocClassTypePartySelect";
 
 function PartyNameSearchForm({ searchFor }) {
-    console.debug("PartyNameSearchForm", "searchFor=", typeof searchFor);
+  console.debug("PartyNameSearchForm", "searchFor=", typeof searchFor);
 
-    const [searchTerms, setSearchTerms] = useState({
-        name: "",
-        document_date_range: "to-current-date-default", // Default value for date range
-        document_date_start: "", // For custom date range start
-        document_date_end: "", // For custom date range end
-        recorded_borough: "",
-        party_type: "all-party-types-default",
-        doc_type: "doc-type-default",
-        doc_class: "all-classes-default",
-    });
+  const [searchTerms, setSearchTerms] = useState({
+    name: "",
+    document_date_range: "to-current-date-default", // Default value for date range
+    document_date_start: "", // For custom date range start
+    document_date_end: "", // For custom date range end
+    recorded_borough: "",
+    party_type: "all-party-types-default",
+    doc_type: "doc-type-default",
+    doc_class: "all-classes-default",
+  });
 
-    const [apiSearchSources, setApiSearchSources] = useState({
-        masterDataset: true,
-        lotDataset: false,
-        partiesDataset: true,
-        referencesDataset: false,
-        remarksDataset: false,
-    });
+  const [apiSearchSources, setApiSearchSources] = useState({
+    masterDataset: true,
+    lotDataset: false,
+    partiesDataset: true,
+    referencesDataset: false,
+    remarksDataset: false,
+  });
 
-    const handleCheckboxChange = (datasetKey) => (event) => {
-        setApiSearchSources((prev) => ({
-            ...prev,
-            [datasetKey]: event.target.checked,
-        }));
-    };
+  const handleCheckboxChange = (datasetKey) => (event) => {
+    setApiSearchSources((prev) => ({
+      ...prev,
+      [datasetKey]: event.target.checked,
+    }));
+  };
 
-    function handleSubmit(evt) {
-        evt.preventDefault();
-        console.debug("PartyNameSearchForm: handleSubmit called with:", searchTerms, apiSearchSources);
-        searchFor(searchTerms, apiSearchSources);
-    }
-
-    function handleChange(evt) {
-        const { name, value } = evt.target;
-
-        // Handle predefined date ranges
-        if (name === "document_date_range") {
-            if (value === "custom-date-range") {
-                // If "Choose Custom Date Range" is selected, clear the predefined range
-                setSearchTerms((data) => ({
-                    ...data,
-                    document_date_range: value,
-                    document_date_start: "",
-                    document_date_end: "",
-                }));
-            } else {
-                // Calculate the date range for predefined options
-                const dateRange = getPredefinedDateRange(value);
-                setSearchTerms((data) => ({
-                    ...data,
-                    document_date_range: value,
-                    document_date_start: dateRange.start,
-                    document_date_end: dateRange.end,
-                }));
-            }
-        } else {
-            // Update other fields
-            setSearchTerms((data) => ({
-                ...data,
-                [name]: value,
-            }));
-        }
-    }
-
-    // Helper function to calculate date ranges
-    function calculateDateRange(days) {
-        const currentDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(currentDate.getDate() - days);
-        return {
-            start: startDate.toISOString().split("T")[0], // Format as YYYY-MM-DD
-            end: currentDate.toISOString().split("T")[0],
-        };
-    }
-
-    // Map predefined options to date ranges
-    function getPredefinedDateRange(option) {
-        switch (option) {
-            case "last-7-days":
-                return calculateDateRange(7);
-            case "last-30-days":
-                return calculateDateRange(30);
-            case "last-90-days":
-                return calculateDateRange(90);
-            case "last-1-year":
-                return calculateDateRange(365);
-            case "last-2-years":
-                return calculateDateRange(365 * 2);
-            case "last-5-years":
-                return calculateDateRange(365 * 5);
-            default:
-                return { start: "", end: "" }; // Default empty range
-        }
-    }
-
-    return (
-        <div className="PartyNameSearchForm mb-4">
-            <form onSubmit={handleSubmit}>
-                <div className="row justify-content-center justify-content-lg-start gx-4 gy-4">
-                    <fieldset className="col-6 justify-content-start text-start">
-                        <h3 className="mb-1 fw-bold">Name:</h3>
-                        <input
-                            className="form-control form-control-lg mb-4"
-                            name="name"
-                            placeholder="e.g. John Doe"
-                            value={searchTerms.name}
-                            onChange={handleChange}
-                        />
-
-                        <h3 className="mb-1 fw-bold">Document Date Range:</h3>
-                        <select
-                            className="form-select form-select-lg mb-1"
-                            name="document_date_range"
-                            value={searchTerms.document_date_range}
-                            onChange={handleChange}
-                        >
-                            <option value="to-current-date-default">To Current Date</option>
-                            <option value="last-7-days">Last 7 Days</option>
-                            <option value="last-30-days">Last 30 Days</option>
-                            <option value="last-90-days">Last 90 Days</option>
-                            <option value="last-1-year">Last 1 Year</option>
-                            <option value="last-2-years">Last 2 Years</option>
-                            <option value="last-5-years">Last 5 Years</option>
-                            <option value="custom-date-range">Choose Custom Date Range</option>
-                        </select>
-
-                        {/* Render custom date range inputs if "Choose Custom Date Range" is selected */}
-                        {searchTerms.document_date_range === "custom-date-range" && (
-                            <div className="mt-3">
-                                <label htmlFor="document_date_start" className="form-label">
-                                    Start Date:
-                                </label>
-                                <input
-                                    type="date"
-                                    id="document_date_start"
-                                    name="document_date_start"
-                                    className="form-control mb-3"
-                                    value={searchTerms.document_date_start}
-                                    onChange={handleChange}
-                                />
-                                <label htmlFor="document_date_end" className="form-label">
-                                    End Date:
-                                </label>
-                                <input
-                                    type="date"
-                                    id="document_date_end"
-                                    name="document_date_end"
-                                    className="form-control"
-                                    value={searchTerms.document_date_end}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        )}
-
-                        <DocClassTypePartySelect
-                            searchTerms={searchTerms}
-                            setSearchTerms={setSearchTerms}
-                        />
-                    </fieldset>
-                    <fieldset className="col-6">
-                        <h3 className="mb-1 fw-bold">Select Datasets:</h3>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="master-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.masterDataset}
-                                onChange={handleCheckboxChange("masterDataset")}
-                            />
-                            <label htmlFor="master-record-checkbox" className="form-check-label">
-                                Master Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="lot-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.lotDataset}
-                                onChange={handleCheckboxChange("lotDataset")}
-                            />
-                            <label htmlFor="lot-record-checkbox" className="form-check-label">
-                                Lot Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="parties-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.partiesDataset}
-                                onChange={handleCheckboxChange("partiesDataset")}
-                            />
-                            <label htmlFor="parties-record-checkbox" className="form-check-label">
-                                Parties Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="references-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.referencesDataset}
-                                onChange={handleCheckboxChange("referencesDataset")}
-                            />
-                            <label htmlFor="references-record-checkbox" className="form-check-label">
-                                References Record
-                            </label>
-                        </div>
-                        <div className="form-check d-flex align-items-center me-3">
-                            <input
-                                type="checkbox"
-                                id="remarks-record-checkbox"
-                                className="form-check-input me-2"
-                                checked={apiSearchSources.remarksDataset}
-                                onChange={handleCheckboxChange("remarksDataset")}
-                            />
-                            <label htmlFor="remarks-record-checkbox" className="form-check-label">
-                                Remarks Record
-                            </label>
-                        </div>
-                    </fieldset>
-                    <button type="submit" className="btn btn-lg btn-primary mx-auto">
-                        Submit
-                    </button>
-                </div>
-            </form>
-        </div>
+  function handleSubmit(evt) {
+    evt.preventDefault();
+    console.debug(
+      "PartyNameSearchForm: handleSubmit called with:",
+      searchTerms,
+      apiSearchSources
     );
+    searchFor(searchTerms, apiSearchSources);
+  }
+
+  function handleChange(evt) {
+    const { name, value } = evt.target;
+
+    // Handle predefined date ranges
+    if (name === "document_date_range") {
+      if (value === "custom-date-range") {
+        // If "Choose Custom Date Range" is selected, clear the predefined range
+        setSearchTerms((data) => ({
+          ...data,
+          document_date_range: value,
+          document_date_start: "",
+          document_date_end: "",
+        }));
+      } else {
+        // Calculate the date range for predefined options
+        const dateRange = getPredefinedDateRange(value);
+        setSearchTerms((data) => ({
+          ...data,
+          document_date_range: value,
+          document_date_start: dateRange.start,
+          document_date_end: dateRange.end,
+        }));
+      }
+    } else {
+      // Update other fields
+      setSearchTerms((data) => ({
+        ...data,
+        [name]: value,
+      }));
+    }
+  }
+
+  // Helper function to calculate date ranges
+  function calculateDateRange(days) {
+    const currentDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(currentDate.getDate() - days);
+    return {
+      start: startDate.toISOString().split("T")[0], // Format as YYYY-MM-DD
+      end: currentDate.toISOString().split("T")[0],
+    };
+  }
+
+  // Map predefined options to date ranges
+  function getPredefinedDateRange(option) {
+    switch (option) {
+      case "last-7-days":
+        return calculateDateRange(7);
+      case "last-30-days":
+        return calculateDateRange(30);
+      case "last-90-days":
+        return calculateDateRange(90);
+      case "last-1-year":
+        return calculateDateRange(365);
+      case "last-2-years":
+        return calculateDateRange(365 * 2);
+      case "last-5-years":
+        return calculateDateRange(365 * 5);
+      default:
+        return { start: "", end: "" }; // Default empty range
+    }
+  }
+
+  return (
+    <div className="PartyNameSearchForm mb-4">
+      <form onSubmit={handleSubmit}>
+        <div className="row justify-content-center justify-content-lg-start gx-4 gy-4">
+          <fieldset className="col-6 justify-content-start text-start">
+            <h3 className="mb-1 fw-bold">Name:</h3>
+            <input
+              className="form-control form-control-lg mb-4"
+              name="name"
+              placeholder="e.g. John Doe"
+              value={searchTerms.name}
+              onChange={handleChange}
+            />
+
+            <h3 className="mb-1 fw-bold">Document Date Range:</h3>
+            <select
+              className="form-select form-select-lg mb-1"
+              name="document_date_range"
+              value={searchTerms.document_date_range}
+              onChange={handleChange}
+            >
+              <option value="to-current-date-default">To Current Date</option>
+              <option value="last-7-days">Last 7 Days</option>
+              <option value="last-30-days">Last 30 Days</option>
+              <option value="last-90-days">Last 90 Days</option>
+              <option value="last-1-year">Last 1 Year</option>
+              <option value="last-2-years">Last 2 Years</option>
+              <option value="last-5-years">Last 5 Years</option>
+              <option value="custom-date-range">
+                Choose Custom Date Range
+              </option>
+            </select>
+
+            {/* Render custom date range inputs if "Choose Custom Date Range" is selected */}
+            {searchTerms.document_date_range === "custom-date-range" && (
+              <div className="mt-3">
+                <label htmlFor="document_date_start" className="form-label">
+                  Start Date:
+                </label>
+                <input
+                  type="date"
+                  id="document_date_start"
+                  name="document_date_start"
+                  className="form-control mb-3"
+                  value={searchTerms.document_date_start}
+                  onChange={handleChange}
+                />
+                <label htmlFor="document_date_end" className="form-label">
+                  End Date:
+                </label>
+                <input
+                  type="date"
+                  id="document_date_end"
+                  name="document_date_end"
+                  className="form-control"
+                  value={searchTerms.document_date_end}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
+
+            <DocClassTypePartySelect
+              searchTerms={searchTerms}
+              setSearchTerms={setSearchTerms}
+            />
+          </fieldset>
+          <fieldset className="col-6">
+            <h3 className="mb-1 fw-bold">Select Datasets:</h3>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="master-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.masterDataset}
+                onChange={handleCheckboxChange("masterDataset")}
+              />
+              <label
+                htmlFor="master-record-checkbox"
+                className="form-check-label"
+              >
+                Master Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="lot-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.lotDataset}
+                onChange={handleCheckboxChange("lotDataset")}
+              />
+              <label htmlFor="lot-record-checkbox" className="form-check-label">
+                Lot Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="parties-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.partiesDataset}
+                onChange={handleCheckboxChange("partiesDataset")}
+              />
+              <label
+                htmlFor="parties-record-checkbox"
+                className="form-check-label"
+              >
+                Parties Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="references-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.referencesDataset}
+                onChange={handleCheckboxChange("referencesDataset")}
+              />
+              <label
+                htmlFor="references-record-checkbox"
+                className="form-check-label"
+              >
+                References Record
+              </label>
+            </div>
+            <div className="form-check d-flex align-items-center me-3">
+              <input
+                type="checkbox"
+                id="remarks-record-checkbox"
+                className="form-check-input me-2"
+                checked={apiSearchSources.remarksDataset}
+                onChange={handleCheckboxChange("remarksDataset")}
+              />
+              <label
+                htmlFor="remarks-record-checkbox"
+                className="form-check-label"
+              >
+                Remarks Record
+              </label>
+            </div>
+          </fieldset>
+          <button type="submit" className="btn btn-lg btn-primary mx-auto">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default PartyNameSearchForm;
 ```
 
 ### Key Changes
+
 1. calculateDateRange Usage:
+
 - The `calculateDateRange` function is now used in the `getPredefinedDateRange` function to calculate the start and end dates for predefined options like "Last 7 Days."
 
 2. Dynamic State Updates:
+
 - When the user selects a predefined date range, the `document_date_start` and `document_date_end` fields are dynamically updated with the calculated range.
 
 3. Custom Date Range Handling:
+
 - If the user selects "Choose Custom Date Range," the predefined range fields are cleared, and custom date inputs are rendered.
 
 ### Example Behavior
 
 1. Default State:
+
 - The Document Date Range select input defaults to "To Current Date."
 
 2. Predefined Date Ranges:
+
 - Selecting "Last 7 Days" sets `document_date_start` to 7 days prior to the current date and `document_date_end` to the current date.
 
 3. Custom Date Range:
+
 - Selecting "Choose Custom Date Range" renders two date inputs for the user to specify a custom range.
 
 ## Prompt F (replacing `recorded_borough` with `borough` and refactoring `searchTerms`)
 
-@workspace I want to refactor my `partyNameSearch.js`, `api.js` and `PartyNameSearchForm.js` to achieve the following.  First, I want to replace the stateful object `searchTerms` with `masterSearchTerms`, `partySearchTerms`, `lotSearchTerms`, `remarkSearchTerms` and `referenceSearchTerms` to better organize the request body.  `name` and `party_type` will be associated with `partySearchTerms`.  `document_date_range`, `document_date_start`, `document_date_end`, `doc_type` and `doc_class` will be associated with `masterSearchTerms`.  `borough` will be associated with `lotSearchTerms` and for now the `remarkSearchTerms` and `referenceSearchTerms` objects will be empty but I think they should have a default value to indicate they are empty.  What do you think I should set their default vlaues to?  Also, I want to set the default value of `name` to `name-default`, `document_date_start` to `start-date-default`, `document_date_end` to `end-date-default` without disrupting the code's current functionality.  How do I refactor the code below to achieve the aforementioned criteria?
+@workspace I want to refactor my `partyNameSearch.js`, `api.js` and `PartyNameSearchForm.js` to achieve the following. First, I want to replace the stateful object `searchTerms` with `masterSearchTerms`, `partySearchTerms`, `legalsSearchTerms`, `remarkSearchTerms` and `referenceSearchTerms` to better organize the request body. `name` and `party_type` will be associated with `partySearchTerms`. `document_date_range`, `document_date_start`, `document_date_end`, `doc_type` and `doc_class` will be associated with `masterSearchTerms`. `borough` will be associated with `legalsSearchTerms` and for now the `remarkSearchTerms` and `referenceSearchTerms` objects will be empty but I think they should have a default value to indicate they are empty. What do you think I should set their default vlaues to? Also, I want to set the default value of `name` to `name-default`, `document_date_start` to `start-date-default`, `document_date_end` to `end-date-default` without disrupting the code's current functionality. How do I refactor the code below to achieve the aforementioned criteria?
 
 ```
 import React, { useState } from "react";

@@ -19,7 +19,7 @@ function PartyNameSearchForm({ searchFor }) {
         party_type: "all-party-types-default",
     });
 
-    const [lotSearchTerms, setLotSearchTerms] = useState({
+    const [legalsSearchTerms, setLegalsSearchTerms] = useState({
         borough: "all-boroughs-default",
     });
 
@@ -50,7 +50,7 @@ function PartyNameSearchForm({ searchFor }) {
             "PartyNameSearchForm: handleSubmit called with:",
             masterSearchTerms,
             partySearchTerms,
-            lotSearchTerms,
+            legalsSearchTerms,
             remarkSearchTerms,
             referenceSearchTerms,
             primaryApiSources,
@@ -59,7 +59,7 @@ function PartyNameSearchForm({ searchFor }) {
         searchFor(
             masterSearchTerms,
             partySearchTerms,
-            lotSearchTerms,
+            legalsSearchTerms,
             remarkSearchTerms,
             referenceSearchTerms,
             primaryApiSources,
@@ -105,7 +105,7 @@ function PartyNameSearchForm({ searchFor }) {
 
     function handleLotChange(evt) {
         const { name, value } = evt.target;
-        setLotSearchTerms((data) => ({
+        setLegalsSearchTerms((data) => ({
             ...data,
             [name]: value,
         }));
@@ -216,7 +216,7 @@ function PartyNameSearchForm({ searchFor }) {
                         <select
                             className="form-select form-select-lg mb-1"
                             name="borough"
-                            value={lotSearchTerms.borough}
+                            value={legalsSearchTerms.borough}
                             onChange={handleLotChange}
                         >
                             <option value="all-boroughs-default">Select Borough</option>
