@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SnacrisApi from "../../api/api";
-import AddressParcelLookupForm from "./addressParcelLookupForm";
+import AddressParcelLookupForm from "./AddressParcelLookupForm";
 import AddressParcelCard from "./addressParcelCard";
 
 function AddressParcelLookup() {
@@ -12,10 +12,10 @@ function AddressParcelLookup() {
   /** Triggered by search form submit. 
    * the AddressParcelLookupForm component allows users search for a property using one of two sets of criteria. The first option includes the search terms: `borough`, `street number`, `street name` and `unit` (all required except for `unit` which is optional).  The second option includes the search terms `borough`, `block` and `lot` (all required).  When the search form is submitted, the `search()` function is called with the search term, and the list of companies is updated.
   */
-  async function search(searchTerms) {
-    console.debug("AddressParcelLookup: search called with:", searchTerms);
+  async function search(legalsSearchTerms) {
+    console.debug("AddressParcelLookup: search called with:", legalsSearchTerms);
     try {
-      const results = await SnacrisApi.queryAcrisAddressParcel(searchTerms);
+      const results = await SnacrisApi.queryAcrisAddressParcel(legalsSearchTerms);
       console.debug("AddressParcelLookup: search results:", results);
       setResults(results);
     } catch (err) {

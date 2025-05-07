@@ -159,6 +159,3 @@ class SnacrisApi {
 }
 
 export default SnacrisApi;
-
-
-

@@ -17,9 +17,7 @@ function PartyNameSearch() {
     partySearchTerms,
     legalsSearchTerms,
     remarkSearchTerms,
-    referenceSearchTerms,
-    primaryApiSources,
-    secondaryApiSources
+    referenceSearchTerms
   ) {
     console.debug(
       "PartyNameSearch: search called with:",
@@ -27,9 +25,7 @@ function PartyNameSearch() {
       partySearchTerms,
       legalsSearchTerms,
       remarkSearchTerms,
-      referenceSearchTerms,
-      primaryApiSources,
-      secondaryApiSources
+      referenceSearchTerms
     );
     try {
       const results = await SnacrisApi.queryAcrisPartyName(
@@ -37,9 +33,7 @@ function PartyNameSearch() {
         partySearchTerms,
         legalsSearchTerms,
         remarkSearchTerms,
-        referenceSearchTerms,
-        primaryApiSources,
-        secondaryApiSources
+        referenceSearchTerms
       );
       console.log("PartyNameSearch: search results:", results);
       setResults(results);
@@ -111,7 +105,9 @@ function PartyNameSearch() {
                   );
                 case "P":
                   const docTypeForParties = results.find(
-                    (res) => res.record_type === "A" && res.document_id === result.document_id
+                    (res) =>
+                      res.record_type === "A" &&
+                      res.document_id === result.document_id
                   )?.doc_type;
                   return (
                     <RealPropertyPartiesCard
