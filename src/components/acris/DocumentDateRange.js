@@ -60,7 +60,6 @@ function DocumentDateRange({ masterSearchTerms, setMasterSearchTerms }) {
 
     return (
         <div>
-            <h3 className="mb-1 fw-bold">Select Date Range:</h3>
             <select
                 className="form-select form-select-lg mb-1"
                 name="document_date_range"
@@ -93,11 +92,11 @@ function DocumentDateRange({ masterSearchTerms, setMasterSearchTerms }) {
                     <label htmlFor="document_date_end" className="form-label">
                         End Date:
                     </label>
-                    <input
+                    <input 
                         type="date"
                         id="document_date_end"
                         name="document_date_end"
-                        className="form-control"
+                        className="form-control mb-1"
                         value={masterSearchTerms.document_date_end}
                         onChange={handleDateRangeChange}
                     />

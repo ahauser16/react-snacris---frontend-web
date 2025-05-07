@@ -65,7 +65,6 @@ function DocClassTypeSelect({ masterSearchTerms, setMasterSearchTerms }) {
 
     return (
         <>
-            <h3 className="mb-1 fw-bold">Select Document Class:</h3>
             <select
                 className="form-select form-select-lg mb-1"
                 name="doc_class"
@@ -78,8 +77,6 @@ function DocClassTypeSelect({ masterSearchTerms, setMasterSearchTerms }) {
                 <option value="UCC AND FEDERAL LIENS">UCC AND FEDERAL LIENS</option>
                 <option value="OTHER DOCUMENTS">OTHER DOCUMENTS</option>
             </select>
-
-            <h3 className="mb-1 fw-bold">Select Document Type:</h3>
             <select
                 className={`form-select form-select-lg mb-1 ${isDocTypeDisabled ? "disabled-select" : ""}`}
                 name="doc_type"

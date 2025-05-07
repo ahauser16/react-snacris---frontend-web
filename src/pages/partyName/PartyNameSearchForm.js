@@ -24,26 +24,27 @@ function PartyNameSearchForm({ searchFor }) {
     borough: "all-boroughs-default",
   });
 
-  const [remarkSearchTerms] = useState({});
-  const [referenceSearchTerms] = useState({});
-
   function handleSubmit(evt) {
     evt.preventDefault();
     console.debug(
       "PartyNameSearchForm: handleSubmit called with:",
       masterSearchTerms,
       partySearchTerms,
-      legalsSearchTerms,
-      remarkSearchTerms,
-      referenceSearchTerms
+      legalsSearchTerms
     );
     searchFor(
       masterSearchTerms,
       partySearchTerms,
-      legalsSearchTerms,
-      remarkSearchTerms,
-      referenceSearchTerms
+      legalsSearchTerms
     );
+  }
+
+  function handleMasterChange(evt) {
+    const { name, value } = evt.target;
+    setMasterSearchTerms((data) => ({
+      ...data,
+      [name]: value,
+    }));
   }
 
   function handlePartyChange(evt) {
