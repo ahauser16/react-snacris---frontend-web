@@ -5,8 +5,6 @@ import DocumentTypeSearchForm from "./DocumentTypeSearchForm";
 
 /** Search ACRIS by Document Class & Type, Document Date and Borough.
  *
-
- *
  * Navigation.js --> <NavLink className="nav-link" to="/documentTypeSearch">.
  *
  * RoutesList.js --> `<Route path="/documentTypeSearch" element={<DocumentTypeSearch />} />`

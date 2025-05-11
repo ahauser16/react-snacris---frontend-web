@@ -1,0 +1,6 @@
+.helper-text{
+    background-color: hsl(0, 0%, 83%, .6);
+    border-radius: .25rem;
+    padding: .25rem;
+    text-align: left;
+  }

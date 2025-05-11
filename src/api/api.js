@@ -75,16 +75,19 @@ class SnacrisApi {
 
   static async queryAcrisAddressParcel(searchTerms) {
     console.debug("API queryAcrisAddressParcel called with:", searchTerms);
-    const res = await this.request("queryAcrisAddressParcel/fetchRecord", searchTerms);
+
+    const params = {...searchTerms};
+
+    const res = await this.request("queryAcrisAddressParcel/fetchRecord", params);
     console.debug("API queryAcrisAddressParcel response:", res);
     return res.records;
   }
 
-  static async queryAcrisDocIdCrfn(searchTerms, apiSearchSources) {
-    console.debug("API queryAcrisDocIdCrfn called with:", searchTerms, apiSearchSources);
+  static async queryAcrisDocIdCrfn(searchTerms) {
+    console.debug("API queryAcrisDocIdCrfn called with:", searchTerms);
 
     // Combine `searchTerms` and `apiSearchSources` into a single object
-    const params = { ...searchTerms, ...apiSearchSources };
+    const params = { ...searchTerms };
 
     // Make a GET request with all parameters serialized into the URL
     const res = await this.request("queryAcrisDocIdCrfn/fetchRecord", params);
@@ -92,33 +95,34 @@ class SnacrisApi {
     return res.records;
   }
 
+  static async queryAcrisDocumentType(masterSearchTerms, legalsSearchTerms) {
+    console.debug("API queryAcrisDocumentType called with:", masterSearchTerms, legalsSearchTerms);
+
+    // Combine `searchTerms` and `apiSearchSources` into a single object
+    const params = { ...masterSearchTerms, ...legalsSearchTerms };
+
+    // Make a GET request with all parameters serialized into the URL
+    const res = await this.request("queryAcrisDocumentType/fetchRecord", params);
+    console.debug("API queryAcrisDocumentType response:", res);
+    return res.records;
+  }
+
+
   static async queryAcrisPartyName(
     masterSearchTerms,
     partySearchTerms,
-    legalsSearchTerms,
-    remarkSearchTerms,
-    referenceSearchTerms,
-    primaryApiSources,
-    secondaryApiSources
+    legalsSearchTerms
   ) {
     console.debug("API queryPartyName called with:", {
       masterSearchTerms,
       partySearchTerms,
-      legalsSearchTerms,
-      remarkSearchTerms,
-      referenceSearchTerms,
-      primaryApiSources,
-      secondaryApiSources,
+      legalsSearchTerms
     });
 
     const params = {
       masterSearchTerms,
       partySearchTerms,
-      legalsSearchTerms,
-      remarkSearchTerms,
-      referenceSearchTerms,
-      primaryApiSources,
-      secondaryApiSources,
+      legalsSearchTerms
     };
 
     const res = await this.request("queryAcrisPartyName/fetchRecord", params);

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import "./partyNameSearchForm.css";
 import DocClassTypePartySelect from "../../components/acris/DocClassTypePartySelect";
 import DocumentDateRange from "../../components/acris/DocumentDateRange";
-import BoroughSelect from "../../components/acris/legalsForms/BoroughSelect";
+// import BoroughSelect from "../../components/acris/legalsForms/BoroughSelect";
+import PartyNameWrapperBoroughSelect from "./PartyNameWrapperBoroughSelect";
 
 function PartyNameSearchForm({ searchFor }) {
   console.debug("PartyNameSearchForm", "searchFor=", typeof searchFor);
@@ -21,7 +22,7 @@ function PartyNameSearchForm({ searchFor }) {
   });
 
   const [legalsSearchTerms, setLegalsSearchTerms] = useState({
-    borough: "all-boroughs-default",
+    borough: "",
   });
 
   function handleSubmit(evt) {
@@ -86,7 +87,7 @@ function PartyNameSearchForm({ searchFor }) {
               partySearchTerms={partySearchTerms}
               setPartySearchTerms={setPartySearchTerms}
             />
-            <BoroughSelect
+            <PartyNameWrapperBoroughSelect
               legalsSearchTerms={legalsSearchTerms}
               handleLegalsChange={handleLegalsChange}
             />

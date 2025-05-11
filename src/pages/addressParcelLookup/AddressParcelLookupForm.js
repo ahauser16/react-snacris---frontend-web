@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Alert from "../../common/Alert";
 import "./addressParcelLookupForm.css";
-import BoroughSelect from "../../components/acris/legalsForms/BoroughSelect";
+// import BoroughSelect from "../../components/acris/legalsForms/BoroughSelect";
+import AddressParcelWrapperBoroughSelect from "./AddressParcelWrapperBoroughSelect";
 import StreetNumber from "../../components/acris/legalsForms/StreetNumber";
 import StreetName from "../../components/acris/legalsForms/StreetName";
 import Unit from "../../components/acris/legalsForms/Unit";
@@ -25,29 +26,42 @@ function AddressParcelLookupForm({ searchFor }) {
   });
 
   const [formErrors, setFormErrors] = useState([]);
+  const [alert, setAlert] = useState({ type: "", messages: [] });
 
-  function handleSubmit(evt) {
+  async function handleSubmit(evt) {
     evt.preventDefault();
-    console.debug("AddressParcelLookupForm: handleSubmit called with:", {
+    console.debug("AddressParcelLookupForm-handleSubmit called with:", {
       addressFields,
       bblFields,
     });
 
-    // Check if any fields in addressFields are filled
+    // Check if all required fields in the address fieldset are filled
     const isAddressFilled =
-      addressFields.borough || addressFields.street_number || addressFields.street_name;
+      addressFields.borough && addressFields.street_number && addressFields.street_name;
 
-    // Check if any fields in bblFields are filled
-    const isBblFilled = bblFields.borough || bblFields.block || bblFields.lot;
+    // Check if all required fields in the BBL fieldset are filled
+    const isBblFilled =
+      bblFields.borough && bblFields.block && bblFields.lot;
 
-    // Check if both fieldsets have any fields filled
-    if (isAddressFilled && isBblFilled) {
-      setFormErrors(["Submit the form with either Property Address or Property Borough, Block & Lot but not both."]);
+    // Check if any fields in the address fieldset are filled
+    const isAddressPartiallyFilled = Object.values(addressFields).some(
+      (value) => value
+    );
+
+    // Check if any fields in the BBL fieldset are filled
+    const isBblPartiallyFilled = Object.values(bblFields).some(
+      (value) => value
+    );
+
+    // Ensure only one fieldset is fully filled and the other is completely empty
+    if ((isAddressFilled && isBblPartiallyFilled) || (isBblFilled && isAddressPartiallyFilled)) {
+      setFormErrors([
+        "Submit the form with either Property Address or Property Borough, Block & Lot but not both.",
+      ]);
       return;
     }
 
-    // Check if addressFields are fully filled
-    if (addressFields.borough && addressFields.street_number && addressFields.street_name) {
+    if (isAddressFilled) {
       const legalsSearchTerms = {
         borough: addressFields.borough,
         street_number: addressFields.street_number,
@@ -56,9 +70,9 @@ function AddressParcelLookupForm({ searchFor }) {
         block: "",
         lot: "",
       };
-      searchFor(legalsSearchTerms);
-      setFormErrors([]); // Clear errors on successful submission
-    } else if (bblFields.borough && bblFields.block && bblFields.lot) {
+      await searchFor(legalsSearchTerms, setAlert);
+      setFormErrors([]);
+    } else if (isBblFilled) {
       const legalsSearchTerms = {
         borough: bblFields.borough,
         street_number: "",
@@ -67,10 +81,12 @@ function AddressParcelLookupForm({ searchFor }) {
         block: bblFields.block,
         lot: bblFields.lot,
       };
-      searchFor(legalsSearchTerms);
-      setFormErrors([]); // Clear errors on successful submission
+      await searchFor(legalsSearchTerms, setAlert);
+      setFormErrors([]);
     } else {
-      setFormErrors(["Please fill out either the Property Address or Property Borough, Block & Lot fields."]);
+      setFormErrors([
+        "Please fill out either the Property Address or Property Borough, Block & Lot fields.",
+      ]);
     }
   }
 
@@ -80,9 +96,8 @@ function AddressParcelLookupForm({ searchFor }) {
       ...data,
       [name]: value,
     }));
-
-    // Clear errors when the user modifies the form
     setFormErrors([]);
+    setAlert({ type: "", messages: [] });
   }
 
   function handleBblChange(evt) {
@@ -91,31 +106,42 @@ function AddressParcelLookupForm({ searchFor }) {
       ...data,
       [name]: value,
     }));
-
-    // Clear errors when the user modifies the form
     setFormErrors([]);
+    setAlert({ type: "", messages: [] });
   }
 
   return (
-    <div className="AddressParcelLookupForm mb-4">
+    <div className="AddressParcelLookupForm mb-2">
       <form onSubmit={handleSubmit}>
         <div className="row justify-content-center justify-content-lg-start gx-4 gy-4">
-          {formErrors.length ? <Alert type="danger" messages={formErrors} /> : null}
+          {formErrors.length > 0 && (
+            <Alert type="danger" messages={formErrors} />
+          )}
           <fieldset className="col-6 justify-content-start text-start property-address">
-            <h3 className="mb-1 fw-bold">Property Address:</h3>
-            <div className="d-flex justify-content-start text-start">
-              <p>If you know the property address, complete the fields below and press "Find BBL" to find the Borough/Block/Lot of the property. Address fields indicated by an asterisk (*) are required. If an address is found, the fields in the Property Borough/Block/Lot section will be populated.</p>
-            </div>
-
-            <BoroughSelect value={addressFields.borough} onChange={handleAddressChange} />
-            <StreetNumber value={addressFields.street_number} onChange={handleAddressChange} />
-            <StreetName value={addressFields.street_name} onChange={handleAddressChange} />
-            <Unit value={addressFields.unit} onChange={handleAddressChange} />
+            <h3 className="mb-2 fw-bold">Property Address</h3>
+            <AddressParcelWrapperBoroughSelect
+              value={addressFields.borough}
+              onChange={handleAddressChange}
+            />
+            <StreetNumber
+              value={addressFields.street_number}
+              onChange={handleAddressChange}
+            />
+            <StreetName
+              value={addressFields.street_name}
+              onChange={handleAddressChange}
+            />
+            <Unit
+              value={addressFields.unit}
+              onChange={handleAddressChange}
+            />
           </fieldset>
           <fieldset className="col-6 justify-content-start text-start property-bbl">
-            <h3 className="mb-1 fw-bold">Property Borough, Block & Lot:</h3>
-            <p>If you know the Borough, Block and Lot of the property, complete the fields below and press the "Find Address" button to find the address of the property. Fields indicated by an asterisk (*) are required. If the BBL is found, the fields in the Property Address section will be populated.</p>
-            <BoroughSelect value={bblFields.borough} onChange={handleBblChange} />
+            <h3 className="mb-2 fw-bold">Property Borough, Block & Lot</h3>
+            <AddressParcelWrapperBoroughSelect
+              value={bblFields.borough}
+              onChange={handleBblChange}
+            />
             <TaxBlock value={bblFields.block} onChange={handleBblChange} />
             <TaxLot value={bblFields.lot} onChange={handleBblChange} />
           </fieldset>

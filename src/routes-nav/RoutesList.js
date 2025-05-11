@@ -1,9 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Homepage from "../homepage/Homepage";
-// import CompanyList from "../pages/companies/CompanyList";
-// import JobList from "../pages/jobs/JobList";
-// import CompanyDetail from "../pages/companies/CompanyDetail";
 import AddressParcelLookup from "../pages/addressParcelLookup/AddressParcelLookup";
 import PartyNameSearch from "../pages/partyName/PartyNameSearch";
 import ParcelIdentifierSearch from "../pages/parcelIdentifier/ParcelIdentifierSearch";
@@ -66,11 +63,10 @@ function RoutesList({ login, signup, currentUser }) {
         )}
 
         {/* The code below is a React Router configuration that defines a fallback route with the following elements: (1) the <Route> component is used to define a single route in your application and specifies the path to match and the element to render when the path matches, (2) the path="*" is a wildcard route, meaning it will match any URL that does not match any of the other defined routes and is typically used as a "catch-all" route to handle undefined or invalid paths, (3) the element={<Navigate to="/" />} specifies what should happen when the wildcard route is matched, (4) the <Navigate> component is a utility provided by React Router that programmatically redirects the user to a different route and in this case it redirects the user to the root path ("/").
-Purpose: This route acts as a safeguard to ensure that users are not left on a blank or broken page if they navigate to an invalid URL. Instead, they are redirected to the home page ("/"). This improves the user experience by providing a fallback behavior.
-Practical Use:
-This pattern is commonly used in React applications to handle 404-like scenarios. For example, if a user tries to access a non-existent page, this route will catch the invalid path and redirect them to a valid page (in this case, the home page).
-Suggested Refactor: 
-If you want to provide a more user-friendly experience, you could replace the <Navigate> component with a custom "404 Not Found" page that informs the user about the invalid URL while still offering navigation options. */}
+        Purpose: This route acts as a safeguard to ensure that users are not left on a blank or broken page if they navigate to an invalid URL. Instead, they are redirected to the home page ("/"). This improves the user experience by providing a fallback behavior.
+        Practical Use: This pattern is commonly used in React applications to handle 404-like scenarios. For example, if a user tries to access a non-existent page, this route will catch the invalid path and redirect them to a valid page (in this case, the home page).
+        Suggested Refactor: 
+        If you want to provide a more user-friendly experience, you could replace the <Navigate> component with a custom "404 Not Found" page that informs the user about the invalid URL while still offering navigation options. */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
