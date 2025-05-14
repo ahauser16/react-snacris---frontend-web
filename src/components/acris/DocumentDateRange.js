@@ -1,5 +1,7 @@
 import React from "react";
 
+// this component should be adapted to be used for any date range selection.  I realized ACRIS searches for documents by the date of recording (`recorded_datetime`) and not the date of the document (`document_date`).  There is also a queryable field called `modified_date` which represents the date a document was modified which I don't fully understand yet.  Also, each API endpoint has a `good_through_date` which I also don't fully understand yet.  These fields are all associated with the Real Property Master API dataset.  The Real Property Legals, Parties, Remarks and References only have a `good_through_date` field that can use this component.  The Personal Property Master endpoint has the same `recorded_datetime`, `modified_date`, `fedtax_assessment_date` and `good_through_date` fields as the Real Property Master endpoint.  Keep in mind the Personal Property Master endpoint does NOT have a `document_date` field.
+
 function DocumentDateRange({ masterSearchTerms, setMasterSearchTerms }) {
     function calculateDateRange(days) {
         const currentDate = new Date();

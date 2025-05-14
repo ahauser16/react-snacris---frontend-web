@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import "./partyNameSearchForm.css";
 import DocClassTypePartySelect from "../../components/acris/DocClassTypePartySelect";
-import DocumentDateRange from "../../components/acris/DocumentDateRange";
-// import BoroughSelect from "../../components/acris/legalsForms/BoroughSelect";
+import DocumentDateRangeWrapper from "../../components/acris/masterForms/DocumentDateRangeWrapper";
 import PartyNameWrapperBoroughSelect from "./PartyNameWrapperBoroughSelect";
 
 function PartyNameSearchForm({ searchFor }) {
@@ -10,8 +9,8 @@ function PartyNameSearchForm({ searchFor }) {
 
   const [masterSearchTerms, setMasterSearchTerms] = useState({
     document_date_range: "to-current-date-default",
-    document_date_start: "start-date-default",
-    document_date_end: "end-date-default",
+    document_date_start: "",
+    document_date_end: "",
     doc_type: "doc-type-default",
     doc_class: "all-classes-default",
   });
@@ -77,7 +76,7 @@ function PartyNameSearchForm({ searchFor }) {
               value={partySearchTerms.name}
               onChange={handlePartyChange}
             />
-            <DocumentDateRange
+            <DocumentDateRangeWrapper
               masterSearchTerms={masterSearchTerms}
               setMasterSearchTerms={setMasterSearchTerms}
             />
