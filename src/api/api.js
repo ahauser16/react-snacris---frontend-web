@@ -127,7 +127,7 @@ class SnacrisApi {
 
     const res = await this.request("queryAcrisPartyName/fetchRecord", params);
     console.debug("API queryPartyName response:", res);
-    return res.records;
+    return res;
   }
 
   static async getDocControlCodesFromDb() {
