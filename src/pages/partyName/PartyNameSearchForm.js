@@ -64,10 +64,24 @@ function PartyNameSearchForm({ searchFor }) {
   }
 
   return (
-    <div className="PartyNameSearchForm mb-4">
+    //mb-4: Adds a bottom margin of 4 units (spacing).
+    <div className="PartyNameSearchForm">
       <form onSubmit={handleSubmit}>
-        <div className="row justify-content-center justify-content-lg-start gx-4 gy-4">
-          <fieldset className="col-6 justify-content-start text-start">
+        {/* 
+        row: Adds a flexbox row layout with horizontal and vertical spacing.
+        justify-content-center: Centers the content horizontally.
+        justify-content-lg-start: Aligns the content to the left on large screens.
+        gx-4: Adds horizontal spacing between columns.
+        gy-4: Adds vertical spacing between rows. 
+        */}
+        {/* <div className="row justify-content-center justify-content-lg-start gx-4 gy-4"> */}
+          {/* 
+          col-6: Sets the column width to 6 out of 12 (50% width).
+          justify-content-center: Centers the content horizontally.
+          text-center: Centers the text inside the column.
+           */}
+          {/* <fieldset className="col-6 justify-content-start text-start"> */}
+          <fieldset className="text-start">
             <h3 className="mb-1 fw-bold">Name:</h3>
             <input
               className="form-control form-control-lg mb-1"
@@ -91,10 +105,10 @@ function PartyNameSearchForm({ searchFor }) {
               handleLegalsChange={handleLegalsChange}
             />
           </fieldset>
-          <button type="submit" className="btn btn-lg btn-primary mx-auto">
+          <button type="submit" className="btn btn-lg btn-primary mt-3">
             Submit
           </button>
-        </div>
+        {/* </div> */}
       </form>
     </div>
   );

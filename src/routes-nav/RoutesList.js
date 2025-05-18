@@ -29,7 +29,7 @@ function RoutesList({ login, signup, currentUser }) {
   );
 
   return (
-    <div className="pt-5">
+    <div className="pt-3">
       <Routes>
         {/* The code `!currentUser` checks if the user is not logged in. If the user is not logged in, it renders the LoginForm and SignupForm components, allowing the user to log in or sign up.*/}
         {!currentUser && (

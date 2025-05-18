@@ -2,6 +2,7 @@ import React from "react";
 import getPropertyTypeData from "../utils/acris/getPropertyTypeData";
 import "./acrisRealPropCard.css";
 import displayDateTime from "../utils/displayDateTime";
+import "./CommonAcrisComponent.css";
 
 function RealPropertyLegalsCard({
     document_id,
@@ -46,7 +47,7 @@ function RealPropertyLegalsCard({
 
     const decodedRecordTypeName = {
         "A": "Master",
-        "L": "Lot",
+        "L": "Legals",
         "R": "Remarks",
         "X": "References",
         "P": "Parties"
@@ -55,36 +56,32 @@ function RealPropertyLegalsCard({
     const convertedGoodThroughDate = displayDateTime(good_through_date);
 
     return (
-        <div className="card mb-3 shadow-sm col-6 mx-auto">
-            <div className="card-body row">
-                <h4 className="card-title text-primary mb-3 row">
-                    Real Property Lot Data
+        <div className="card mb-3 shadow-sm w-100">
+            <div className="card-body">
+                <h4 className="card-title text-primary mb-3" aria-label="Real Property Legal Data">
+                    {decodedRecordTypeName}
                 </h4>
-                <h5 className="card-title text-secondary mb-3 row">
-                    {document_id ? (
-                        `Document ID: ${document_id} `
-                    ) : (
-                        ""
-                    )}
-                </h5>
 
                 <div className="text-start">
-                    <h6 className="card-text">Location (Borough/County): {decodedBoroughName}</h6>
-                    <h6 className="card-text">Tax Block Number: {block}</h6>
-                    <h6 className="card-text">Tax Lot Number: {lot}</h6>
+                    
+                    <h6 className="card-text">Borough: {decodedBoroughName}</h6>
+                    <h6 className="card-text">Tax Block: {block}</h6>
+                    <h6 className="card-text">Tax Lot: {lot}</h6>
                     <h6 className="card-text">Property Type: {propertyTypeName}</h6>
                     <h6 className="card-text">Street Number: {street_number}</h6>
                     <h6 className="card-text">Street Name: {street_name}</h6>
                     {unit_address ? (
                         <h6 className="card-text">Unit Address: {unit_address}</h6>
                     ) : (
-                        <h6 className="card-text">Unit Address: Not Applicable</h6>
+                        <h6 className="card-text notApplic" aria-label="Unit address not applicable">Unit Address:{" "}
+                            <span aria-hidden="true">N/A</span>
+                            <span className="visually-hidden">Unit address not applicable</span>
+                        </h6>
                     )}
                     <h6 className="card-text">Easement: {easement ? "Yes" : "No"}</h6>
                     <h6 className="card-text">Partial Lot: {partial_lot ? "Yes" : "No"}</h6>
                     <h6 className="card-text">Air Rights: {air_rights ? "Yes" : "No"}</h6>
                     <h6 className="card-text">Subterranean Rights: {subterranean_rights ? "Yes" : "No"}</h6>
-                    <h6 className="card-text">API Data Source: Real Property {decodedRecordTypeName} Dataset</h6>
                     <h6 className="card-text">Good Through Date: {convertedGoodThroughDate}</h6>
                 </div>
             </div>

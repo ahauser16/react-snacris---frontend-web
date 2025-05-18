@@ -1,6 +1,7 @@
 import React from "react";
 import getDocTypeData from "../utils/acris/getDocTypeData";
 import displayDateTime from "../utils/displayDateTime";
+import "./CommonAcrisComponent.css";
 
 import "./acrisRealPropCard.css";
 
@@ -47,34 +48,29 @@ function RealPropertyPartiesCard({
     const convertedGoodThroughDate = displayDateTime(good_through_date);
 
     return (
-        <div className="card mb-3 shadow-sm col-6 mx-auto">
-            <div className="card-body row">
-                <h4 className="card-title text-primary mb-3 row">
-                    Real Property Party Data
+        <div className="card mb-3 shadow-sm w-100">
+            <div className="card-body">
+                <h4 className="card-title text-primary mb-3" aria-label="Real Property Party Data">
+                    {decodedRecordTypeName}
                 </h4>
-                <h5 className="card-title text-secondary mb-3 row">
-                    {document_id ? (
-                        `Document ID: ${document_id} `
-                    ) : (
-                        ""
-                    )}
-                </h5>
 
                 <div className="text-start">
                     <h6 className="card-text">Name: {name}</h6>
-                    <h6 className="card-text">Role: {partyTypeName} ({docTypeData.doc__type_description} document type)</h6>
+                    <h6 className="card-text">Role: {partyTypeName} ({docTypeData.doc__type_description})</h6>
                     <h6 className="card-text">Address 1: {address_1}</h6>
 
                     {address_2 ? (
                         <h6 className="card-text">Address 2: {address_2}</h6>
                     ) : (
-                        <h6 className="card-text">* Address 2 Data is N/A</h6>
+                        <h6 className="card-text notApplic" aria-label="Address 2 data not available">Address 2:{" "}
+                            <span aria-hidden="true">N/A</span>
+                            <span className="visually-hidden">Address 2 data not available</span>
+                        </h6>
                     )}
                     <h6 className="card-text">City: {city}</h6>
                     <h6 className="card-text">State: {state}</h6>
                     <h6 className="card-text">Zip: {zip}</h6>
                     <h6 className="card-text">Country: {country}</h6>
-                    <h6 className="card-text">API Data Source: Real Property {decodedRecordTypeName} Dataset</h6>
                     <h6 className="card-text">Good Through Date: {convertedGoodThroughDate}</h6>
                 </div>
             </div>

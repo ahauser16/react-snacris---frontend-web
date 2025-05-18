@@ -1,6 +1,7 @@
 import React from "react";
 import displayDateTime from "../utils/displayDateTime";
 import "./acrisRealPropCard.css";
+import "./CommonAcrisComponent.css";
 
 function RealPropertyRemarksCard({
     document_id,
@@ -29,26 +30,19 @@ function RealPropertyRemarksCard({
     const convertedGoodThroughDate = displayDateTime(good_through_date);
 
     return (
-        <div className="card mb-3 shadow-sm col-6 mx-auto">
-            <div className="card-body row">
-                <h4 className="card-title text-primary mb-3 row">
-                    Real Property Remarks Data
+        <div className="card mb-3 shadow-sm w-100">
+            <div className="card-body">
+                <h4 className="card-title text-primary mb-3" aria-label="Real Property Remarks Data">
+                    {decodedRecordTypeName}
                 </h4>
-                <h5 className="card-title text-secondary mb-3 row">
-                    {document_id ? (
-                        `Document ID: ${document_id} `
-                    ) : (
-                        ""
-                    )}
-                </h5>
                 <div className="text-start">
-                    <h6 className="card-text">Sequence Number: {sequence_number}</h6>
-                    <h6 className="card-text">Remark Text: {remark_text}</h6>
+                    <h6 className="card-text">Sequence Number: {sequence_number ?? <span className="notApplic" aria-label="Sequence number not available"><span aria-hidden="true">N/A</span><span className="visually-hidden">Sequence number not available</span></span>}</h6>
+                    <h6 className="card-text">Remark Text: {remark_text ?? <span className="notApplic" aria-label="Remark text not available"><span aria-hidden="true">N/A</span><span className="visually-hidden">Remark text not available</span></span>}</h6>
                     <h6 className="card-text">API Data Source: Real Property {decodedRecordTypeName} Dataset</h6>
                     <h6 className="card-text">Good Through Date: {convertedGoodThroughDate}</h6>
                 </div>
             </div>
-        </div >
+        </div>
     );
 }
 

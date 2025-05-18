@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./documentIdCrfnSearchForm.css";
-import SelectDatasetsCheckboxes from "../../components/acris/SelectDatasetsCheckboxes";
 
 function DocumentIdCrfnSearchForm({ searchFor }) {
   console.debug("DocumentIdCrfnSearchForm", "searchFor=", typeof searchFor);
@@ -82,11 +81,6 @@ function DocumentIdCrfnSearchForm({ searchFor }) {
               onChange={handleChange}
             />
           </fieldset>
-          <SelectDatasetsCheckboxes
-            apiSearchSources={apiSearchSources}
-            handleCheckboxChange={handleCheckboxChange}
-            disabledDatasets={disabledDatasets} // Pass disabled datasets as props
-          />
           <button type="submit" className="btn btn-lg btn-primary mx-auto">
             Submit
           </button>
