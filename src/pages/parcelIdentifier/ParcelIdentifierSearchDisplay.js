@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import RealPropertyCardContainer from "../../components/acris/RealPropertyCardContainer";
 import DocumentIdMenu from "../../components/acris/DocumentIdMenu";
 
-function PartyNameSearchDisplay({ results }) {
+function ParcelIdentifierSearchDisplay({ results }) {
   const [selectedDocId, setSelectedDocId] = useState(
     results && results.length > 0 ? results[0].document_id : null
   );
@@ -25,4 +25,4 @@ function PartyNameSearchDisplay({ results }) {
   );
 }
 
-export default PartyNameSearchDisplay;
+export default ParcelIdentifierSearchDisplay;

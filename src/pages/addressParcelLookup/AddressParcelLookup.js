@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import SnacrisApi from "../../api/api";
 import AddressParcelLookupForm from "./AddressParcelLookupForm";
-import AddressParcelCard from "./AddressParcelCard";
+import AddressParcelLookupDisplay from "./AddressParcelLookupDisplay";
 import "./addressParcelLookup.css";
 
 function AddressParcelLookup() {
-  console.debug("AddressParcelLookup");
+  //console.debug("AddressParcelLookup");
 
   const [results, setResults] = useState(null);
 
@@ -15,39 +15,23 @@ function AddressParcelLookup() {
       const response = await SnacrisApi.queryAcrisAddressParcel(legalsSearchTerms);
       console.debug("AddressParcelLookup: search results:", response);
 
-      if (response.status === "success") {
-        setResults(response.records); // Update results state with the records array
-        setAlert({ type: "success", messages: [response.message] });
+      // If response is an array, treat it as results
+      if (Array.isArray(response) && response.length > 0) {
+        setResults(response);
+        setAlert({ type: "success", messages: ["Results found."] });
+      } else if (Array.isArray(response) && response.length === 0) {
+        setResults([]);
+        setAlert({ type: "danger", messages: ["No results found."] });
       } else {
-        setResults([]); // Set results to an empty array if no records are found
-        setAlert({ type: "danger", messages: [response.message] });
+        setResults([]);
+        setAlert({ type: "danger", messages: ["Unexpected response format."] });
       }
     } catch (err) {
       console.error("Error fetching results:", err);
-      setResults([]); // Set results to an empty array in case of an error
+      setResults([]);
       setAlert({ type: "danger", messages: ["An error occurred while fetching data. Please try again."] });
     }
   }
-
-  // Group results by borough, block, and lot
-  const groupedResults = results
-    ? results.reduce((acc, result) => {
-      const key = `${result.borough}-${result.block}-${result.lot}`;
-      if (!acc[key]) {
-        acc[key] = {
-          borough: result.borough,
-          block: result.block,
-          lot: result.lot,
-          addresses: [],
-        };
-      }
-      acc[key].addresses.push({
-        street_number: result.street_number,
-        street_name: result.street_name,
-      });
-      return acc;
-    }, {})
-    : {};
 
   return (
     <div className="container justify-content-center text-center">
@@ -56,23 +40,7 @@ function AddressParcelLookup() {
         If you know the property address, complete the fields below and press "Submit" to find the Borough/Block/Lot ("BBL") of the property. If an address is found, the results will show the BBL information along with any associated street address(es). Keep in mind that a property will have one BBL reference but may have one or more street addresses.
       </p>
       <AddressParcelLookupForm searchFor={searchRPLegals} />
-      {results === null ? (
-        <p className="text-muted">Please submit a search to see results.</p>
-      ) : results.length > 0 ? (
-        <div className="row">
-          {Object.values(groupedResults).map((group, idx) => (
-            <AddressParcelCard
-              key={idx}
-              borough={group.borough}
-              block={group.block}
-              lot={group.lot}
-              addresses={group.addresses}
-            />
-          ))}
-        </div>
-      ) : (
-        <p className="text-danger">No results found.</p>
-      )}
+      <AddressParcelLookupDisplay results={results} />
     </div>
   );
 }

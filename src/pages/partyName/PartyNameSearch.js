@@ -4,7 +4,7 @@ import PartyNameSearchDisplay from "./PartyNameSearchDisplay";
 import SnacrisApi from "../../api/api";
 
 function PartyNameSearch() {
-  console.debug("PartyNameSearch");
+  //console.debug("PartyNameSearch");
 
   const [results, setResults] = useState(null);
 
@@ -15,14 +15,14 @@ function PartyNameSearch() {
     remarkSearchTerms,
     referenceSearchTerms
   ) {
-    console.debug(
-      "PartyNameSearch: search called with:",
-      masterSearchTerms,
-      partySearchTerms,
-      legalsSearchTerms,
-      remarkSearchTerms,
-      referenceSearchTerms
-    );
+    // console.debug(
+    //   "PartyNameSearch: search called with:",
+    //   masterSearchTerms,
+    //   partySearchTerms,
+    //   legalsSearchTerms,
+    //   remarkSearchTerms,
+    //   referenceSearchTerms
+    // );
     try {
       const results = await SnacrisApi.queryAcrisPartyName(
         masterSearchTerms,
@@ -40,23 +40,15 @@ function PartyNameSearch() {
   }
 
   return (
-    //container: Adds a fixed-width responsive container with horizontal padding.
-    //text-center: Centers text inside the container (affects headings and children unless overridden).
     <div className="container">
       <div className="row mb-2">
         <h1 className="title">Search By Party Name</h1>
         <em className="subtitle">Recorded Documents Only</em>
       </div>
       <div className="row">
-        {/* 
-        NB--> on mobile col-12 (100% width), on large screens col-lg-4 (33% width)
-         */}
         <div className="col-12 col-lg-4 col-md-4 mb-2">
           <PartyNameSearchForm searchFor={search} />
         </div>
-        {/* 
-        NB--> on mobile col-12 (100% width), on large screens col-lg-8 (66% width)
-         */}
         <div className="col-12 col-lg-8 col-md-8">
           {results && (<PartyNameSearchDisplay results={results} />)}
         </div>

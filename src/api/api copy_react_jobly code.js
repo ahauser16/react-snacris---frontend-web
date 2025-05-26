@@ -42,54 +42,89 @@ class SnacrisApi {
     return res.user;
   }
 
+  /** Get companies (filtered by name if not undefined) */
+
+  static async getCompanies(name) {
+    let res = await this.request("companies", { name });
+    return res.companies;
+  }
+
+  /** Get details on a company by handle. */
+
+  static async getCompany(handle) {
+    let res = await this.request(`companies/${handle}`);
+    return res.company;
+  }
+
+  /** Get list of jobs (filtered by title if not undefined) */
+
+  static async getJobs(title) {
+    let res = await this.request("jobs", { title });
+    return res.jobs;
+  }
+
+  /** Apply to a job */
+
+  static async applyToJob(username, id) {
+    console.debug("API applyToJob called with:", username, id);
+    //NB--> as part of debugging it was suggested to add the `await` keyword to the implementation of this function in `App.js` and `JobCard.js`
+    await this.request(`users/${username}/jobs/${id}`, {}, "post");
+  }
+
   static async queryAcrisAddressParcel(searchTerms) {
     console.debug("API queryAcrisAddressParcel called with:", searchTerms);
 
-    const params = { ...searchTerms };
+    const params = {...searchTerms};
 
     const res = await this.request("queryAcrisAddressParcel/fetchRecord", params);
     console.debug("API queryAcrisAddressParcel response:", res);
     return res.records;
   }
 
-  static async queryAcrisDocIdCrfn(masterSearchTerms) {
-    console.debug("API queryAcrisDocIdCrfn called with:", masterSearchTerms);
+  static async queryAcrisDocIdCrfn(searchTerms) {
+    console.debug("API queryAcrisDocIdCrfn called with:", searchTerms);
 
-    const params = { masterSearchTerms };
+    // Combine `searchTerms` and `apiSearchSources` into a single object
+    const params = { ...searchTerms };
 
+    // Make a GET request with all parameters serialized into the URL
     const res = await this.request("queryAcrisDocIdCrfn/fetchRecord", params);
     console.debug("API queryAcrisDocIdCrfn response:", res);
-    return res;
+    return res.records;
   }
 
   static async queryAcrisDocumentType(masterSearchTerms, legalsSearchTerms) {
     console.debug("API queryAcrisDocumentType called with:", masterSearchTerms, legalsSearchTerms);
 
     // Combine `searchTerms` and `apiSearchSources` into a single object
-    const params = { masterSearchTerms, legalsSearchTerms };
+    const params = { ...masterSearchTerms, ...legalsSearchTerms };
 
     // Make a GET request with all parameters serialized into the URL
     const res = await this.request("queryAcrisDocumentType/fetchRecord", params);
     console.debug("API queryAcrisDocumentType response:", res);
-    return res;
+    return res.records;
   }
 
-  static async queryAcrisPartyName(masterSearchTerms, partySearchTerms, legalsSearchTerms) {
-    console.debug("API queryPartyName called with:", { masterSearchTerms, partySearchTerms, legalsSearchTerms });
-    const params = { masterSearchTerms, partySearchTerms, legalsSearchTerms };
+  static async queryAcrisPartyName(
+    masterSearchTerms,
+    partySearchTerms,
+    legalsSearchTerms
+  ) {
+    console.debug("API queryPartyName called with:", {
+      masterSearchTerms,
+      partySearchTerms,
+      legalsSearchTerms
+    });
+
+    const params = {
+      masterSearchTerms,
+      partySearchTerms,
+      legalsSearchTerms
+    };
 
     //use this function's structure to refactor the others.
     const res = await this.request("queryAcrisPartyName/fetchRecord", params);
     console.debug("API queryPartyName response:", res);
-    return res;
-  }
-
-  static async queryAcrisParcel(masterSearchTerms, legalsSearchTerms) {
-    console.debug("API queryAcrisParcel called with:", { masterSearchTerms, legalsSearchTerms });
-    const params = { masterSearchTerms, legalsSearchTerms };
-
-    const res = await this.request("queryAcrisParcel/fetchRecord", params);
-    console.debug("API queryAcrisParcel response:", res);
     return res;
   }
 

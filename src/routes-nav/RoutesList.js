@@ -5,7 +5,7 @@ import AddressParcelLookup from "../pages/addressParcelLookup/AddressParcelLooku
 import PartyNameSearch from "../pages/partyName/PartyNameSearch";
 import ParcelIdentifierSearch from "../pages/parcelIdentifier/ParcelIdentifierSearch";
 import DocumentTypeSearch from "../pages/documentType/DocumentTypeSearch";
-import DocumentIdCrfnSearch from "../pages/documentIdCrfn/documentIdCrfnSearch";
+import DocumentIdCrfnSearch from "../pages/documentIdCrfn/DocumentIdCrfnSearch";
 import TransactionNumberSearch from "../pages/transactionNumber/transactionNumberSearch";
 import ReelPageSearch from "../pages/reelPage/reelPageSearch";
 import UccFedLienFileNumberSearch from "../pages/uccFedLienFileNumber/uccFedLienFileNumberSearch";
@@ -46,10 +46,6 @@ function RoutesList({ login, signup, currentUser }) {
         {/* The `Route` component is used to define the path and the corresponding component to render when that path is accessed. For example, when the user navigates to "/companies", the CompanyList component will be displayed, and when they navigate to "/jobs", the JobList component will be displayed. */}
         {currentUser && (
           <>
-            {/* <Route path="/companies" element={<CompanyList />} />
-            <Route path="/jobs" element={<JobList />} />
-            <Route path="/companies/:handle" element={<CompanyDetail />} /> */}
-
             <Route path="/addressParcelLookup" element={<AddressParcelLookup />} />
             <Route path="/partyNameSearch" element={<PartyNameSearch />} />
             <Route path="/parcelIdentifierSearch" element={<ParcelIdentifierSearch />} />
