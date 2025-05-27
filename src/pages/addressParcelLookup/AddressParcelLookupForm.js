@@ -111,44 +111,45 @@ function AddressParcelLookupForm({ searchFor }) {
   }
 
   return (
-    <div className="AddressParcelLookupForm mb-2">
+    <div className="AddressParcelLookupForm">
       <form onSubmit={handleSubmit}>
-        <div className="row justify-content-center justify-content-lg-start gx-4 gy-4">
-          {formErrors.length > 0 && (
-            <Alert type="danger" messages={formErrors} />
-          )}
-          <fieldset className="col-6 justify-content-start text-start property-address">
-            <h3 className="mb-2 fw-bold">Property Address</h3>
-            <AddressParcelWrapperBoroughSelect
-              value={addressFields.borough}
-              onChange={handleAddressChange}
-            />
-            <StreetNumber
-              value={addressFields.street_number}
-              onChange={handleAddressChange}
-            />
-            <StreetName
-              value={addressFields.street_name}
-              onChange={handleAddressChange}
-            />
-            <Unit
-              value={addressFields.unit}
-              onChange={handleAddressChange}
-            />
-          </fieldset>
-          <fieldset className="col-6 justify-content-start text-start property-bbl">
-            <h3 className="mb-2 fw-bold">Property Borough, Block & Lot</h3>
-            <AddressParcelWrapperBoroughSelect
-              value={bblFields.borough}
-              onChange={handleBblChange}
-            />
-            <TaxBlock value={bblFields.block} onChange={handleBblChange} />
-            <TaxLot value={bblFields.lot} onChange={handleBblChange} />
-          </fieldset>
-          <button type="submit" className="btn btn-lg btn-primary mx-auto">
-            Submit
-          </button>
-        </div>
+        {formErrors.length > 0 && (
+          <Alert type="danger" messages={formErrors} />
+        )}
+        <fieldset className="text-start mb-2">
+          <h3 className="mb-1 fw-bold">Property Address</h3>
+          <AddressParcelWrapperBoroughSelect
+            value={addressFields.borough}
+            onChange={handleAddressChange}
+          />
+          <StreetNumber
+            value={addressFields.street_number}
+            onChange={handleAddressChange}
+          />
+          <StreetName
+            value={addressFields.street_name}
+            onChange={handleAddressChange}
+          />
+          <Unit
+            value={addressFields.unit}
+            onChange={handleAddressChange}
+          />
+        </fieldset>
+        <fieldset className="text-start">
+          <h3 className="mb-1 fw-bold">Property Borough, Block & Lot</h3>
+          <AddressParcelWrapperBoroughSelect
+            value={bblFields.borough}
+            onChange={handleBblChange}
+          />
+          <TaxBlock value={bblFields.block} onChange={handleBblChange} />
+          <TaxLot value={bblFields.lot} onChange={handleBblChange} />
+        </fieldset>
+        <button
+          type="submit"
+          className="btn btn-lg btn-primary mt-3 w-100 w-lg-auto"
+        >
+          Submit
+        </button>
       </form>
     </div>
   );

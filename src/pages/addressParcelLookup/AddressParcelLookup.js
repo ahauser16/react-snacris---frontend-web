@@ -34,13 +34,24 @@ function AddressParcelLookup() {
   }
 
   return (
-    <div className="container justify-content-center text-center">
-      <h2 className="mb-2 fw-bold">Lookup Address or Parcel</h2>
-      <p className="helper-text">
-        If you know the property address, complete the fields below and press "Submit" to find the Borough/Block/Lot ("BBL") of the property. If an address is found, the results will show the BBL information along with any associated street address(es). Keep in mind that a property will have one BBL reference but may have one or more street addresses.
-      </p>
-      <AddressParcelLookupForm searchFor={searchRPLegals} />
-      <AddressParcelLookupDisplay results={results} />
+    <div className="container">
+      <div className="row mb-2">
+        <h1 className="title">Lookup Address or Parcel</h1>
+        <em className="subtitle">Recorded Documents Only</em>
+      </div>
+      <div className="row">
+        <p className="helper-text">
+          If you know the property address, complete the fields below and press "Submit" to find the Borough/Block/Lot ("BBL") of the property. If an address is found, the results will show the BBL information along with any associated street address(es). Keep in mind that a property will have one BBL reference but may more than one street address.
+        </p>
+      </div>
+      <div className="row">
+        <div className="col-12 col-lg-4 col-md-4 mb-2">
+          <AddressParcelLookupForm searchFor={searchRPLegals} />
+        </div>
+        <div className="col-12 col-lg-8 col-md-8">
+          {results && (<AddressParcelLookupDisplay results={results} />)}
+        </div>
+      </div>
     </div>
   );
 }

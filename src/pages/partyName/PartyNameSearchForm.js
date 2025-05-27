@@ -64,7 +64,6 @@ function PartyNameSearchForm({ searchFor }) {
   }
 
   return (
-    //mb-4: Adds a bottom margin of 4 units (spacing).
     <div className="PartyNameSearchForm">
       <form onSubmit={handleSubmit}>
         <fieldset className="text-start">
