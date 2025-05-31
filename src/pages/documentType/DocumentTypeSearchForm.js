@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import DocClassTypeSelect from '../../components/acris/DocClassTypeSelect'
-// import DocumentDateRange from '../../components/acris/DocumentDateRange'
+import DocClassTypeSelect from '../../components/acris/documentControlCodeForms/DocClassTypeSelect';
 import RecordedDateRangeWrapper from "../../components/acris/masterForms/RecordedDateRangeWrapper";
 import DocumentTypeSearchWrapperBoroughSelect from './DocumentTypeSearchWrapperBoroughSelect'
 

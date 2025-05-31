@@ -49,7 +49,7 @@ class SnacrisApi {
 
     const res = await this.request("queryAcrisAddressParcel/fetchRecord", params);
     console.debug("API queryAcrisAddressParcel response:", res);
-    return res.records;
+    return res;
   }
 
   static async queryAcrisDocIdCrfn(masterSearchTerms) {

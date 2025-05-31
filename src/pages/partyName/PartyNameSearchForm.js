@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./partyNameSearchForm.css";
-import DocClassTypePartySelect from "../../components/acris/DocClassTypePartySelect";
+import DocClassTypePartySelect from "../../components/acris/documentControlCodeForms/DocClassTypePartySelect";
 import RecordedDateRangeWrapper from "../../components/acris/masterForms/RecordedDateRangeWrapper";
 import PartyNameWrapperBoroughSelect from "./PartyNameWrapperBoroughSelect";
 

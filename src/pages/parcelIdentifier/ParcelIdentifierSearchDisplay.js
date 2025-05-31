@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import RealPropertyCardContainer from "../../components/acris/RealPropertyCardContainer";
-import DocumentIdMenu from "../../components/acris/DocumentIdMenu";
+import RealPropertyCardContainer from "../../components/acris/realPropertyDisplay/RealPropertyCardContainer";
+import DocumentIdMenu from "../../components/acris/realPropertyDisplay/DocumentIdMenu";
 
 function ParcelIdentifierSearchDisplay({ results }) {
   const [selectedDocId, setSelectedDocId] = useState(

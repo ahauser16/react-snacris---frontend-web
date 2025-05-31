@@ -4,8 +4,7 @@ import ParcelIdentifierWrapperBoroughSelect from "./ParcelIdentifierWrapperBorou
 import TaxBlock from "../../components/acris/legalsForms/TaxBlock";
 import TaxLot from "../../components/acris/legalsForms/TaxLot";
 import Unit from "../../components/acris/legalsForms/Unit";
-import DocClassTypeSelect from "../../components/acris/DocClassTypeSelect";
-// import DocumentDateRange from "../../components/acris/DocumentDateRange";
+import DocClassTypeSelect from "../../components/acris/documentControlCodeForms/DocClassTypeSelect";
 import RecordedDateRangeWrapper from "../../components/acris/masterForms/RecordedDateRangeWrapper";
 
 
