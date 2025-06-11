@@ -25,6 +25,11 @@ function DateRange({ dateRange, setDateRange, rangeName }) {
         return calculateDateRange(365 * 2);
       case "last-5-years":
         return calculateDateRange(365 * 5);
+      case "to-current-date-default": {
+        const start = "1901-01-01";
+        const end = new Date().toISOString().split("T")[0];
+        return { start, end };
+      }
       default:
         return { start: "", end: "" };
     }

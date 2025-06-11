@@ -33,7 +33,16 @@ function ParcelIdentifierSearchForm({ searchFor }) {
       masterSearchTerms,
       legalsSearchTerms
     );
+    console.log("DEBUG: masterSearchTerms before submit", masterSearchTerms);
     searchFor(masterSearchTerms, legalsSearchTerms);
+  }
+
+  function handleMasterChange(evt) {
+    const { name, value } = evt.target;
+    setMasterSearchTerms((data) => ({
+      ...data,
+      [name]: value,
+    }));
   }
 
   function handleLegalsChange(evt) {
