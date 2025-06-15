@@ -6,7 +6,7 @@ import PartyNameSearch from "../pages/partyName/PartyNameSearch";
 import ParcelIdentifierSearch from "../pages/parcelIdentifier/ParcelIdentifierSearch";
 import DocumentTypeSearch from "../pages/documentType/DocumentTypeSearch";
 import DocumentIdCrfnSearch from "../pages/documentIdCrfn/DocumentIdCrfnSearch";
-import TransactionNumberSearch from "../pages/transactionNumber/transactionNumberSearch";
+import TransactionNumberSearch from "../pages/transactionNumber/TransactionNumberSearch";
 import ReelPageSearch from "../pages/reelPage/reelPageSearch";
 import UccFedLienFileNumberSearch from "../pages/uccFedLienFileNumber/uccFedLienFileNumberSearch";
 import LoginForm from "../auth/LoginForm";

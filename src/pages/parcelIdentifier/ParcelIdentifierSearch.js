@@ -31,8 +31,15 @@ function ParcelIdentifierSearch() {
   return (
     <div className="container">
       <div className="row mb-2">
-        <h1 className="title">Search By Parcel (Borough, Block & Lot)</h1>
-        <em className="subtitle">Recorded Documents Only</em>
+        <div className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start" role="alert">
+          <div className="d-flex align-items-end justify-content-start mb-1">
+            <h1 className="title mb-0 me-2">Search By Parcel (Borough, Block & Lot)</h1>
+            <em className="subtitle mb-0">Recorded Documents Only</em>
+          </div>
+          <p>
+            Enter the Borough, Block & Lot (BBL) of the property you want to find documents for below.  Additionally, you can narrow your search by selecting a class or type of document and selecting a date range.
+          </p>
+        </div>
       </div>
       <div className="row">
         <div className="col-12 col-lg-4 col-md-4 mb-2">

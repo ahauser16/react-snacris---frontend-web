@@ -23,8 +23,15 @@ function DocumentTypeSearch() {
   return (
     <div className="container">
       <div className="row mb-2">
-        <h1 className="title">Search By Document Type</h1>
-        <em className="subtitle">Recorded Documents Only</em>
+        <div className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start" role="alert">
+          <div className="d-flex align-items-end justify-content-start mb-1">
+            <h1 className="title mb-0 me-2">Search By Document Type</h1>
+            <em className="subtitle mb-0">Recorded Documents Only</em>
+          </div>
+          <p>
+            Select the document class and/or document type from the dropdown menu below and press "Submit" to search for documents of the chosen class/type.  Additionally, you can narrow your search results by selecting a broough and a date range.  
+          </p>
+        </div>
       </div>
       <div className="row">
         <div className="col-12 col-lg-4 col-md-4 mb-2">

@@ -52,6 +52,16 @@ class SnacrisApi {
     return res;
   }
 
+  static async queryAcrisTransactionNumber(masterSearchTerms) {
+    console.debug("API queryAcrisTransactionNumber called with:", masterSearchTerms);
+
+    const params = { masterSearchTerms };
+
+    const res = await this.request("queryAcrisTransactionNumber/fetchRecord", params);
+    console.debug("API queryAcrisTransactionNumber response:", res);
+    return res;
+  }
+
   static async queryAcrisDocIdCrfn(masterSearchTerms) {
     console.debug("API queryAcrisDocIdCrfn called with:", masterSearchTerms);
 

@@ -30,11 +30,6 @@ function DocumentIdCrfnSearchForm({ searchFor }) {
     <div className="DocumentIdCrfnSearchForm">
       <form onSubmit={handleSubmit}>
         <fieldset className="text-start">
-          <div className="d-flex justify-content-start text-start">
-            <p>
-              Please fill in only one number (Document ID Number or CityRegister File Number "CRFN")
-            </p>
-          </div>
           <DocumentIdTextInput
             value={masterSearchTerms.document_id}
             onChange={(e) =>

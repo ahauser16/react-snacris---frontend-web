@@ -7,7 +7,6 @@ import Unit from "../../components/acris/legalsForms/Unit";
 import DocClassTypeSelect from "../../components/acris/documentControlCodeForms/DocClassTypeSelect";
 import RecordedDateRangeWrapper from "../../components/acris/masterForms/RecordedDateRangeWrapper";
 
-
 function ParcelIdentifierSearchForm({ searchFor }) {
   console.debug("ParcelIdentifierSearchForm", "searchFor=", typeof searchFor);
 

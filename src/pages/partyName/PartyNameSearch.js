@@ -15,14 +15,6 @@ function PartyNameSearch() {
     remarkSearchTerms,
     referenceSearchTerms
   ) {
-    // console.debug(
-    //   "PartyNameSearch: search called with:",
-    //   masterSearchTerms,
-    //   partySearchTerms,
-    //   legalsSearchTerms,
-    //   remarkSearchTerms,
-    //   referenceSearchTerms
-    // );
     try {
       const results = await SnacrisApi.queryAcrisPartyName(
         masterSearchTerms,
@@ -42,8 +34,15 @@ function PartyNameSearch() {
   return (
     <div className="container">
       <div className="row mb-2">
-        <h1 className="title">Search By Party Name</h1>
-        <em className="subtitle">Recorded Documents Only</em>
+        <div className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start" role="alert">
+          <div className="d-flex align-items-end justify-content-start mb-1">
+            <h1 className="title mb-0 me-2">Search By Party Name</h1>
+            <em className="subtitle mb-0">Recorded Documents Only</em>
+          </div>
+          <p>
+            Enter the name of the party in the field below and press "Submit" to search for records where one of the associated party's name <em>contains</em> the search term provided.  For example, searching for "Smith" will return all documents where a party's name contains "Smith", such as "John Smith", "Smith & Co.", or "Smithson".  Additionally, you can narrow your search results by selecting a borough, a document class and/or document type, selecting a date range and a party type.
+          </p>
+        </div>
       </div>
       <div className="row">
         <div className="col-12 col-lg-4 col-md-4 mb-2">

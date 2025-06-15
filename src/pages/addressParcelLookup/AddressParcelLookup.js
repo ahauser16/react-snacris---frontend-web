@@ -39,7 +39,7 @@ function AddressParcelLookup() {
             <em className="subtitle mb-0">Recorded Documents Only</em>
           </div>
           <p>
-            If you know the property address, complete the fields below and press "Submit" to find the Borough/Block/Lot ("BBL") of the property. If an address is found, the results will show the BBL information along with any associated street address(es). Keep in mind that a property will have one BBL reference but may have more than one street address.
+            If you know the property address, complete the fields below and press "Submit" to find the Borough, Block & Lot (BBL) of the property. If an address is found, the results will show the BBL information along with any associated street address(es).  Keep in mind that a property will have one BBL reference but may have more than one street address.
           </p>
         </div>
       </div>
