@@ -72,6 +72,16 @@ class SnacrisApi {
     return res;
   }
 
+  static async queryAcrisUccFedLienNum(masterSearchTerms, legalsSearchTerms) {
+    console.debug("API queryAcrisUccFedLienNum called with:", masterSearchTerms, legalsSearchTerms);
+
+    const params = { masterSearchTerms, legalsSearchTerms };
+
+    const res = await this.request("queryAcrisUccFedLienNum/fetchRecord", params);
+    console.debug("API queryAcrisUccFedLienNum response:", res);
+    return res;
+  }
+
   static async queryAcrisDocIdCrfn(masterSearchTerms) {
     console.debug("API queryAcrisDocIdCrfn called with:", masterSearchTerms);
 
