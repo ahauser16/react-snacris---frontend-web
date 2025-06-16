@@ -7,7 +7,7 @@ import ParcelIdentifierSearch from "../pages/parcelIdentifier/ParcelIdentifierSe
 import DocumentTypeSearch from "../pages/documentType/DocumentTypeSearch";
 import DocumentIdCrfnSearch from "../pages/documentIdCrfn/DocumentIdCrfnSearch";
 import TransactionNumberSearch from "../pages/transactionNumber/TransactionNumberSearch";
-import ReelPageSearch from "../pages/reelPage/reelPageSearch";
+import ReelPageSearch from "../pages/reelPage/ReelPageSearch";
 import UccFedLienFileNumberSearch from "../pages/uccFedLienFileNumber/uccFedLienFileNumberSearch";
 import LoginForm from "../auth/LoginForm";
 import ProfileForm from "../profiles/ProfileForm";
