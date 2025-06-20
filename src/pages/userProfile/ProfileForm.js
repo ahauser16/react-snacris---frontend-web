@@ -1,12 +1,12 @@
 import React, { useState, useContext } from "react";
-import Alert from "../common/Alert";
-import SnacrisApi from "../api/api";
+import Alert from "../../common/Alert";
+import SnacrisApi from "../../api/api";
 //The UserContext provides access to the currentUser object and the setCurrentUser function.
-import UserContext from "../auth/UserContext";
+import UserContext from "../../auth/UserContext";
 import "./ProfileForm.css";
 
 // eslint-disable-next-line
-import useTimedMessage from "../hooks/useTimedMessage";
+import useTimedMessage from "../../hooks/useTimedMessage";
 
 /** Profile editing form.
  *
@@ -26,7 +26,7 @@ function ProfileForm() {
   // currentUser contains the currently logged-in user's data (e.g., username, firstName, lastName, email).
   // setCurrentUser is used to update the global user state after a successful profile update.
   const { currentUser, setCurrentUser } = useContext(UserContext);
-  
+
   // formData: Holds the values of the form fields (firstName, lastName, email, username).
   // formData: Initialized with the current user's data from UserContext.
   const [formData, setFormData] = useState({
@@ -35,7 +35,7 @@ function ProfileForm() {
     email: currentUser.email,
     username: currentUser.username,
   });
-  
+
   //formErrors: Stores any validation or API errors that occur during form submission.
   const [formErrors, setFormErrors] = useState([]);
 
@@ -63,12 +63,12 @@ function ProfileForm() {
    *   - show save-confirmed message
    *   - set current user info throughout the site
    */
-  
+
   //Submitting the Form with the `handleSubmit` function which is triggered when the user clicks the "Save Changes" button.
   async function handleSubmit(evt) {
     //Prevents the default form submission behavior
     evt.preventDefault();
-    
+
     //Preparing Data: The `handleSubmit` function prepares the data to be sent to the API by creating a `profileData` object that contains the user's first name, last name, and email.
     let profileData = {
       firstName: formData.firstName,
@@ -76,7 +76,7 @@ function ProfileForm() {
       email: formData.email,
     };
 
-    //The `username` variable is set to the current user's username from the `formData` state.  This is used to identify which user's profile is being updated in the API call named `SnacrisApi.saveProfile`.  
+    //The `username` variable is set to the current user's username from the `formData` state.  This is used to identify which user's profile is being updated in the API call named `SnacrisApi.saveProfile`.
     let username = formData.username;
 
     //The `updatedUser` variable is initialized to store the updated user data returned from the API after a successful profile update.  This variable will be used to update the `formData` state and the global `currentUser` state.
@@ -99,7 +99,7 @@ function ProfileForm() {
     setFormErrors([]);
 
     // The `setSaveConfirmed` function is called to set the `saveConfirmed` state to true, indicating that the profile update was successful. This will trigger a success message to be displayed to the user.  This is done to provide feedback to the user that their changes have been saved successfully.
-    setSaveConfirmed(true);
+  data: setSaveConfirmed(true);
 
     //Updating State: If the API call is successful (i) it Clears any previous errors, (ii) sets saveConfirmed to true to display a success message and (iii) updates the global currentUser state using setCurrentUser.
     // trigger reloading of user information throughout the site
@@ -114,7 +114,6 @@ function ProfileForm() {
   2. updates the corresponding field in the formData state, and
   3. clears any previous error messages in the formErrors state.*/
   function handleChange(evt) {
-
     //The `const { name, value } = evt.target;` line destructures the `name` and `value` properties from the event target (the input field that triggered the change event).
     const { name, value } = evt.target;
 
@@ -128,7 +127,7 @@ function ProfileForm() {
 
   return (
     <div className="ProfileForm col-md-6 col-lg-4 offset-md-3 offset-lg-4">
-      <h3>Profile</h3>
+      <h3>My Profile</h3>
       <div className="card">
         <div className="card-body">
           {/* The form includes fields for firstName, lastName, and email, which are editable. */}

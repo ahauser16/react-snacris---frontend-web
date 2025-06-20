@@ -10,7 +10,7 @@ import TransactionNumberSearch from "../pages/transactionNumber/TransactionNumbe
 import ReelPageSearch from "../pages/reelPage/ReelPageSearch";
 import UccFedLienFileNumberSearch from "../pages/uccFedLienFileNumber/UccFedLienFileNumberSearch";
 import LoginForm from "../auth/LoginForm";
-import ProfileForm from "../profiles/ProfileForm";
+import ProfilePage from "../pages/userProfile/ProfilePage";
 import SignupForm from "../auth/SignupForm";
 
 /** Site-wide routes.
@@ -54,7 +54,7 @@ function RoutesList({ login, signup, currentUser }) {
             <Route path="/transactionNumberSearch" element={<TransactionNumberSearch />} />
             <Route path="/reelPageSearch" element={<ReelPageSearch />} />
             <Route path="/uccFedLienFileNumberSearch" element={<UccFedLienFileNumberSearch />} />
-            <Route path="/profile" element={<ProfileForm />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </>
         )}
 
