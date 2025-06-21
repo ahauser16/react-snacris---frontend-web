@@ -13,7 +13,7 @@ import "./Navigation.css";
 
 //The Navigation.js component dynamically renders navigation links based on whether the user is logged in or not. It integrates with `App.js`, `UserContext.js`, and `RoutesList.js` to determine the user's authentication status and provide appropriate navigation options.
 
-//How Navigation.js Uses App.js: App.js wraps the entire application in a UserContext.Provider which makes the `currentUser`, `setCurrentUser`, `hasAppliedToJob`, and `applyToJob` object available to the Navigation component.  The `logout` function is made available to the Navigation.js component via the `logout` prop passed from App.js. This allows the Navigation component to call the logout function when the user clicks the "Log out" link, effectively logging them out of the application.
+//How Navigation.js Uses App.js: App.js wraps the entire application in a UserContext.Provider which makes the `currentUser` and `setCurrentUser, object available to the Navigation component.  The `logout` function is made available to the Navigation.js component via the `logout` prop passed from App.js. This allows the Navigation component to call the logout function when the user clicks the "Log out" link, effectively logging them out of the application.
 
 function Navigation({ logout }) {
   // The Navigation component uses the `currentUser` object to determine whether the user is logged in or not, and conditionally renders the appropriate navigation links based on that status.
@@ -23,17 +23,6 @@ function Navigation({ logout }) {
   function loggedInNav() {
     return (
       <ul className="navbar-nav ms-auto">
-          {/* The `NavLink` component is used to create navigation links that are styled based on the current route. It automatically adds an "active" class to the link when the route matches, allowing for better user experience and visual feedback.  The `to` property of the `NavLink` component specifies the path to which the link should navigate when clicked. The `className` property is used to apply CSS classes to the link for styling purposes.  For example, the `to = "/companies"` property indicates that when the link is clicked, it will navigate to the "/companies" route which is referenced in the `RoutesList.js` component (see `RoutesList.js` for more details on routing architecture). */} 
-        {/* <li className="nav-item me-4">
-          <NavLink className="nav-link" to="/companies">
-            Companies
-          </NavLink>
-        </li>
-        <li className="nav-item me-4">
-          <NavLink className="nav-link" to="/jobs">
-            Jobs
-          </NavLink>
-        </li> */}
         <li className="nav-item me-4">
           <NavLink className="nav-link" to="/addressParcelLookup">
             Address & Parcel Lookup
