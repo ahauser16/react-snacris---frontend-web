@@ -36,11 +36,12 @@ function AddressParcelLookupForm({ searchFor }) {
 
     // Check if all required fields in the address fieldset are filled
     const isAddressFilled =
-      addressFields.borough && addressFields.street_number && addressFields.street_name;
+      addressFields.borough &&
+      addressFields.street_number &&
+      addressFields.street_name;
 
     // Check if all required fields in the BBL fieldset are filled
-    const isBblFilled =
-      bblFields.borough && bblFields.block && bblFields.lot;
+    const isBblFilled = bblFields.borough && bblFields.block && bblFields.lot;
 
     // Check if any fields in the address fieldset are filled
     const isAddressPartiallyFilled = Object.values(addressFields).some(
@@ -53,7 +54,10 @@ function AddressParcelLookupForm({ searchFor }) {
     );
 
     // Ensure only one fieldset is fully filled and the other is completely empty
-    if ((isAddressFilled && isBblPartiallyFilled) || (isBblFilled && isAddressPartiallyFilled)) {
+    if (
+      (isAddressFilled && isBblPartiallyFilled) ||
+      (isBblFilled && isAddressPartiallyFilled)
+    ) {
       setFormErrors([
         "Submit the form with either Property Address or Property Borough, Block & Lot but not both.",
       ]);
@@ -112,33 +116,33 @@ function AddressParcelLookupForm({ searchFor }) {
   return (
     <div className="AddressParcelLookupForm">
       <form onSubmit={handleSubmit}>
-        {formErrors.length > 0 && (
-          <Alert type="danger" messages={formErrors} />
-        )}
+        {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
         <fieldset className="text-start mb-2">
           <h3 className="mb-1 fw-bold">Property Address</h3>
           <AddressParcelWrapperBoroughSelect
             value={addressFields.borough}
             onChange={handleAddressChange}
+            id="address-borough"
           />
           <StreetNumber
             value={addressFields.street_number}
             onChange={handleAddressChange}
+            id="address-street-number"
           />
           <StreetName
             value={addressFields.street_name}
             onChange={handleAddressChange}
+            id="address-street-name"
+            required={true}
           />
-          <Unit
-            value={addressFields.unit}
-            onChange={handleAddressChange}
-          />
+          <Unit value={addressFields.unit} onChange={handleAddressChange} />
         </fieldset>
         <fieldset className="text-start">
           <h3 className="mb-1 fw-bold">Property Borough, Block & Lot</h3>
           <AddressParcelWrapperBoroughSelect
             value={bblFields.borough}
             onChange={handleBblChange}
+            id="bbl-borough"
           />
           <TaxBlock value={bblFields.block} onChange={handleBblChange} />
           <TaxLot value={bblFields.lot} onChange={handleBblChange} />
