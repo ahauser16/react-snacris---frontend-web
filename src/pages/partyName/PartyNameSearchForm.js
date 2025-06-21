@@ -1,12 +1,11 @@
 import React, { useState } from "react";
+import Alert from "../../common/Alert";
 import "./partyNameSearchForm.css";
 import DocClassTypePartySelect from "../../components/acris/documentControlCodeForms/DocClassTypePartySelect";
 import RecordedDateRangeWrapper from "../../components/acris/masterForms/RecordedDateRangeWrapper";
 import PartyNameWrapperBoroughSelect from "./PartyNameWrapperBoroughSelect";
 
 function PartyNameSearchForm({ searchFor }) {
-  console.debug("PartyNameSearchForm", "searchFor=", typeof searchFor);
-
   const [masterSearchTerms, setMasterSearchTerms] = useState({
     recorded_date_range: "to-current-date-default",
     recorded_date_start: "",
@@ -24,32 +23,30 @@ function PartyNameSearchForm({ searchFor }) {
     borough: "",
   });
 
+  const [formErrors, setFormErrors] = useState([]);
+
   function handleSubmit(evt) {
     evt.preventDefault();
-    console.debug(
-      "PartyNameSearchForm: handleSubmit called with:",
-      masterSearchTerms,
-      partySearchTerms,
-      legalsSearchTerms
-    );
-    searchFor(
-      masterSearchTerms,
-      partySearchTerms,
-      legalsSearchTerms
-    );
-  }
-
-  function handleMasterChange(evt) {
-    const { name, value } = evt.target;
-    setMasterSearchTerms((data) => ({
-      ...data,
-      [name]: value,
-    }));
+    if (!partySearchTerms.name.trim()) {
+      setFormErrors(["The name field is required."]);
+      return;
+    }
+    setFormErrors([]);
+    searchFor(masterSearchTerms, partySearchTerms, legalsSearchTerms);
   }
 
   function handlePartyChange(evt) {
     const { name, value } = evt.target;
     setPartySearchTerms((data) => ({
+      ...data,
+      [name]: value,
+    }));
+    setFormErrors([]); // clear errors on change
+  }
+
+  function handleMasterChange(evt) {
+    const { name, value } = evt.target;
+    setMasterSearchTerms((data) => ({
       ...data,
       [name]: value,
     }));
@@ -66,6 +63,9 @@ function PartyNameSearchForm({ searchFor }) {
   return (
     <div className="PartyNameSearchForm">
       <form onSubmit={handleSubmit}>
+        {formErrors.length > 0 && (
+          <Alert type="danger" messages={formErrors} />
+        )}
         <fieldset className="text-start">
           <h3 className="mb-1 fw-bold">Name:</h3>
           <input

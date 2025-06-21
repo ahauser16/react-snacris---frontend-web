@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Alert from "../../common/Alert";
 import "./parcelIdentifierSearchForm.css";
 import ParcelIdentifierWrapperBoroughSelect from "./ParcelIdentifierWrapperBoroughSelect";
 import TaxBlock from "../../components/acris/legalsForms/TaxBlock";
@@ -8,8 +9,6 @@ import DocClassTypeSelect from "../../components/acris/documentControlCodeForms/
 import RecordedDateRangeWrapper from "../../components/acris/masterForms/RecordedDateRangeWrapper";
 
 function ParcelIdentifierSearchForm({ searchFor }) {
-  console.debug("ParcelIdentifierSearchForm", "searchFor=", typeof searchFor);
-
   const [masterSearchTerms, setMasterSearchTerms] = useState({
     recorded_date_range: "to-current-date-default",
     recorded_date_start: "",
@@ -25,14 +24,16 @@ function ParcelIdentifierSearchForm({ searchFor }) {
     unit: "",
   });
 
+  const [formErrors, setFormErrors] = useState([]);
+
   function handleSubmit(evt) {
     evt.preventDefault();
-    console.debug(
-      "ParcelIdentifierSearchForm: handleSubmit called with:",
-      masterSearchTerms,
-      legalsSearchTerms
-    );
-    console.log("DEBUG: masterSearchTerms before submit", masterSearchTerms);
+    // Validate required fields
+    if (!legalsSearchTerms.borough || !legalsSearchTerms.block || !legalsSearchTerms.lot) {
+      setFormErrors(["Please fill out Borough, Block, and Lot fields."]);
+      return;
+    }
+    setFormErrors([]);
     searchFor(masterSearchTerms, legalsSearchTerms);
   }
 
@@ -50,11 +51,30 @@ function ParcelIdentifierSearchForm({ searchFor }) {
       ...data,
       [name]: value,
     }));
+    setFormErrors([]); // clear errors on change
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const borough = params.get("borough") || "";
+    const block = params.get("block") || "";
+    const lot = params.get("lot") || "";
+    if (borough || block || lot) {
+      setLegalsSearchTerms((prev) => ({
+        ...prev,
+        borough,
+        block,
+        lot,
+      }));
+    }
+  }, []);
 
   return (
     <div className="ParcelIdentifierSearchForm">
       <form onSubmit={handleSubmit}>
+        {formErrors.length > 0 && (
+          <Alert type="danger" messages={formErrors} />
+        )}
         <fieldset className="text-start">
           <ParcelIdentifierWrapperBoroughSelect
             legalsSearchTerms={legalsSearchTerms}
@@ -64,14 +84,8 @@ function ParcelIdentifierSearchForm({ searchFor }) {
             value={legalsSearchTerms.block}
             onChange={handleLegalsChange}
           />
-          <TaxLot
-            value={legalsSearchTerms.lot}
-            onChange={handleLegalsChange}
-          />
-          <Unit
-            value={legalsSearchTerms.unit}
-            onChange={handleLegalsChange}
-          />
+          <TaxLot value={legalsSearchTerms.lot} onChange={handleLegalsChange} />
+          <Unit value={legalsSearchTerms.unit} onChange={handleLegalsChange} />
           <RecordedDateRangeWrapper
             masterSearchTerms={masterSearchTerms}
             setMasterSearchTerms={setMasterSearchTerms}
@@ -81,7 +95,6 @@ function ParcelIdentifierSearchForm({ searchFor }) {
             setMasterSearchTerms={setMasterSearchTerms}
           />
         </fieldset>
-
         <button type="submit" className="btn btn-lg btn-primary mx-auto">
           Submit
         </button>

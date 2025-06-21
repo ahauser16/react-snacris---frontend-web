@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import Alert from "../../common/Alert";
 
 const TransNumSearchForm = ({ searchFor }) => {
   console.debug("TransNumSearchForm", "searchFor=", typeof searchFor);
@@ -7,13 +7,15 @@ const TransNumSearchForm = ({ searchFor }) => {
   const [masterSearchTerms, setMasterSearchTerms] = useState({
     transaction_number: "",
   });
+  const [formErrors, setFormErrors] = useState([]);
 
   function handleSubmit(evt) {
     evt.preventDefault();
-    console.debug(
-      "TransNumSearchForm: handleSubmit called with:",
-      masterSearchTerms
-    );
+    if (!masterSearchTerms.transaction_number.trim()) {
+      setFormErrors(["Transaction Number is required."]);
+      return;
+    }
+    setFormErrors([]);
     searchFor(masterSearchTerms);
   }
 
@@ -23,11 +25,15 @@ const TransNumSearchForm = ({ searchFor }) => {
       ...data,
       [name]: value,
     }));
+    setFormErrors([]); // clear errors on change
   }
 
   return (
     <div className="TransNumSearchForm">
       <form onSubmit={handleSubmit}>
+        {formErrors.length > 0 && (
+          <Alert type="danger" messages={formErrors} />
+        )}
         <fieldset className="text-start">
           <div className="mb-3">
             <label htmlFor="transaction_number" className="form-label fw-bold">

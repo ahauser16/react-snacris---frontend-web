@@ -29,7 +29,7 @@ function DocumentIdCrfnSearch() {
             <em className="subtitle mb-0">Recorded Documents Only</em>
           </div>
           <p>
-            Enter the Document ID or CRFN (City Register File Number) of the document you want to find below and press "Submit".
+            Enter either the Document ID or CRFN (City Register File Number) of the document you want to find below and press "Submit".
           </p>
         </div>
       </div>

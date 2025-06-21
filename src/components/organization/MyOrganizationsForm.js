@@ -114,8 +114,8 @@ function MyOrganizationsForm({
             <button
               className="btn btn-secondary mb-2 mb-md-0 me-0 me-md-2"
               type="button"
-              //   onClick={onCancel}
-              onClick={() => setShowConfirm(true)}
+                 onClick={onCancel}
+              //onClick={() => setShowConfirm(true)}
             >
               Cancel
             </button>

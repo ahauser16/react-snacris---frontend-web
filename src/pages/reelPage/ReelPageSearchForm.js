@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Alert from "../../common/Alert";
 import ReelPageWrapperBoroughSelect from "./ReelPageWrapperBoroughSelect";
 
 function ReelPageSearchForm({ searchFor }) {
@@ -12,12 +13,15 @@ function ReelPageSearchForm({ searchFor }) {
         borough: "",
     });
 
+    const [formErrors, setFormErrors] = useState([]);
+
     function handleMasterChange(evt) {
         const { name, value } = evt.target;
         setMasterSearchTerms((data) => ({
             ...data,
             [name]: value,
         }));
+        setFormErrors([]); // clear errors on change
     }
 
     function handleLegalsChange(evt) {
@@ -26,16 +30,30 @@ function ReelPageSearchForm({ searchFor }) {
             ...data,
             [name]: value,
         }));
+        setFormErrors([]); // clear errors on change
     }
 
     function handleSubmit(evt) {
         evt.preventDefault();
+        const errors = [];
+        if (!masterSearchTerms.reel_yr.trim()) errors.push("Reel Year is required.");
+        if (!masterSearchTerms.reel_nbr.trim()) errors.push("Reel Number is required.");
+        if (!masterSearchTerms.reel_pg.trim()) errors.push("Page Number is required.");
+        if (!legalsSearchTerms.borough.trim()) errors.push("Borough is required.");
+        if (errors.length > 0) {
+            setFormErrors(errors);
+            return;
+        }
+        setFormErrors([]);
         searchFor(masterSearchTerms, legalsSearchTerms);
     }
 
     return (
         <div className="ReelPageSearchForm">
             <form onSubmit={handleSubmit}>
+                {formErrors.length > 0 && (
+                    <Alert type="danger" messages={formErrors} />
+                )}
                 <fieldset className="text-start">
                     <div className="mb-3">
                         <label htmlFor="reel_yr" className="form-label fw-bold">

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Alert from "../../common/Alert";
 import DocClassTypeSelect from '../../components/acris/documentControlCodeForms/DocClassTypeSelect';
 import RecordedDateRangeWrapper from "../../components/acris/masterForms/RecordedDateRangeWrapper";
 import DocumentTypeSearchWrapperBoroughSelect from './DocumentTypeSearchWrapperBoroughSelect'
@@ -18,13 +19,23 @@ const DocumentTypeSearchForm = ({ searchFor }) => {
         borough: "",
     });
 
+    const [formErrors, setFormErrors] = useState([]);
+
     function handleSubmit(evt) {
         evt.preventDefault();
-        console.debug(
-            "DocumentTypeSearchForm: handleSubmit called with:",
-            masterSearchTerms,
-            legalsSearchTerms
-        );
+        // Validate required fields
+        if (
+            !masterSearchTerms.doc_class ||
+            masterSearchTerms.doc_class === "all-classes-default" ||
+            !masterSearchTerms.doc_type ||
+            masterSearchTerms.doc_type === "doc-type-default"
+        ) {
+            setFormErrors([
+                "Please select both a Document Class and a Document Type."
+            ]);
+            return;
+        }
+        setFormErrors([]);
         searchFor(masterSearchTerms, legalsSearchTerms);
     }
 
@@ -34,6 +45,7 @@ const DocumentTypeSearchForm = ({ searchFor }) => {
             ...data,
             [name]: value,
         }));
+        setFormErrors([]); // clear errors on change
     }
 
     function handleLegalsChange(evt) {
@@ -47,6 +59,9 @@ const DocumentTypeSearchForm = ({ searchFor }) => {
     return (
         <div className="DocumentTypeSearchForm">
             <form onSubmit={handleSubmit}>
+                {formErrors.length > 0 && (
+                    <Alert type="danger" messages={formErrors} />
+                )}
                 <fieldset className="text-start">
                     <RecordedDateRangeWrapper
                         masterSearchTerms={masterSearchTerms}
@@ -55,6 +70,7 @@ const DocumentTypeSearchForm = ({ searchFor }) => {
                     <DocClassTypeSelect
                         masterSearchTerms={masterSearchTerms}
                         setMasterSearchTerms={setMasterSearchTerms}
+                        onChange={handleMasterChange}
                     />
                     <DocumentTypeSearchWrapperBoroughSelect
                         legalsSearchTerms={legalsSearchTerms}
