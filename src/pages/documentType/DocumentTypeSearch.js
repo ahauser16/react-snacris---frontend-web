@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import Alert from "../../common/Alert";
 import SnacrisApi from "../../api/api";
 import DocumentTypeSearchForm from "./DocumentTypeSearchForm";
 import DocumentTypeSearchDisplay from "./DocumentTypeSearchDisplay";
@@ -6,30 +7,60 @@ import DocumentTypeSearchDisplay from "./DocumentTypeSearchDisplay";
 function DocumentTypeSearch() {
   console.debug("DocumentTypeSearch");
 
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState([]);
+  const [dataFound, setDataFound] = useState(null);
+  const [alert, setAlert] = useState({ type: "", messages: [] });
 
-  async function search(masterSearchTerms, legalsSearchTerms) {
-    console.debug("DocumentTypeSearch search called with:", masterSearchTerms, legalsSearchTerms);
+  async function search(masterSearchTerms, legalsSearchTerms, setAlert) {
+    console.debug(
+      "DocumentTypeSearch search called with:",
+      masterSearchTerms,
+      legalsSearchTerms
+    );
     try {
-      const results = await SnacrisApi.queryAcrisDocumentType(masterSearchTerms, legalsSearchTerms);
-      console.debug("DocumentTypeSearch search results:", results);
-      setResults(results);
+      const res = await SnacrisApi.queryAcrisDocumentType(
+        masterSearchTerms,
+        legalsSearchTerms
+      );
+      console.debug("DocumentTypeSearch search results:", res);
+
+      // handle backend shape: { dataFound, results, message }
+      const hasData = res.dataFound === true;
+      setDataFound(hasData);
+      setResults(hasData ? res.results : []);
+      setAlert({
+        type: hasData ? "success" : "danger",
+        messages: [
+          res.message || (hasData ? "Results found." : "No documents found."),
+        ],
+      });
     } catch (err) {
       console.error("Error fetching results:", err);
+      setDataFound(false);
       setResults([]);
+      setAlert({
+        type: "danger",
+        messages: ["An error occurred while fetching data. Please try again."],
+      });
     }
   }
 
   return (
     <div className="container">
-      <div className="row mb-2">
-        <div className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start" role="alert">
-          <div className="d-flex align-items-end justify-content-start mb-1">
-            <h1 className="title mb-0 me-2">Search By Document Type</h1>
+      <div className="row mb-1">
+        <div
+          className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start mb-1 p-1"
+          role="alert"
+        >
+          <div className="d-flex align-items-end justify-content-start mb-0">
+            <h2 className="title mb-0 me-2">Search By Document Type</h2>
             <em className="subtitle mb-0">Recorded Documents Only</em>
           </div>
           <p>
-            Select the document class and/or document type from the dropdown menu below and press "Submit" to search for documents of the chosen class/type.  Additionally, you can narrow your search results by selecting a broough and a date range.  
+            Select the document class and/or document type from the dropdown
+            menu below and press "Submit" to search for documents of the chosen
+            class/type. Additionally, you can narrow your search results by
+            selecting a borough and a date range.
           </p>
         </div>
       </div>
@@ -38,7 +69,9 @@ function DocumentTypeSearch() {
           <DocumentTypeSearchForm searchFor={search} />
         </div>
         <div className="col-12 col-lg-8 col-md-8">
-          {results && (<DocumentTypeSearchDisplay results={results} />)}
+          {dataFound === true && (
+            <DocumentTypeSearchDisplay results={results} />
+          )}
         </div>
       </div>
     </div>

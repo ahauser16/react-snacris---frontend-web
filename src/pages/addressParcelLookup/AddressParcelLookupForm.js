@@ -117,6 +117,10 @@ function AddressParcelLookupForm({ searchFor }) {
     <div className="AddressParcelLookupForm">
       <form onSubmit={handleSubmit}>
         {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
+        {/* display backend messages or success alerts */}
+        {alert.messages.length > 0 && (
+          <Alert type={alert.type} messages={alert.messages} />
+        )}
         <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
           <h4 className="mb-1 fw-bold">Property Address</h4>
           <AddressParcelWrapperBoroughSelect

@@ -10,8 +10,9 @@ function DocumentIdCrfnSearchForm({ searchFor }) {
     crfn: "",
   });
   const [formErrors, setFormErrors] = useState([]);
+  const [alert, setAlert] = useState({ type: "", messages: [] });
 
-  function handleSubmit(evt) {
+  async function handleSubmit(evt) {
     evt.preventDefault();
     const { document_id, crfn } = masterSearchTerms;
     if (!document_id && !crfn) {
@@ -19,14 +20,17 @@ function DocumentIdCrfnSearchForm({ searchFor }) {
       return;
     }
     if (document_id && crfn) {
-      setFormErrors(["Please fill out only one field: Document ID or CRFN, not both."]);
+      setFormErrors([
+        "Please fill out only one field: Document ID or CRFN, not both.",
+      ]);
       return;
     }
     setFormErrors([]);
+    setAlert({ type: "", messages: [] });
     if (document_id) {
-      searchFor({ document_id });
+      await searchFor({ document_id }, setAlert);
     } else {
-      searchFor({ crfn });
+      await searchFor({ crfn }, setAlert);
     }
   }
 
@@ -34,27 +38,30 @@ function DocumentIdCrfnSearchForm({ searchFor }) {
     setMasterSearchTerms((data) => ({
       ...data,
       document_id: e.target.value,
-      crfn: "", // clear crfn if document_id is being edited
+      crfn: "",
     }));
     setFormErrors([]);
+    setAlert({ type: "", messages: [] });
   }
 
   function handleCrfnChange(e) {
     setMasterSearchTerms((data) => ({
       ...data,
       crfn: e.target.value,
-      document_id: "", // clear document_id if crfn is being edited
+      document_id: "",
     }));
     setFormErrors([]);
+    setAlert({ type: "", messages: [] });
   }
 
   return (
     <div className="DocumentIdCrfnSearchForm">
       <form onSubmit={handleSubmit}>
-        {formErrors.length > 0 && (
-          <Alert type="danger" messages={formErrors} />
+        {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
+        {alert.messages.length > 0 && (
+          <Alert type={alert.type} messages={alert.messages} />
         )}
-        <fieldset className="text-start">
+        <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
           <DocumentIdTextInput
             value={masterSearchTerms.document_id}
             onChange={handleDocumentIdChange}

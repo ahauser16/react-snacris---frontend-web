@@ -25,16 +25,22 @@ function ParcelIdentifierSearchForm({ searchFor }) {
   });
 
   const [formErrors, setFormErrors] = useState([]);
+  const [alert, setAlert] = useState({ type: "", messages: [] });
 
-  function handleSubmit(evt) {
+  async function handleSubmit(evt) {
     evt.preventDefault();
     // Validate required fields
-    if (!legalsSearchTerms.borough || !legalsSearchTerms.block || !legalsSearchTerms.lot) {
+    if (
+      !legalsSearchTerms.borough ||
+      !legalsSearchTerms.block ||
+      !legalsSearchTerms.lot
+    ) {
       setFormErrors(["Please fill out Borough, Block, and Lot fields."]);
       return;
     }
     setFormErrors([]);
-    searchFor(masterSearchTerms, legalsSearchTerms);
+    setAlert({ type: "", messages: [] });
+    await searchFor(masterSearchTerms, legalsSearchTerms, setAlert);
   }
 
   function handleMasterChange(evt) {
@@ -43,6 +49,7 @@ function ParcelIdentifierSearchForm({ searchFor }) {
       ...data,
       [name]: value,
     }));
+    setAlert({ type: "", messages: [] });
   }
 
   function handleLegalsChange(evt) {
@@ -52,6 +59,7 @@ function ParcelIdentifierSearchForm({ searchFor }) {
       [name]: value,
     }));
     setFormErrors([]); // clear errors on change
+    setAlert({ type: "", messages: [] });
   }
 
   useEffect(() => {
@@ -72,8 +80,9 @@ function ParcelIdentifierSearchForm({ searchFor }) {
   return (
     <div className="ParcelIdentifierSearchForm">
       <form onSubmit={handleSubmit}>
-        {formErrors.length > 0 && (
-          <Alert type="danger" messages={formErrors} />
+        {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
+        {alert.messages.length > 0 && (
+          <Alert type={alert.type} messages={alert.messages} />
         )}
         <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
           <ParcelIdentifierWrapperBoroughSelect

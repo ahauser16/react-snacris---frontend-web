@@ -25,7 +25,7 @@ const PartyName = ({
         />
       </div>
       <input
-        className="form-control form-control-md"
+        className="form-control form-control-md uppercase"
         type="text"
         id={id}
         name="name"
