@@ -117,8 +117,8 @@ function AddressParcelLookupForm({ searchFor }) {
     <div className="AddressParcelLookupForm">
       <form onSubmit={handleSubmit}>
         {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
-        <fieldset className="text-start mb-2">
-          <h3 className="mb-1 fw-bold">Property Address</h3>
+        <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
+          <h4 className="mb-1 fw-bold">Property Address</h4>
           <AddressParcelWrapperBoroughSelect
             value={addressFields.borough}
             onChange={handleAddressChange}
@@ -135,17 +135,31 @@ function AddressParcelLookupForm({ searchFor }) {
             id="address-street-name"
             required={true}
           />
-          <Unit value={addressFields.unit} onChange={handleAddressChange} />
+          <Unit
+            value={addressFields.unit}
+            onChange={handleAddressChange}
+            id="address-unit"
+            label="Unit"
+            description="coop only (optional)"
+          />
         </fieldset>
-        <fieldset className="text-start">
-          <h3 className="mb-1 fw-bold">Property Borough, Block & Lot</h3>
+        <fieldset className="text-start bg-blue-transparent p-2">
+          <h4 className="mb-1 fw-bold">Property Borough, Block & Lot</h4>
           <AddressParcelWrapperBoroughSelect
             value={bblFields.borough}
             onChange={handleBblChange}
             id="bbl-borough"
           />
-          <TaxBlock value={bblFields.block} onChange={handleBblChange} />
-          <TaxLot value={bblFields.lot} onChange={handleBblChange} />
+          <TaxBlock
+            value={bblFields.block}
+            onChange={handleBblChange}
+            id="bbl-block"
+          />
+          <TaxLot
+            value={bblFields.lot}
+            onChange={handleBblChange}
+            id="bbl-lot"
+          />
         </fieldset>
         <button
           type="submit"

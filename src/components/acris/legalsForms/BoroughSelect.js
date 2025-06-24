@@ -10,12 +10,11 @@ const BoroughSelect = ({
 }) => {
   return (
     <div className="mb-1">
-      <label htmlFor={id} className="form-label fw-bold">
+      <label htmlFor={id} className="form-label fw-bold mb-0">
         {label}
-        {required && <span className="text-danger ms-1">*</span>}
       </label>
       <select
-        className="form-select form-select-lg"
+        className="form-select form-select-md"
         id={id}
         name={name}
         value={value}

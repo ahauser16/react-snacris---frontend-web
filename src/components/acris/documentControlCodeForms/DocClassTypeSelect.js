@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SnacrisApi from "../../../api/api";
+import "../commonFormStyles.css";
+import Tooltip from "../../utils/Tooltip";
 import "./DocClassTypeSelect.css";
 
 function DocClassTypeSelect({ masterSearchTerms, setMasterSearchTerms }) {
@@ -64,34 +66,75 @@ function DocClassTypeSelect({ masterSearchTerms, setMasterSearchTerms }) {
     };
 
     return (
-        <>
-            <select
-                className="form-select form-select-lg mb-1"
-                name="doc_class"
-                value={masterSearchTerms.doc_class}
-                onChange={handleMasterChange}
-            >
-                <option value="all-classes-default">Select Document Class</option>
-                <option value="DEEDS AND OTHER CONVEYANCES">DEEDS AND OTHER CONVEYANCES</option>
-                <option value="MORTGAGES & INSTRUMENTS">MORTGAGES & INSTRUMENTS</option>
-                <option value="UCC AND FEDERAL LIENS">UCC AND FEDERAL LIENS</option>
-                <option value="OTHER DOCUMENTS">OTHER DOCUMENTS</option>
-            </select>
-            <select
-                className={`form-select form-select-lg mb-1 ${isDocTypeDisabled ? "disabled-select" : ""}`}
-                name="doc_type"
-                value={masterSearchTerms.doc_type}
-                onChange={handleMasterChange}
-                disabled={isDocTypeDisabled}
-            >
-                <option value="doc-type-default">Select Document Type</option>
-                {getDocTypeOptions().map((doc) => (
-                    <option key={doc.doc_type} value={doc.doc_type}>
-                        {doc.doc_type_description}
-                    </option>
-                ))}
-            </select>
-        </>
+        <div className="mb-1">
+            {/* Document Class */}
+            <div className="mb-1">
+                <div className="d-flex align-items-center justify-content-between">
+                    <label htmlFor="doc-class-select" className="form-label fw-bold mb-0">
+                        Document Class
+                    </label>
+                    <Tooltip
+                        helperText="Select the broad category of legal document. This determines which specific document types will be available in the next dropdown. Choose from Deeds, Mortgages, UCC Liens, or Other Documents."
+                        label="Document Class field information"
+                        iconName="icon-information"
+                        iconClassName="ms-1"
+                        iconSize={20}
+                    />
+                </div>
+                <select
+                    className="form-select form-select-md mb-1"
+                    id="doc-class-select"
+                    name="doc_class"
+                    value={masterSearchTerms.doc_class}
+                    onChange={handleMasterChange}
+                    aria-describedby="doc-class-desc"
+                >
+                    <option value="all-classes-default">Select Document Class</option>
+                    <option value="DEEDS AND OTHER CONVEYANCES">DEEDS AND OTHER CONVEYANCES</option>
+                    <option value="MORTGAGES & INSTRUMENTS">MORTGAGES & INSTRUMENTS</option>
+                    <option value="UCC AND FEDERAL LIENS">UCC AND FEDERAL LIENS</option>
+                    <option value="OTHER DOCUMENTS">OTHER DOCUMENTS</option>
+                </select>
+                <div id="doc-class-desc" className="form-text visually-hidden">
+                    Select the broad category of legal document to determine available document types.
+                </div>
+            </div>
+
+            {/* Document Type */}
+            <div className="mb-1">
+                <div className="d-flex align-items-center justify-content-between">
+                    <label htmlFor="doc-type-select" className="form-label fw-bold mb-0">
+                        Document Type
+                    </label>
+                    <Tooltip
+                        helperText="Select the specific type of document within the chosen class. Options are filtered based on your Document Class selection. Each document type has specific party roles and requirements. You must select a Document Class before choosing a Document Type."
+                        label="Document Type field information"
+                        iconName="icon-information"
+                        iconClassName="ms-1"
+                        iconSize={20}
+                    />
+                </div>
+                <select
+                    className={`form-select form-select-md mb-1 ${isDocTypeDisabled ? "disabled-select" : ""}`}
+                    id="doc-type-select"
+                    name="doc_type"
+                    value={masterSearchTerms.doc_type}
+                    onChange={handleMasterChange}
+                    disabled={isDocTypeDisabled}
+                    aria-describedby="doc-type-desc"
+                >
+                    <option value="doc-type-default">Select Document Type</option>
+                    {getDocTypeOptions().map((doc) => (
+                        <option key={doc.doc_type} value={doc.doc_type}>
+                            {doc.doc_type_description}
+                        </option>
+                    ))}
+                </select>
+                <div id="doc-type-desc" className="form-text visually-hidden">
+                    Document type options are determined by the selected document class.
+                </div>
+            </div>
+        </div>
     );
 }
 

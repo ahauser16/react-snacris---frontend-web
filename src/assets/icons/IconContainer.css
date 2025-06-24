@@ -5,3 +5,8 @@
 .secondary{
     fill: hsl(203, 65%, 15%);
 }
+
+svg {
+  vertical-align: middle;
+  display: inline-block;
+}

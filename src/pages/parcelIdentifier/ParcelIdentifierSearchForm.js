@@ -75,7 +75,7 @@ function ParcelIdentifierSearchForm({ searchFor }) {
         {formErrors.length > 0 && (
           <Alert type="danger" messages={formErrors} />
         )}
-        <fieldset className="text-start">
+        <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
           <ParcelIdentifierWrapperBoroughSelect
             legalsSearchTerms={legalsSearchTerms}
             handleLegalsChange={handleLegalsChange}

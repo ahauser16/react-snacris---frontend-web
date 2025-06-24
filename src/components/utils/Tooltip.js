@@ -35,17 +35,24 @@ const Tooltip = ({
   // Desktop/laptop: show tooltip on hover/focus
   if (!isTouch) {
     return (
-      <div className="position-relative d-inline-block">
+      <div
+        className="position-relative d-inline-block"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+      >
         <button
           type="button"
-          className="btn btn-link p-0 m-0 align-baseline"
+          className="btn btn-link p-0 m-0 align-items-center d-flex"
           aria-label={label || "Show information"}
           tabIndex={0}
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
           onFocus={() => setShowTooltip(true)}
           onBlur={() => setShowTooltip(false)}
-          style={{ outline: "none", border: "none", background: "none" }}
+          style={{
+            outline: "none",
+            border: "none",
+            background: "none",
+            cursor: "pointer", // <-- Add this line
+          }}
         >
           <IconContainer
             name={iconName}
@@ -71,6 +78,7 @@ const Tooltip = ({
               borderRadius: "0.25rem",
               fontSize: "0.95rem",
               boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              cursor: "pointer", // <-- Add this line
             }}
           >
             {helperText}

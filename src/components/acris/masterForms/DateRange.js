@@ -1,6 +1,15 @@
 import React from "react";
+import "../commonFormStyles.css";
+import Tooltip from "../../utils/Tooltip";
 
-function DateRange({ dateRange, setDateRange, rangeName }) {
+function DateRange({
+  dateRange,
+  setDateRange,
+  rangeName,
+  label,
+  helperText,
+  id,
+}) {
   function calculateDateRange(days) {
     const currentDate = new Date();
     const startDate = new Date();
@@ -63,13 +72,29 @@ function DateRange({ dateRange, setDateRange, rangeName }) {
     }
   }
 
+  const selectId = id || `${rangeName}-range`;
+
   return (
-    <div>
+    <div className="mb-1">
+      <div className="d-flex align-items-center justify-content-between">
+        <label htmlFor={selectId} className="form-label fw-bold mb-0">
+          {label}
+        </label>
+        <Tooltip
+          helperText={helperText}
+          label={`${label} field information`}
+          iconName="icon-information"
+          iconClassName="ms-1"
+          iconSize={20}
+        />
+      </div>
       <select
-        className="form-select form-select-lg mb-1"
+        className="form-select form-select-md mb-1"
+        id={selectId}
         name={`${rangeName}_range`}
         value={dateRange[`${rangeName}_range`]}
         onChange={handleDateRangeChange}
+        aria-describedby={`${selectId}-desc`}
       >
         <option value="to-current-date-default">To Current Date</option>
         <option value="last-7-days">Last 7 Days</option>
@@ -82,19 +107,19 @@ function DateRange({ dateRange, setDateRange, rangeName }) {
       </select>
 
       {dateRange[`${rangeName}_range`] === "custom-date-range" && (
-        <div className="mt-3">
-          <label htmlFor={`${rangeName}_start`} className="form-label">
+        <div className="mt-1">
+          <label htmlFor={`${rangeName}_start`} className="form-label fw-bold mb-0">
             Start Date:
           </label>
           <input
             type="date"
             id={`${rangeName}_start`}
             name={`${rangeName}_start`}
-            className="form-control mb-3"
+            className="form-control mb-1"
             value={dateRange[`${rangeName}_start`]}
             onChange={handleDateRangeChange}
           />
-          <label htmlFor={`${rangeName}_end`} className="form-label">
+          <label htmlFor={`${rangeName}_end`} className="form-label fw-bold mb-0">
             End Date:
           </label>
           <input
@@ -107,6 +132,9 @@ function DateRange({ dateRange, setDateRange, rangeName }) {
           />
         </div>
       )}
+      <div id={`${selectId}-desc`} className="form-text visually-hidden">
+        {helperText}
+      </div>
     </div>
   );
 }

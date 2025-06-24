@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SnacrisApi from "../../../api/api";
+import "../commonFormStyles.css";
+import Tooltip from "../../utils/Tooltip";
 import "./DocClassTypePartySelect.css";
 
 function DocClassTypePartySelect({
@@ -93,52 +95,109 @@ function DocClassTypePartySelect({
     };
 
     return (
-        <>
-            <h3 className="mb-1 fw-bold">Select Document Class:</h3>
-            <select
-                className="form-select form-select-lg mb-1"
-                name="doc_class"
-                value={masterSearchTerms.doc_class}
-                onChange={handleMasterChange}
-            >
-                <option value="all-classes-default">Select Document Class</option>
-                <option value="DEEDS AND OTHER CONVEYANCES">DEEDS AND OTHER CONVEYANCES</option>
-                <option value="MORTGAGES & INSTRUMENTS">MORTGAGES & INSTRUMENTS</option>
-                <option value="UCC AND FEDERAL LIENS">UCC AND FEDERAL LIENS</option>
-                <option value="OTHER DOCUMENTS">OTHER DOCUMENTS</option>
-            </select>
+        <div className="mb-1">
+            {/* Document Class */}
+            <div className="mb-1">
+                <div className="d-flex align-items-center justify-content-between">
+                    <label htmlFor="doc-class-select" className="form-label fw-bold mb-0">
+                        Document Class
+                    </label>
+                    <Tooltip
+                        helperText="Select the broad category of legal document. This determines which specific document types will be available in the next dropdown. Choose from Deeds, Mortgages, UCC Liens, or Other Documents."
+                        label="Document Class field information"
+                        iconName="icon-information"
+                        iconClassName="ms-1"
+                        iconSize={20}
+                    />
+                </div>
+                <select
+                    className="form-select form-select-md mb-1"
+                    id="doc-class-select"
+                    name="doc_class"
+                    value={masterSearchTerms.doc_class}
+                    onChange={handleMasterChange}
+                    aria-describedby="doc-class-desc"
+                >
+                    <option value="all-classes-default">Select Document Class</option>
+                    <option value="DEEDS AND OTHER CONVEYANCES">DEEDS AND OTHER CONVEYANCES</option>
+                    <option value="MORTGAGES & INSTRUMENTS">MORTGAGES & INSTRUMENTS</option>
+                    <option value="UCC AND FEDERAL LIENS">UCC AND FEDERAL LIENS</option>
+                    <option value="OTHER DOCUMENTS">OTHER DOCUMENTS</option>
+                </select>
+                <div id="doc-class-desc" className="form-text visually-hidden">
+                    Select the broad category of legal document to determine available document types.
+                </div>
+            </div>
 
-            <h3 className="mb-1 fw-bold">Select Document Type:</h3>
-            <select
-                className={`form-select form-select-lg mb-1 ${isDocTypeDisabled ? "disabled-select" : ""}`}
-                name="doc_type"
-                value={masterSearchTerms.doc_type}
-                onChange={handleMasterChange}
-                disabled={isDocTypeDisabled}
-            >
-                <option value="doc-type-default">Select Document Type</option>
-                {getDocTypeOptions().map((doc) => (
-                    <option key={doc.doc_type} value={doc.doc_type}>
-                        {doc.doc_type_description}
-                    </option>
-                ))}
-            </select>
+            {/* Document Type */}
+            <div className="mb-1">
+                <div className="d-flex align-items-center justify-content-between">
+                    <label htmlFor="doc-type-select" className="form-label fw-bold mb-0">
+                        Document Type
+                    </label>
+                    <Tooltip
+                        helperText="Select the specific type of document within the chosen class. Options are filtered based on your Document Class selection. Each document type has specific party roles and requirements.  You must select a Document Class before choosing a Document Type."
+                        label="Document Type field information"
+                        iconName="icon-information"
+                        iconClassName="ms-1"
+                        iconSize={20}
+                    />
+                </div>
+                <select
+                    className={`form-select form-select-md mb-1 ${isDocTypeDisabled ? "disabled-select" : ""}`}
+                    id="doc-type-select"
+                    name="doc_type"
+                    value={masterSearchTerms.doc_type}
+                    onChange={handleMasterChange}
+                    disabled={isDocTypeDisabled}
+                    aria-describedby="doc-type-desc"
+                >
+                    <option value="doc-type-default">Select Document Type</option>
+                    {getDocTypeOptions().map((doc) => (
+                        <option key={doc.doc_type} value={doc.doc_type}>
+                            {doc.doc_type_description}
+                        </option>
+                    ))}
+                </select>
+                <div id="doc-type-desc" className="form-text visually-hidden">
+                    Document type options are determined by the selected document class.
+                </div>
+            </div>
 
-            <h3 className="mb-1 fw-bold">Select Party Type:</h3>
-            <select
-                className="form-select form-select-lg mb-1"
-                name="party_type"
-                value={partySearchTerms.party_type}
-                onChange={handlePartyChange}
-            >
-                <option value="">Select Party Type</option>
-                {getPartyTypeOptions().map((party) => (
-                    <option key={party.value} value={party.value}>
-                        {party.label}
-                    </option>
-                ))}
-            </select>
-        </>
+            {/* Party Type */}
+            <div className="mb-1">
+                <div className="d-flex align-items-center justify-content-between">
+                    <label htmlFor="party-type-select" className="form-label fw-bold mb-0">
+                        Party Type
+                    </label>
+                    <Tooltip
+                        helperText="Select the role of the party in the document transaction. Party types are specific to the chosen document type (e.g., Grantor/Grantee for deeds, Mortgagor/Mortgagee for mortgages). Generic options show until a document type is selected."
+                        label="Party Type field information"
+                        iconName="icon-information"
+                        iconClassName="ms-1"
+                        iconSize={20}
+                    />
+                </div>
+                <select
+                    className="form-select form-select-md mb-1"
+                    id="party-type-select"
+                    name="party_type"
+                    value={partySearchTerms.party_type}
+                    onChange={handlePartyChange}
+                    aria-describedby="party-type-desc"
+                >
+                    <option value="">Select Party Type</option>
+                    {getPartyTypeOptions().map((party) => (
+                        <option key={party.value} value={party.value}>
+                            {party.label}
+                        </option>
+                    ))}
+                </select>
+                <div id="party-type-desc" className="form-text visually-hidden">
+                    Party type options are determined by the selected document type.
+                </div>
+            </div>
+        </div>
     );
 }
 

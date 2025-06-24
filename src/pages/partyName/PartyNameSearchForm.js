@@ -4,6 +4,7 @@ import "./partyNameSearchForm.css";
 import DocClassTypePartySelect from "../../components/acris/documentControlCodeForms/DocClassTypePartySelect";
 import RecordedDateRangeWrapper from "../../components/acris/masterForms/RecordedDateRangeWrapper";
 import PartyNameWrapperBoroughSelect from "./PartyNameWrapperBoroughSelect";
+import PartyName from "../../components/acris/partyForms/PartyName";
 
 function PartyNameSearchForm({ searchFor }) {
   const [masterSearchTerms, setMasterSearchTerms] = useState({
@@ -24,15 +25,22 @@ function PartyNameSearchForm({ searchFor }) {
   });
 
   const [formErrors, setFormErrors] = useState([]);
+  const [alert, setAlert] = useState({ type: "", messages: [] });
 
-  function handleSubmit(evt) {
+  async function handleSubmit(evt) {
     evt.preventDefault();
     if (!partySearchTerms.name.trim()) {
       setFormErrors(["The name field is required."]);
       return;
     }
     setFormErrors([]);
-    searchFor(masterSearchTerms, partySearchTerms, legalsSearchTerms);
+    setAlert({ type: "", messages: [] });
+    await searchFor(
+      masterSearchTerms,
+      partySearchTerms,
+      legalsSearchTerms,
+      setAlert
+    );
   }
 
   function handlePartyChange(evt) {
@@ -41,7 +49,8 @@ function PartyNameSearchForm({ searchFor }) {
       ...data,
       [name]: value,
     }));
-    setFormErrors([]); // clear errors on change
+    setFormErrors([]);
+    setAlert({ type: "", messages: [] });
   }
 
   function handleMasterChange(evt) {
@@ -63,17 +72,16 @@ function PartyNameSearchForm({ searchFor }) {
   return (
     <div className="PartyNameSearchForm">
       <form onSubmit={handleSubmit}>
-        {formErrors.length > 0 && (
-          <Alert type="danger" messages={formErrors} />
+        {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
+        {alert && alert.messages && alert.messages.length > 0 && (
+          <Alert type={alert.type} messages={alert.messages} />
         )}
-        <fieldset className="text-start">
-          <h3 className="mb-1 fw-bold">Name:</h3>
-          <input
-            className="form-control form-control-lg mb-1"
-            name="name"
-            placeholder="e.g. John Doe"
+        <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
+          <PartyName
             value={partySearchTerms.name}
             onChange={handlePartyChange}
+            id="party-name"
+            required={true}
           />
           <RecordedDateRangeWrapper
             masterSearchTerms={masterSearchTerms}

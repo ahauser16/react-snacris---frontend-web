@@ -17,8 +17,8 @@ const IconContainer = ({
   name,
   label,
   className = "",
-  iconClassName = "me-3", // Bootstrap margin-end
-  iconSize = 32, // px
+  iconClassName = "me-3",
+  iconSize = 32,
 }) => {
   const Icon = icons[name];
   if (!Icon) {
@@ -27,13 +27,18 @@ const IconContainer = ({
   }
 
   return (
-    <div className={`d-flex align-items-center mb-3 ${className}`}>
+    <span className={`d-flex align-items-center ${className}`}>
       <Icon
         className={`${iconClassName} ${name}`}
         style={{ width: iconSize, height: iconSize }}
+        aria-label={label || name}
+        role="img"
       />
-      <span>{label || name}</span>
-    </div>
+      {/* Visually hidden label for screen readers only */}
+      {label && (
+        <span className="visually-hidden">{label}</span>
+      )}
+    </span>
   );
 };
 

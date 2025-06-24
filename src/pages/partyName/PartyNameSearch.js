@@ -4,43 +4,49 @@ import PartyNameSearchDisplay from "./PartyNameSearchDisplay";
 import SnacrisApi from "../../api/api";
 
 function PartyNameSearch() {
-  //console.debug("PartyNameSearch");
-
   const [results, setResults] = useState(null);
 
   async function search(
     masterSearchTerms,
     partySearchTerms,
     legalsSearchTerms,
-    remarkSearchTerms,
-    referenceSearchTerms
+    setAlert
   ) {
     try {
-      const results = await SnacrisApi.queryAcrisPartyName(
+      const response = await SnacrisApi.queryAcrisPartyName(
         masterSearchTerms,
         partySearchTerms,
         legalsSearchTerms,
-        remarkSearchTerms,
-        referenceSearchTerms
+        null, // remarkSearchTerms
+        null  // referenceSearchTerms
       );
-      console.log("PartyNameSearch: search results:", results);
-      setResults(results);
+      
+      if (response && response.status === "success" && response.analysis) {
+        setResults(response);
+        setAlert({ type: "success", messages: [response.message || "Results found."] });
+      } else if (response && response.status === "success" && !response.analysis) {
+        setResults(response);
+        setAlert({ type: "danger", messages: ["No analysis data found."] });
+      } else {
+        setResults(response);
+        setAlert({ type: "danger", messages: [response.message || "Unexpected response format."] });
+      }
     } catch (err) {
-      console.error("Error fetching results:", err);
-      setResults([]);
+      setResults(null);
+      setAlert({ type: "danger", messages: ["An error occurred while fetching data. Please try again."] });
     }
   }
 
   return (
     <div className="container">
-      <div className="row mb-2">
-        <div className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start" role="alert">
-          <div className="d-flex align-items-end justify-content-start mb-1">
-            <h1 className="title mb-0 me-2">Search By Party Name</h1>
+      <div className="row mb-1">
+        <div className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start mb-1 p-1" role="alert">
+          <div className="d-flex align-items-end justify-content-start mb-0">
+            <h2 className="title mb-0 me-2">Search By Party Name</h2>
             <em className="subtitle mb-0">Recorded Documents Only</em>
           </div>
           <p>
-            Enter the name of the party in the field below and press "Submit" to search for records where one of the associated party's name <em>contains</em> the search term provided.  For example, searching for "Smith" will return all documents where a party's name contains "Smith", such as "John Smith", "Smith & Co.", or "Smithson".  Additionally, you can narrow your search results by selecting a borough, a document class and/or document type, selecting a date range and a party type.
+            Enter the name of the party in the field below and press "Submit" to search for records where one of the associated party's name <b>contains</b> the search term provided. For example, searching for "Smith" will return all documents where a party's name contains "Smith", such as "John Smith", "Smith & Co.", or "Smithson". Additionally, you can narrow your search results by selecting a borough, a document class and/or document type, selecting a date range and a party type.
           </p>
         </div>
       </div>

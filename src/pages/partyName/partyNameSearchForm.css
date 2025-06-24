@@ -1,0 +1,11 @@
+.SearchForm input:focus {
+  box-shadow: none;
+  border-color: #8bb1d6;
+}
+
+.bg-blue-transparent {
+  background-color: hsla(202, 14%, 69%, .35); 
+  border: 1px solid hsl(203, 65%, 15%);
+  border-radius: 0.25rem;
+}
+

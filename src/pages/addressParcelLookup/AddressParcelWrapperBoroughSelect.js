@@ -1,7 +1,7 @@
 import React from "react";
 import BoroughSelect from "../../components/acris/legalsForms/BoroughSelect";
 
-const AddressParcelWrapperBoroughSelect = ({ value, onChange, id, required }) => {
+const AddressParcelWrapperBoroughSelect = ({ value, onChange, id }) => {
   return (
     <BoroughSelect
       value={value}

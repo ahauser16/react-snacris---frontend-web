@@ -32,14 +32,14 @@ function AddressParcelLookup() {
 
   return (
     <div className="container">
-      <div className="row mb-2">
-        <div className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start" role="alert">
-          <div className="d-flex align-items-end justify-content-start mb-1">
-            <h1 className="title mb-0 me-2">Lookup Address or Parcel</h1>
+      <div className="row mb-1">
+        <div className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start mb-1 p-1" role="alert">
+          <div className="d-flex align-items-end justify-content-start mb-0">
+            <h2 className="title mb-0 me-2">Lookup Address or Parcel</h2>
             <em className="subtitle mb-0">Recorded Documents Only</em>
           </div>
           <p>
-            If you know the property address, complete the fields below and press "Submit" to find the Borough, Block & Lot (BBL) of the property. If an address is found, the results will show the BBL information along with any associated street address(es).  Keep in mind that a property will have one BBL reference but may have more than one street address.
+            If you know the property address, complete the fields below and press "Submit" to find the Borough, Block & Lot (<b>BBL</b>) of the property. If an address is found, the results will show the <b>BBL</b> information along with any associated street address(es).  Keep in mind that a property will have one <b>BBL</b> reference but may have more than one street address.
           </p>
         </div>
       </div>
