@@ -4,6 +4,8 @@ import LegalsCardSelector from "./LegalsCardSelector";
 import PartiesCardSelector from "./PartiesCardSelector";
 import RealPropertyRefsCard from "./RealPropertyRefsCard";
 import RealPropertyRemarksCard from "./RealPropertyRemarksCard";
+import SaveRealPropertyDoc from "../userFavorites/SaveRealPropertyDoc";
+import DeleteRealPropertyDoc from "../userFavorites/DeleteRealPropertyDoc";
 import "./commonRealPropCardDisplay.css";
 
 // Helper to get doc_type for parties
@@ -51,7 +53,11 @@ function RemarksCardDisplay({ remarksRecords, document_id }) {
   ));
 }
 
-function RealPropertyCardContainer({ group }) {
+function RealPropertyCardContainer({
+  group,
+  isSavedDocument = false,
+  onDeleteSuccess,
+}) {
   const docType = getDocTypeForParties(group.masterRecords);
   const docId = group.document_id;
   const detailUrl = `https://a836-acris.nyc.gov/DS/DocumentSearch/DocumentDetail?doc_id=${docId}`;
@@ -77,6 +83,14 @@ function RealPropertyCardContainer({ group }) {
         >
           View Document
         </a>
+        {isSavedDocument ? (
+          <DeleteRealPropertyDoc
+            documentId={docId}
+            onDeleteSuccess={onDeleteSuccess}
+          />
+        ) : (
+          <SaveRealPropertyDoc group={group} />
+        )}
       </div>
       {/* Stack these vertically, full width */}
       <div className="d-flex flex-column gap-3">

@@ -238,6 +238,80 @@ class SnacrisApi {
     const res = await this.request(`organizations/${id}`, {}, "delete");
     return res.deleted;
   }
+
+  // Real Property Document routes
+
+  /** Get all saved real property documents for current user */
+  static async getRealPropertyDocuments() {
+    const res = await this.request("realPropertyDbRoutes/documents");
+    return res.documents;
+  }
+
+  /** Get a single saved real property document by document ID for current user */
+  static async getRealPropertyDocument(documentId) {
+    const res = await this.request(
+      `realPropertyDbRoutes/document/${documentId}`
+    );
+    return res.document;
+  }
+
+  /** Save (create or update) a real property document for current user */
+  static async saveRealPropertyDocument(data) {
+    const res = await this.request(
+      "realPropertyDbRoutes/document",
+      data,
+      "post"
+    );
+    return res.savedMasterId;
+  }
+
+  /** Delete a saved real property document for current user */
+  static async deleteRealPropertyDocument(documentId) {
+    const res = await this.request(
+      `realPropertyDbRoutes/document/${documentId}`,
+      {},
+      "delete"
+    );
+    return res.deletedMasterId;
+  }
+
+  // Admin Real Property Document routes
+
+  /** Admin: Get all saved real property documents for any user */
+  static async getAdminRealPropertyDocuments(username) {
+    const res = await this.request(
+      `realPropertyDbRoutes/admin/documents/${username}`
+    );
+    return res.documents;
+  }
+
+  /** Admin: Get a single saved real property document by document ID for any user */
+  static async getAdminRealPropertyDocument(username, documentId) {
+    const res = await this.request(
+      `realPropertyDbRoutes/admin/document/${username}/${documentId}`
+    );
+    return res.document;
+  }
+
+  /** Admin: Save (create or update) a real property document for any user */
+  static async saveAdminRealPropertyDocument(username, data) {
+    const res = await this.request(
+      `realPropertyDbRoutes/admin/document/${username}`,
+      data,
+      "post"
+    );
+    return res.savedMasterId;
+  }
+
+  /** Admin: Delete a saved real property document for any user */
+  static async deleteAdminRealPropertyDocument(username, documentId) {
+    const res = await this.request(
+      `realPropertyDbRoutes/admin/document/${username}/${documentId}`,
+      {},
+      "delete"
+    );
+    return res.deletedMasterId;
+  }
 }
 
 export default SnacrisApi;

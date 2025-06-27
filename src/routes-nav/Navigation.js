@@ -64,6 +64,11 @@ function Navigation({ logout }) {
           </NavLink>
         </li>
         <li className="nav-item me-4">
+          <NavLink className="nav-link" to="/favorites">
+            Favorites
+          </NavLink>
+        </li>
+        <li className="nav-item me-4">
           <NavLink className="nav-link" to="/profile">
             Profile
           </NavLink>

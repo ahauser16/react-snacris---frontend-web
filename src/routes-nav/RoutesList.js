@@ -9,6 +9,7 @@ import DocumentIdCrfnSearch from "../pages/documentIdCrfn/DocumentIdCrfnSearch";
 import TransactionNumberSearch from "../pages/transactionNumber/TransactionNumberSearch";
 import ReelPageSearch from "../pages/reelPage/ReelPageSearch";
 import UccFedLienFileNumberSearch from "../pages/uccFedLienFileNumber/UccFedLienFileNumberSearch";
+import FavoritesPage from "../pages/favorites/FavoritesPage";
 import LoginForm from "../auth/LoginForm";
 import ProfilePage from "../pages/userProfile/ProfilePage";
 import SignupForm from "../auth/SignupForm";
@@ -46,14 +47,33 @@ function RoutesList({ login, signup, currentUser }) {
         {/* The `Route` component is used to define the path and the corresponding component to render when that path is accessed. For example, when the user navigates to "/companies", the CompanyList component will be displayed, and when they navigate to "/jobs", the JobList component will be displayed. */}
         {currentUser && (
           <>
-            <Route path="/addressParcelLookup" element={<AddressParcelLookup />} />
+            <Route
+              path="/addressParcelLookup"
+              element={<AddressParcelLookup />}
+            />
             <Route path="/partyNameSearch" element={<PartyNameSearch />} />
-            <Route path="/parcelIdentifierSearch" element={<ParcelIdentifierSearch />} />
-            <Route path="/documentTypeSearch" element={<DocumentTypeSearch />} />
-            <Route path="/documentIdCrfnSearch" element={<DocumentIdCrfnSearch />} />
-            <Route path="/transactionNumberSearch" element={<TransactionNumberSearch />} />
+            <Route
+              path="/parcelIdentifierSearch"
+              element={<ParcelIdentifierSearch />}
+            />
+            <Route
+              path="/documentTypeSearch"
+              element={<DocumentTypeSearch />}
+            />
+            <Route
+              path="/documentIdCrfnSearch"
+              element={<DocumentIdCrfnSearch />}
+            />
+            <Route
+              path="/transactionNumberSearch"
+              element={<TransactionNumberSearch />}
+            />
             <Route path="/reelPageSearch" element={<ReelPageSearch />} />
-            <Route path="/uccFedLienFileNumberSearch" element={<UccFedLienFileNumberSearch />} />
+            <Route
+              path="/uccFedLienFileNumberSearch"
+              element={<UccFedLienFileNumberSearch />}
+            />
+            <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </>
         )}
