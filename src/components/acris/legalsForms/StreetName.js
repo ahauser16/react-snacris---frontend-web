@@ -1,6 +1,7 @@
 import React from "react";
 import "../commonFormStyles.css";
 import Tooltip from "../../utils/Tooltip";
+import AutocompleteStreetName from "./AutocompleteStreetName";
 
 const StreetName = ({
   value,
@@ -8,7 +9,27 @@ const StreetName = ({
   id = "street-name",
   label = "Street Name",
   required = false,
+  enableAutocomplete = false, // New prop to enable autocomplete functionality
+  debounceMs = 300,
+  maxSuggestions = 15,
 }) => {
+  // Use autocomplete component if enabled
+  if (enableAutocomplete) {
+    return (
+      <AutocompleteStreetName
+        value={value}
+        onChange={onChange}
+        id={id}
+        label={label}
+        required={required}
+        enableAutocomplete={true}
+        debounceMs={debounceMs}
+        maxSuggestions={maxSuggestions}
+      />
+    );
+  }
+
+  // Default simple input component (maintains backward compatibility)
   return (
     <div className="mb-1">
       <div className="d-flex align-items-center justify-content-between">
