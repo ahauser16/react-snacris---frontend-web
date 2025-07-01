@@ -9,7 +9,7 @@ function AddressParcelLookup() {
   const [results, setResults] = useState(null);
   const [alert, setAlert] = useState({ type: "", messages: [] });
 
-  async function searchRPLegals(legalsSearchTerms, setAlert) {
+  async function searchRPLegals(legalsSearchTerms) {
     console.debug("AddressParcelLookup search called with:", legalsSearchTerms);
     try {
       const response = await SnacrisApi.queryAcrisAddressParcel(
@@ -90,7 +90,10 @@ function AddressParcelLookup() {
       </div>
       <div className="row">
         <div className="col-12 col-lg-4 col-md-4 mb-2">
-          <AddressParcelLookupForm searchFor={searchRPLegals} />
+          <AddressParcelLookupForm
+            searchFor={searchRPLegals}
+            setAlert={setAlert}
+          />
         </div>
         <div className="col-12 col-lg-8 col-md-8">
           {results && <AddressParcelLookupDisplay results={results} />}

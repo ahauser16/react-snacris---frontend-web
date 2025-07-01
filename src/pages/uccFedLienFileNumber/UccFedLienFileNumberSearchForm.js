@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import Alert from "../../common/Alert";
 import UccFedLienWrapperBoroughSelect from "./UccFedLienWrapperBoroughSelect";
+import UccFileNumInput from "../../components/acris/personalPropertyForms/UccFileNumInput";
+import "./UccFedLienFileNumberSearchForm.css"; 
 
-const UccFedLienFileNumberSearchForm = ({ searchFor }) => {
+const UccFedLienFileNumberSearchForm = ({ searchFor, setAlert }) => {
   const [masterSearchTerms, setMasterSearchTerms] = useState({
     ucc_lien_file_number: "",
   });
@@ -20,6 +22,7 @@ const UccFedLienFileNumberSearchForm = ({ searchFor }) => {
       [name]: value,
     }));
     setFormErrors([]); // clear errors on change
+    setAlert({ type: "", messages: [] }); // clear alerts on change
   }
 
   function handleLegalsChange(evt) {
@@ -29,6 +32,7 @@ const UccFedLienFileNumberSearchForm = ({ searchFor }) => {
       [name]: value,
     }));
     setFormErrors([]); // clear errors on change
+    setAlert({ type: "", messages: [] }); // clear alerts on change
   }
 
   function handleSubmit(evt) {
@@ -45,33 +49,21 @@ const UccFedLienFileNumberSearchForm = ({ searchFor }) => {
       return;
     }
     setFormErrors([]);
+    setAlert({ type: "", messages: [] }); // clear alerts before search
     searchFor(masterSearchTerms, legalsSearchTerms);
   }
 
   return (
     <div className="UccFedLienFileNumberSearchForm">
       <form onSubmit={handleSubmit}>
-        {formErrors.length > 0 && (
-          <Alert type="danger" messages={formErrors} />
-        )}
-        <fieldset className="text-start">
-          <div className="mb-3">
-            <label
-              htmlFor="ucc_lien_file_number"
-              className="form-label fw-bold"
-            >
-              File Number
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="ucc_lien_file_number"
-              name="ucc_lien_file_number"
-              value={masterSearchTerms.ucc_lien_file_number}
-              onChange={handleMasterChange}
-              placeholder="e.g. 02PN03283"
-            />
-          </div>
+        {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
+        <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
+          <UccFileNumInput
+            value={masterSearchTerms.ucc_lien_file_number}
+            onChange={handleMasterChange}
+            id="ucc_lien_file_number"
+            required={true}
+          />
           <UccFedLienWrapperBoroughSelect
             legalsSearchTerms={legalsSearchTerms}
             handleLegalsChange={handleLegalsChange}

@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoadingSpinner snapshot test - component structure remains consistent 1`] = `
+<div
+  class="LoadingSpinner"
+  data-testid="loading-spinner"
+>
+  Loading...
+</div>
+`;

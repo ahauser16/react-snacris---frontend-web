@@ -8,7 +8,7 @@ import Unit from "../../components/acris/legalsForms/Unit";
 import TaxBlock from "../../components/acris/legalsForms/TaxBlock";
 import TaxLot from "../../components/acris/legalsForms/TaxLot";
 
-function AddressParcelLookupForm({ searchFor }) {
+function AddressParcelLookupForm({ searchFor, setAlert }) {
   console.debug("AddressParcelLookupForm", "searchFor=", typeof searchFor);
 
   const [addressFields, setAddressFields] = useState({
@@ -25,7 +25,6 @@ function AddressParcelLookupForm({ searchFor }) {
   });
 
   const [formErrors, setFormErrors] = useState([]);
-  const [alert, setAlert] = useState({ type: "", messages: [] });
 
   async function handleSubmit(evt) {
     evt.preventDefault();
@@ -64,6 +63,9 @@ function AddressParcelLookupForm({ searchFor }) {
       return;
     }
 
+    setFormErrors([]);
+    setAlert({ type: "", messages: [] }); // clear alerts before search
+
     if (isAddressFilled) {
       const legalsSearchTerms = {
         borough: addressFields.borough,
@@ -73,8 +75,7 @@ function AddressParcelLookupForm({ searchFor }) {
         block: "",
         lot: "",
       };
-      await searchFor(legalsSearchTerms, setAlert);
-      setFormErrors([]);
+      await searchFor(legalsSearchTerms);
     } else if (isBblFilled) {
       const legalsSearchTerms = {
         borough: bblFields.borough,
@@ -84,8 +85,7 @@ function AddressParcelLookupForm({ searchFor }) {
         block: bblFields.block,
         lot: bblFields.lot,
       };
-      await searchFor(legalsSearchTerms, setAlert);
-      setFormErrors([]);
+      await searchFor(legalsSearchTerms);
     } else {
       setFormErrors([
         "Please fill out either the Property Address or Property Borough, Block & Lot fields.",
@@ -117,12 +117,8 @@ function AddressParcelLookupForm({ searchFor }) {
     <div className="AddressParcelLookupForm">
       <form onSubmit={handleSubmit}>
         {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
-        {/* display backend messages or success alerts */}
-        {alert.messages.length > 0 && (
-          <Alert type={alert.type} messages={alert.messages} />
-        )}
         <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
-          <h4 className="mb-1 fw-bold">Property Address</h4>
+          <h4 className="mb-1 fw-bold">Address</h4>
           <AddressParcelWrapperBoroughSelect
             value={addressFields.borough}
             onChange={handleAddressChange}
@@ -148,7 +144,7 @@ function AddressParcelLookupForm({ searchFor }) {
           />
         </fieldset>
         <fieldset className="text-start bg-blue-transparent p-2">
-          <h4 className="mb-1 fw-bold">Property Borough, Block & Lot</h4>
+          <h4 className="mb-1 fw-bold">Borough, Block & Lot</h4>
           <AddressParcelWrapperBoroughSelect
             value={bblFields.borough}
             onChange={handleBblChange}

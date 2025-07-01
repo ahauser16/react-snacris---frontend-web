@@ -60,10 +60,13 @@ function SignupForm({ signup }) {
         <h2 className="mb-3">Sign Up</h2>
         <div className="card">
           <div className="card-body">
-            <form onSubmit={handleSubmit}>
+            <form role="form" onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="form-label">Username</label>
+                <label htmlFor="username" className="form-label">
+                  Username
+                </label>
                 <input
+                  id="username"
                   name="username"
                   className="form-control"
                   value={formData.username}
@@ -71,8 +74,11 @@ function SignupForm({ signup }) {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Password</label>
+                <label htmlFor="password" className="form-label">
+                  Password
+                </label>
                 <input
+                  id="password"
                   type="password"
                   name="password"
                   className="form-control"
@@ -82,8 +88,11 @@ function SignupForm({ signup }) {
               </div>
 
               <div className="mb-3">
-                <label className="form-label">First name</label>
+                <label htmlFor="firstName" className="form-label">
+                  First name
+                </label>
                 <input
+                  id="firstName"
                   name="firstName"
                   className="form-control"
                   value={formData.firstName}
@@ -91,8 +100,11 @@ function SignupForm({ signup }) {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Last name</label>
+                <label htmlFor="lastName" className="form-label">
+                  Last name
+                </label>
                 <input
+                  id="lastName"
                   name="lastName"
                   className="form-control"
                   value={formData.lastName}
@@ -100,8 +112,11 @@ function SignupForm({ signup }) {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Email</label>
+                <label htmlFor="email" className="form-label">
+                  Email
+                </label>
                 <input
+                  id="email"
                   type="email"
                   name="email"
                   className="form-control"

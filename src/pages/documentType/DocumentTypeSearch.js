@@ -11,7 +11,7 @@ function DocumentTypeSearch() {
   const [dataFound, setDataFound] = useState(null);
   const [alert, setAlert] = useState({ type: "", messages: [] });
 
-  async function search(masterSearchTerms, legalsSearchTerms, setAlert) {
+  async function search(masterSearchTerms, legalsSearchTerms) {
     console.debug(
       "DocumentTypeSearch search called with:",
       masterSearchTerms,
@@ -64,9 +64,16 @@ function DocumentTypeSearch() {
           </p>
         </div>
       </div>
+      <div className="row mb-2">
+        <div className="col-12">
+          {alert.messages.length > 0 && (
+            <Alert type={alert.type} messages={alert.messages} />
+          )}
+        </div>
+      </div>
       <div className="row">
         <div className="col-12 col-lg-4 col-md-4 mb-2">
-          <DocumentTypeSearchForm searchFor={search} />
+          <DocumentTypeSearchForm searchFor={search} setAlert={setAlert} />
         </div>
         <div className="col-12 col-lg-8 col-md-8">
           {dataFound === true && (

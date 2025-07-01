@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Alert from "../../common/Alert";
+import TransNumberInput from "../../components/acris/masterForms/TransNumberInput";
 
 const TransNumSearchForm = ({ searchFor }) => {
   console.debug("TransNumSearchForm", "searchFor=", typeof searchFor);
@@ -8,15 +9,17 @@ const TransNumSearchForm = ({ searchFor }) => {
     transaction_number: "",
   });
   const [formErrors, setFormErrors] = useState([]);
+  const [alert, setAlert] = useState({ type: "", messages: [] });
 
-  function handleSubmit(evt) {
+  async function handleSubmit(evt) {
     evt.preventDefault();
     if (!masterSearchTerms.transaction_number.trim()) {
       setFormErrors(["Transaction Number is required."]);
       return;
     }
     setFormErrors([]);
-    searchFor(masterSearchTerms);
+    setAlert({ type: "", messages: [] });
+    await searchFor(masterSearchTerms, setAlert);
   }
 
   function handleMasterChange(evt) {
@@ -26,29 +29,21 @@ const TransNumSearchForm = ({ searchFor }) => {
       [name]: value,
     }));
     setFormErrors([]); // clear errors on change
+    setAlert({ type: "", messages: [] });
   }
 
   return (
     <div className="TransNumSearchForm">
       <form onSubmit={handleSubmit}>
-        {formErrors.length > 0 && (
-          <Alert type="danger" messages={formErrors} />
+        {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
+        {alert.messages.length > 0 && (
+          <Alert type={alert.type} messages={alert.messages} />
         )}
-        <fieldset className="text-start">
-          <div className="mb-3">
-            <label htmlFor="transaction_number" className="form-label fw-bold">
-              Transaction Number
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="transaction_number"
-              name="transaction_number"
-              value={masterSearchTerms.transaction_number}
-              onChange={handleMasterChange}
-              placeholder="Enter as YYYYMMDDNNNNN"
-            />
-          </div>
+        <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
+          <TransNumberInput
+            value={masterSearchTerms.transaction_number}
+            onChange={handleMasterChange}
+          />
         </fieldset>
         <button type="submit" className="btn btn-lg btn-primary mx-auto">
           Submit

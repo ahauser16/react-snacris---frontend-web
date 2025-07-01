@@ -3,15 +3,19 @@ import RealPropertyCardContainer from "../../components/acris/realPropertyDispla
 import DocumentIdMenu from "../../components/acris/realPropertyDisplay/DocumentIdMenu";
 
 function ReelPageSearchDisplay({ results }) {
+  console.log("ReelPageSearchDisplay: received results:", results);
+
   const [selectedDocId, setSelectedDocId] = useState(
     results && results.length > 0 ? results[0].document_id : null
   );
 
   if (!results || results.length === 0) {
+    console.log("ReelPageSearchDisplay: No results to display");
     return <p className="text-danger">No results found.</p>;
   }
 
   const selectedGroup = results.find((g) => g.document_id === selectedDocId);
+  console.log("ReelPageSearchDisplay: selectedGroup:", selectedGroup);
 
   return (
     <>

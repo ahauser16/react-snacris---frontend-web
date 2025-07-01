@@ -5,13 +5,13 @@ import MyOrganizations from "../../components/organization/MyOrganizations";
 
 function ProfilePage() {
   return (
-    <div className="ProfilePage container">
+    <main role="main" aria-label="profile" className="ProfilePage container">
       <ProfileForm />
       <MyOrganizations />
       {/* Add other profile-related components here */}
       {/* <ProfileActivity /> */}
       {/* <ProfileSettings /> */}
-    </div>
+    </main>
   );
 }
 

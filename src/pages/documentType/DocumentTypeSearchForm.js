@@ -5,7 +5,7 @@ import RecordedDateRangeWrapper from "../../components/acris/masterForms/Recorde
 import DocumentTypeSearchWrapperBoroughSelect from "./DocumentTypeSearchWrapperBoroughSelect";
 import "./documentTypeSearchForm.css";
 
-const DocumentTypeSearchForm = ({ searchFor }) => {
+const DocumentTypeSearchForm = ({ searchFor, setAlert }) => {
   console.debug("DocumentTypeSearchForm", "searchFor=", typeof searchFor);
 
   const [masterSearchTerms, setMasterSearchTerms] = React.useState({
@@ -21,7 +21,6 @@ const DocumentTypeSearchForm = ({ searchFor }) => {
   });
 
   const [formErrors, setFormErrors] = useState([]);
-  const [alert, setAlert] = useState({ type: "", messages: [] });
 
   async function handleSubmit(evt) {
     evt.preventDefault();
@@ -38,9 +37,8 @@ const DocumentTypeSearchForm = ({ searchFor }) => {
       return;
     }
     setFormErrors([]);
-    setAlert({ type: "", messages: [] });
-    // call parent search and let it set alerts
-    await searchFor(masterSearchTerms, legalsSearchTerms, setAlert);
+    setAlert({ type: "", messages: [] }); // clear alerts before search
+    await searchFor(masterSearchTerms, legalsSearchTerms);
   }
 
   function handleMasterChange(evt) {
@@ -59,6 +57,7 @@ const DocumentTypeSearchForm = ({ searchFor }) => {
       ...data,
       [name]: value,
     }));
+    setFormErrors([]);
     setAlert({ type: "", messages: [] });
   }
 
@@ -66,9 +65,6 @@ const DocumentTypeSearchForm = ({ searchFor }) => {
     <div className="DocumentTypeSearchForm">
       <form onSubmit={handleSubmit}>
         {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
-        {alert.messages.length > 0 && (
-          <Alert type={alert.type} messages={alert.messages} />
-        )}
         <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
           <RecordedDateRangeWrapper
             masterSearchTerms={masterSearchTerms}

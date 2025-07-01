@@ -6,7 +6,7 @@ import RecordedDateRangeWrapper from "../../components/acris/masterForms/Recorde
 import PartyNameWrapperBoroughSelect from "./PartyNameWrapperBoroughSelect";
 import PartyName from "../../components/acris/partyForms/PartyName";
 
-function PartyNameSearchForm({ searchFor }) {
+function PartyNameSearchForm({ searchFor, setAlert }) {
   const [masterSearchTerms, setMasterSearchTerms] = useState({
     recorded_date_range: "to-current-date-default",
     recorded_date_start: "",
@@ -25,7 +25,6 @@ function PartyNameSearchForm({ searchFor }) {
   });
 
   const [formErrors, setFormErrors] = useState([]);
-  const [alert, setAlert] = useState({ type: "", messages: [] });
 
   async function handleSubmit(evt) {
     evt.preventDefault();
@@ -34,13 +33,8 @@ function PartyNameSearchForm({ searchFor }) {
       return;
     }
     setFormErrors([]);
-    setAlert({ type: "", messages: [] });
-    await searchFor(
-      masterSearchTerms,
-      partySearchTerms,
-      legalsSearchTerms,
-      setAlert
-    );
+    setAlert({ type: "", messages: [] }); // clear alerts before search
+    await searchFor(masterSearchTerms, partySearchTerms, legalsSearchTerms);
   }
 
   function handlePartyChange(evt) {
@@ -53,29 +47,20 @@ function PartyNameSearchForm({ searchFor }) {
     setAlert({ type: "", messages: [] });
   }
 
-  function handleMasterChange(evt) {
-    const { name, value } = evt.target;
-    setMasterSearchTerms((data) => ({
-      ...data,
-      [name]: value,
-    }));
-  }
-
   function handleLegalsChange(evt) {
     const { name, value } = evt.target;
     setLegalsSearchTerms((data) => ({
       ...data,
       [name]: value,
     }));
+    setFormErrors([]);
+    setAlert({ type: "", messages: [] });
   }
 
   return (
     <div className="PartyNameSearchForm">
       <form onSubmit={handleSubmit}>
         {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
-        {alert && alert.messages && alert.messages.length > 0 && (
-          <Alert type={alert.type} messages={alert.messages} />
-        )}
         <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
           <PartyName
             value={partySearchTerms.name}

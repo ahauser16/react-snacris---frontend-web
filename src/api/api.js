@@ -87,6 +87,15 @@ class SnacrisApi {
 
     const res = await this.request("queryAcrisReelPage/fetchRecord", params);
     console.debug("API queryAcrisReelPage response:", res);
+    console.debug(
+      "API queryAcrisReelPage response has dataFound:",
+      res?.dataFound
+    );
+    console.debug("API queryAcrisReelPage response has results:", res?.results);
+    console.debug(
+      "API queryAcrisReelPage results length:",
+      res?.results?.length
+    );
     return res;
   }
 
@@ -103,6 +112,18 @@ class SnacrisApi {
       params
     );
     console.debug("API queryAcrisTransactionNumber response:", res);
+    console.debug(
+      "API queryAcrisTransactionNumber response has dataFound:",
+      res?.dataFound
+    );
+    console.debug(
+      "API queryAcrisTransactionNumber response has results:",
+      res?.results
+    );
+    console.debug(
+      "API queryAcrisTransactionNumber results length:",
+      res?.results?.length
+    );
     return res;
   }
 
@@ -130,6 +151,18 @@ class SnacrisApi {
 
     const res = await this.request("queryAcrisDocIdCrfn/fetchRecord", params);
     console.debug("API queryAcrisDocIdCrfn response:", res);
+    console.debug(
+      "API queryAcrisDocIdCrfn response has dataFound:",
+      res?.dataFound
+    );
+    console.debug(
+      "API queryAcrisDocIdCrfn response has results:",
+      res?.results
+    );
+    console.debug(
+      "API queryAcrisDocIdCrfn results length:",
+      res?.results?.length
+    );
     return res;
   }
 

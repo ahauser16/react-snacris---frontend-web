@@ -4,13 +4,12 @@ import "./documentIdCrfnSearchForm.css";
 import DocumentIdTextInput from "../../components/acris/masterForms/DocumentIdTextInput";
 import CrfnTextInput from "../../components/acris/masterForms/CrfnTextInput";
 
-function DocumentIdCrfnSearchForm({ searchFor }) {
+function DocumentIdCrfnSearchForm({ searchFor, setAlert }) {
   const [masterSearchTerms, setMasterSearchTerms] = useState({
     document_id: "",
     crfn: "",
   });
   const [formErrors, setFormErrors] = useState([]);
-  const [alert, setAlert] = useState({ type: "", messages: [] });
 
   async function handleSubmit(evt) {
     evt.preventDefault();
@@ -26,11 +25,11 @@ function DocumentIdCrfnSearchForm({ searchFor }) {
       return;
     }
     setFormErrors([]);
-    setAlert({ type: "", messages: [] });
+    setAlert({ type: "", messages: [] }); // clear alerts before search
     if (document_id) {
-      await searchFor({ document_id }, setAlert);
+      await searchFor({ document_id });
     } else {
-      await searchFor({ crfn }, setAlert);
+      await searchFor({ crfn });
     }
   }
 
@@ -58,9 +57,6 @@ function DocumentIdCrfnSearchForm({ searchFor }) {
     <div className="DocumentIdCrfnSearchForm">
       <form onSubmit={handleSubmit}>
         {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
-        {alert.messages.length > 0 && (
-          <Alert type={alert.type} messages={alert.messages} />
-        )}
         <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
           <DocumentIdTextInput
             value={masterSearchTerms.document_id}

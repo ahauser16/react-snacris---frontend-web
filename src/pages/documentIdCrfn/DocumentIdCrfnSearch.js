@@ -10,7 +10,7 @@ function DocumentIdCrfnSearch() {
   const [results, setResults] = useState([]);
   const [alert, setAlert] = useState({ type: "", messages: [] });
 
-  async function search(masterSearchTerms, setAlert) {
+  async function search(masterSearchTerms) {
     console.debug(
       "DocumentIdCrfnSearch: search called with:",
       masterSearchTerms
@@ -18,9 +18,42 @@ function DocumentIdCrfnSearch() {
     try {
       const res = await SnacrisApi.queryAcrisDocIdCrfn(masterSearchTerms);
       console.log("DocumentIdCrfnSearch: search results:", res);
-      if (Array.isArray(res) && res.length > 0) {
-        setResults(res);
-        setAlert({ type: "success", messages: ["Results found."] });
+      console.log("DocumentIdCrfnSearch: results type:", typeof res);
+      console.log("DocumentIdCrfnSearch: results isArray:", Array.isArray(res));
+      console.log(
+        "DocumentIdCrfnSearch: res.results isArray:",
+        Array.isArray(res?.results)
+      );
+      console.log(
+        "DocumentIdCrfnSearch: res.results length:",
+        res?.results?.length
+      );
+
+      // Extract the results array from the response object
+      const resultsArray = res?.results || [];
+
+      if (Array.isArray(resultsArray) && resultsArray.length > 0) {
+        // Check if the results contain valid data
+        const hasValidData = resultsArray.some(
+          (result) =>
+            result &&
+            (result.masterRecords?.length > 0 ||
+              result.partiesRecords?.length > 0 ||
+              result.legalsRecords?.length > 0)
+        );
+
+        console.log("DocumentIdCrfnSearch: hasValidData:", hasValidData);
+
+        if (hasValidData) {
+          setResults(resultsArray);
+          setAlert({ type: "success", messages: ["Results found."] });
+        } else {
+          setResults([]);
+          setAlert({
+            type: "danger",
+            messages: ["No valid records found in response."],
+          });
+        }
       } else {
         setResults([]);
         setAlert({ type: "danger", messages: ["No records found."] });
@@ -62,7 +95,7 @@ function DocumentIdCrfnSearch() {
       </div>
       <div className="row">
         <div className="col-12 col-lg-4 col-md-4 mb-2">
-          <DocumentIdCrfnSearchForm searchFor={search} />
+          <DocumentIdCrfnSearchForm searchFor={search} setAlert={setAlert} />
         </div>
         <div className="col-12 col-lg-8 col-md-8">
           {results.length > 0 && (

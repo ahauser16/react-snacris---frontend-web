@@ -99,7 +99,7 @@ function ProfileForm() {
     setFormErrors([]);
 
     // The `setSaveConfirmed` function is called to set the `saveConfirmed` state to true, indicating that the profile update was successful. This will trigger a success message to be displayed to the user.  This is done to provide feedback to the user that their changes have been saved successfully.
-  data: setSaveConfirmed(true);
+    data: setSaveConfirmed(true);
 
     //Updating State: If the API call is successful (i) it Clears any previous errors, (ii) sets saveConfirmed to true to display a success message and (iii) updates the global currentUser state using setCurrentUser.
     // trigger reloading of user information throughout the site
@@ -131,19 +131,25 @@ function ProfileForm() {
       <div className="card">
         <div className="card-body">
           {/* The form includes fields for firstName, lastName, and email, which are editable. */}
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label">Username</label>
+              <label htmlFor="username" className="form-label">
+                Username
+              </label>
               {/* The username field is displayed but disabled, as it cannot be changed. */}
               <input
+                id="username"
                 disabled
                 className="form-control"
                 placeholder={formData.username}
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">First Name</label>
+              <label htmlFor="firstName" className="form-label">
+                First Name
+              </label>
               <input
+                id="firstName"
                 name="firstName"
                 className="form-control"
                 value={formData.firstName}
@@ -151,8 +157,11 @@ function ProfileForm() {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Last Name</label>
+              <label htmlFor="lastName" className="form-label">
+                Last Name
+              </label>
               <input
+                id="lastName"
                 name="lastName"
                 className="form-control"
                 value={formData.lastName}
@@ -160,8 +169,11 @@ function ProfileForm() {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Email</label>
+              <label htmlFor="email" className="form-label">
+                Email
+              </label>
               <input
+                id="email"
                 name="email"
                 className="form-control"
                 value={formData.email}
@@ -180,7 +192,7 @@ function ProfileForm() {
             ) : null}
 
             <div className="d-grid">
-              <button className="btn btn-primary" onClick={handleSubmit}>
+              <button className="btn btn-primary" type="submit">
                 Save Changes
               </button>
             </div>

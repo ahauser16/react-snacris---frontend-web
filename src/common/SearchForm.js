@@ -22,7 +22,12 @@ function SearchForm({ searchFor }) {
   function handleSubmit(evt) {
     // take care of accidentally trying to search for just spaces
     evt.preventDefault();
-    searchFor(searchTerm.trim() || undefined);
+    try {
+      searchFor(searchTerm.trim() || undefined);
+    } catch (err) {
+      console.error("Error in searchFor:", err);
+      // Don't throw the error, allow the component to continue functioning
+    }
     setSearchTerm(searchTerm.trim());
   }
 
@@ -31,17 +36,26 @@ function SearchForm({ searchFor }) {
     setSearchTerm(evt.target.value);
   }
 
+  /** Handle Enter key press on input */
+  function handleKeyDown(evt) {
+    if (evt.key === "Enter") {
+      handleSubmit(evt);
+    }
+  }
+
   return (
     <div className="SearchForm mb-4">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} aria-label="search-form" role="form">
         <div className="row justify-content-center justify-content-lg-start gx-0">
           <div className="col-8">
             <input
               className="form-control form-control-lg"
               name="searchTerm"
+              type="text"
               placeholder="Enter search term.."
               value={searchTerm}
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
             />
           </div>
           <div className="col-auto">

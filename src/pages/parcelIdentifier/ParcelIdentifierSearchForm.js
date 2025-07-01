@@ -8,7 +8,7 @@ import Unit from "../../components/acris/legalsForms/Unit";
 import DocClassTypeSelect from "../../components/acris/documentControlCodeForms/DocClassTypeSelect";
 import RecordedDateRangeWrapper from "../../components/acris/masterForms/RecordedDateRangeWrapper";
 
-function ParcelIdentifierSearchForm({ searchFor }) {
+function ParcelIdentifierSearchForm({ searchFor, setAlert }) {
   const [masterSearchTerms, setMasterSearchTerms] = useState({
     recorded_date_range: "to-current-date-default",
     recorded_date_start: "",
@@ -25,7 +25,6 @@ function ParcelIdentifierSearchForm({ searchFor }) {
   });
 
   const [formErrors, setFormErrors] = useState([]);
-  const [alert, setAlert] = useState({ type: "", messages: [] });
 
   async function handleSubmit(evt) {
     evt.preventDefault();
@@ -39,17 +38,8 @@ function ParcelIdentifierSearchForm({ searchFor }) {
       return;
     }
     setFormErrors([]);
-    setAlert({ type: "", messages: [] });
-    await searchFor(masterSearchTerms, legalsSearchTerms, setAlert);
-  }
-
-  function handleMasterChange(evt) {
-    const { name, value } = evt.target;
-    setMasterSearchTerms((data) => ({
-      ...data,
-      [name]: value,
-    }));
-    setAlert({ type: "", messages: [] });
+    setAlert({ type: "", messages: [] }); // clear alerts before search
+    await searchFor(masterSearchTerms, legalsSearchTerms);
   }
 
   function handleLegalsChange(evt) {
@@ -81,9 +71,6 @@ function ParcelIdentifierSearchForm({ searchFor }) {
     <div className="ParcelIdentifierSearchForm">
       <form onSubmit={handleSubmit}>
         {formErrors.length > 0 && <Alert type="danger" messages={formErrors} />}
-        {alert.messages.length > 0 && (
-          <Alert type={alert.type} messages={alert.messages} />
-        )}
         <fieldset className="text-start p-2 mb-1 bg-blue-transparent">
           <ParcelIdentifierWrapperBoroughSelect
             legalsSearchTerms={legalsSearchTerms}

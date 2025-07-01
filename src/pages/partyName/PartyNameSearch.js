@@ -1,18 +1,27 @@
 import React, { useState } from "react";
+import Alert from "../../common/Alert";
 import PartyNameSearchForm from "./PartyNameSearchForm";
 import PartyNameSearchDisplay from "./PartyNameSearchDisplay";
 import SnacrisApi from "../../api/api";
 
 function PartyNameSearch() {
+  console.debug("PartyNameSearch");
+
   const [results, setResults] = useState(null);
   const [dataFound, setDataFound] = useState(null);
+  const [alert, setAlert] = useState({ type: "", messages: [] });
 
   async function search(
     masterSearchTerms,
     partySearchTerms,
-    legalsSearchTerms,
-    setAlert
+    legalsSearchTerms
   ) {
+    console.debug(
+      "PartyNameSearch: search called with:",
+      masterSearchTerms,
+      partySearchTerms,
+      legalsSearchTerms
+    );
     try {
       // call backend; res === { dataFound: boolean, results: [...] }
       const res = await SnacrisApi.queryAcrisPartyName(
@@ -22,6 +31,7 @@ function PartyNameSearch() {
         null, // remarkSearchTerms
         null // referenceSearchTerms
       );
+      console.log("PartyNameSearch: search results:", res);
 
       // unpack the shape
       setDataFound(res.dataFound);
@@ -63,6 +73,7 @@ function PartyNameSearch() {
         setAlert({ type: "danger", messages });
       }
     } catch (err) {
+      console.error("Error fetching results:", err);
       setDataFound(false);
       setResults([]);
       setAlert({
@@ -95,9 +106,16 @@ function PartyNameSearch() {
           </p>
         </div>
       </div>
+      <div className="row mb-2">
+        <div className="col-12">
+          {alert.messages.length > 0 && (
+            <Alert type={alert.type} messages={alert.messages} />
+          )}
+        </div>
+      </div>
       <div className="row">
         <div className="col-12 col-lg-4 col-md-4 mb-2">
-          <PartyNameSearchForm searchFor={search} />
+          <PartyNameSearchForm searchFor={search} setAlert={setAlert} />
         </div>
         <div className="col-12 col-lg-8 col-md-8">
           {/* only render display when dataFound is true */}

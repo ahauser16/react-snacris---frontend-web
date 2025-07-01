@@ -11,7 +11,7 @@ function ParcelIdentifierSearch() {
   const [dataFound, setDataFound] = useState(null);
   const [alert, setAlert] = useState({ type: "", messages: [] });
 
-  async function search(masterSearchTerms, legalsSearchTerms, setAlert) {
+  async function search(masterSearchTerms, legalsSearchTerms) {
     console.debug(
       "ParcelIdentifierSearch: search called with: masterSearchTerms and legalsSearchTerms objects:",
       masterSearchTerms,
@@ -103,7 +103,7 @@ function ParcelIdentifierSearch() {
       </div>
       <div className="row">
         <div className="col-12 col-lg-4 col-md-4 mb-2">
-          <ParcelIdentifierSearchForm searchFor={search} />
+          <ParcelIdentifierSearchForm searchFor={search} setAlert={setAlert} />
         </div>
         <div className="col-12 col-lg-8 col-md-8">
           {dataFound === true && (
