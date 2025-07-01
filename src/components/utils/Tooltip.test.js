@@ -87,9 +87,9 @@ describe("Tooltip Component", () => {
     jest.resetModules();
 
     // Set up window.matchMedia mock
-    Object.defineProperty(window, 'matchMedia', {
+    Object.defineProperty(window, "matchMedia", {
       writable: true,
-      value: jest.fn().mockImplementation(query => ({
+      value: jest.fn().mockImplementation((query) => ({
         matches: false,
         media: query,
         onchange: null,
@@ -102,20 +102,20 @@ describe("Tooltip Component", () => {
     });
 
     // Reset touch-related properties
-    Object.defineProperty(window, 'ontouchstart', {
+    Object.defineProperty(window, "ontouchstart", {
       configurable: true,
       value: undefined,
     });
 
-    Object.defineProperty(navigator, 'maxTouchPoints', {
+    Object.defineProperty(navigator, "maxTouchPoints", {
       configurable: true,
       value: 0,
     });
 
     // Wait for any pending state updates
     await act(async () => {
-      window.dispatchEvent(new Event('resize'));
-      await new Promise(resolve => setTimeout(resolve, 0));
+      window.dispatchEvent(new Event("resize"));
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
   });
 
