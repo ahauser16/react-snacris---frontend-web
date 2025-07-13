@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 // import Alert from "../../common/Alert";
 // import SnacrisApi from "../../api/api";
 // import TransNumSearchForm from "./TransNumSearchForm";
@@ -15,6 +16,9 @@ function TransactionNumberSearch() {
 
   return (
     <div className="container">
+      <Helmet>
+        <title>SNACRIS 🚧 Transaction Number</title>
+      </Helmet>
       <div className="row mb-1">
         <div
           className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start mb-1 p-1"

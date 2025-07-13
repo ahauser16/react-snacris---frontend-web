@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import "./Homepage.css";
 import UserContext from "../auth/UserContext";
 
@@ -18,9 +19,18 @@ function Homepage() {
 
   return (
     <div className="Homepage">
+      <Helmet>
+        <title>
+          {currentUser
+            ? `SNACRIS Welcome Back ${currentUser.firstName || currentUser.username}`
+            : "SNACRIS 🗽 Welcome!"}
+        </title>
+      </Helmet>
       <div className="container text-center">
         <h1 className="mb-4 fw-bold">SNACRIS</h1>
-        <p className="lead">All NYC property records in one, convenient place.</p>
+        <p className="lead">
+          All NYC property records in one, convenient place.
+        </p>
         {currentUser ? (
           <h2>
             Welcome Back, {currentUser.firstName || currentUser.username}!

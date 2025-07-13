@@ -35,7 +35,7 @@ function Navigation({ logout }) {
         </li>
         <li className="nav-item me-4">
           <NavLink className="nav-link" to="/ParcelIdentifierSearch">
-            Search By Parcel
+             Parcel Search
           </NavLink>
         </li>
         <li className="nav-item me-4">

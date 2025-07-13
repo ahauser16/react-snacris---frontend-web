@@ -127,7 +127,7 @@ function ProfileForm() {
 
   return (
     <div className="ProfileForm col-md-6 col-lg-4 offset-md-3 offset-lg-4">
-      <h3>My Profile</h3>
+      <h3>{`${currentUser.firstName || currentUser.username}'s`} Profile</h3>
       <div className="card">
         <div className="card-body">
           {/* The form includes fields for firstName, lastName, and email, which are editable. */}

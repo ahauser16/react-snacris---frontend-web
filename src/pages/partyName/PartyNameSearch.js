@@ -3,6 +3,7 @@ import Alert from "../../common/Alert";
 import PartyNameSearchForm from "./PartyNameSearchForm";
 import PartyNameSearchDisplay from "./PartyNameSearchDisplay";
 import SnacrisApi from "../../api/api";
+import { Helmet } from "react-helmet";
 
 function PartyNameSearch() {
   console.debug("PartyNameSearch");
@@ -85,6 +86,9 @@ function PartyNameSearch() {
 
   return (
     <div className="container">
+      <Helmet>
+        <title>SNACRIS - Party Name Search</title>
+      </Helmet>
       <div className="row mb-1">
         <div
           className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start mb-1 p-1"

@@ -167,7 +167,7 @@ function RetrieveDisplayRealPropertyDoc() {
     <div className="container mt-4">
       <div className="row justify-content-center">
         <div className="col-lg-12">
-          <h2 className="text-center mb-4">My Favorites</h2>
+          <h2 className="text-center mb-4">{`${currentUser.firstName || currentUser.username}'s Favorites`}</h2>
 
           {alert && <Alert type={alert.type} messages={alert.messages} />}
 

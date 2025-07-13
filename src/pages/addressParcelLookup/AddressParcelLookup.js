@@ -3,6 +3,7 @@ import Alert from "../../common/Alert";
 import SnacrisApi from "../../api/api";
 import AddressParcelLookupForm from "./AddressParcelLookupForm";
 import AddressParcelLookupDisplay from "./AddressParcelLookupDisplay";
+import { Helmet } from "react-helmet";
 import "./addressParcelLookup.css";
 
 function AddressParcelLookup() {
@@ -62,6 +63,9 @@ function AddressParcelLookup() {
 
   return (
     <div className="container">
+      <Helmet>
+        <title>SNACRIS - Address/Parcel Lookup</title>
+      </Helmet>
       <div className="row mb-1">
         <div
           className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start mb-1 p-1"

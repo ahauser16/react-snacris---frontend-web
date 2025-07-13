@@ -3,6 +3,7 @@ import Alert from "../../common/Alert";
 import SnacrisApi from "../../api/api";
 import DocumentTypeSearchForm from "./DocumentTypeSearchForm";
 import DocumentTypeSearchDisplay from "./DocumentTypeSearchDisplay";
+import { Helmet } from "react-helmet";
 
 function DocumentTypeSearch() {
   console.debug("DocumentTypeSearch");
@@ -47,6 +48,9 @@ function DocumentTypeSearch() {
 
   return (
     <div className="container">
+      <Helmet>
+        <title>SNACRIS - Document Type Search</title>
+      </Helmet>
       <div className="row mb-1">
         <div
           className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start mb-1 p-1"

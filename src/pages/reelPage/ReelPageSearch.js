@@ -3,6 +3,7 @@ import Alert from "../../common/Alert";
 import SnacrisApi from "../../api/api";
 import ReelPageSearchForm from "./ReelPageSearchForm";
 import ReelPageSearchDisplay from "./ReelPageSearchDisplay";
+import { Helmet } from "react-helmet";
 
 function ReelPageSearch() {
   console.debug("ReelPageSearch");
@@ -71,6 +72,9 @@ function ReelPageSearch() {
 
   return (
     <div className="container">
+      <Helmet>
+        <title>SNACRIS - Reel & Page Search</title>
+      </Helmet>
       <div className="row mb-1">
         <div
           className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start mb-1 p-1"

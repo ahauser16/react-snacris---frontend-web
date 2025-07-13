@@ -3,6 +3,7 @@ import Alert from "../../common/Alert";
 import SnacrisApi from "../../api/api";
 import DocumentIdCrfnSearchForm from "./DocumentIdCrfnSearchForm";
 import DocumentIdCrfnSearchDisplay from "./DocumentIdCrfnSearchDisplay";
+import { Helmet } from "react-helmet";
 
 function DocumentIdCrfnSearch() {
   console.debug("DocumentIdCrfnSearch");
@@ -70,6 +71,9 @@ function DocumentIdCrfnSearch() {
 
   return (
     <div className="container">
+      <Helmet>
+        <title>SNACRIS - Doc ID/CRFN Search</title>
+      </Helmet>
       <div className="row mb-1">
         <div
           className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start mb-1 p-1"

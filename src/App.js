@@ -6,6 +6,7 @@ import LoadingSpinner from "./common/LoadingSpinner";
 import SnacrisApi from "./api/api";
 import UserContext from "./auth/UserContext";
 import decode from "jwt-decode";
+import { Helmet } from "react-helmet";
 
 export const TOKEN_STORAGE_ID = "snacris-token";
 
@@ -27,13 +28,7 @@ function App() {
   });
   const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
 
-  console.debug(
-    "App",
-    "currentUser=",
-    currentUser,
-    "token=",
-    token
-  );
+  console.debug("App", "currentUser=", currentUser, "token=", token);
 
   // Load user info from API. Until a user is logged in and they have a token, this should not run. It only needs to re-run when a user logs out, so the value of the token is a dependency for this effect.
   useEffect(
@@ -106,8 +101,6 @@ function App() {
     setToken(token);
   }
 
-  
-
   if (!currentUser.infoLoaded) return <LoadingSpinner />;
 
   return (
@@ -118,6 +111,17 @@ function App() {
       }}
     >
       <div className="App">
+        <Helmet>
+          <title>🗽SNACRIS</title>
+          <meta
+            name="description"
+            content="Access New York City public land records with SNACRIS that uses a modern, responsive and accessible approach with the user in mind"
+          />
+          <meta
+            name="keywords"
+            content="New York City, NYC, public land records, NYC deed, NYC lease, NYC easement, ACRIS, property records, real estate, land registry, property search, deed search, mortgage records, title search, property database, real property, BBL, borough block lot, grantor, grantee, property transactions, real estate documents, property ownership"
+          />
+        </Helmet>
         <Navigation logout={logout} />
         <RoutesList
           currentUser={currentUser.data}

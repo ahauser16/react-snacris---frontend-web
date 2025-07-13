@@ -3,6 +3,7 @@ import Alert from "../../common/Alert";
 import ParcelIdentifierSearchForm from "./ParcelIdentifierSearchForm";
 import ParcelIdentifierSearchDisplay from "./ParcelIdentifierSearchDisplay";
 import SnacrisApi from "../../api/api";
+import { Helmet } from "react-helmet";
 
 function ParcelIdentifierSearch() {
   console.debug("ParcelIdentifierSearch");
@@ -75,6 +76,9 @@ function ParcelIdentifierSearch() {
 
   return (
     <div className="container">
+      <Helmet>
+        <title>SNACRIS - Parcel Search</title>
+      </Helmet>
       <div className="row mb-2">
         <div
           className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start mb-1 p-1"

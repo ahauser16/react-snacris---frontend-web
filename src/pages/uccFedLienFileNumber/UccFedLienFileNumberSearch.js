@@ -3,6 +3,7 @@ import Alert from "../../common/Alert";
 import SnacrisApi from "../../api/api";
 import UccFedLienFileNumberSearchForm from "./UccFedLienFileNumberSearchForm";
 import UccFedLienFileNumberSearchDisplay from "./UccFedLienFileNumberSearchDisplay";
+import { Helmet } from "react-helmet";
 
 function UccFedLienFileNumberSearch() {
   console.debug("UccFedLienFileNumberSearch");
@@ -77,6 +78,9 @@ function UccFedLienFileNumberSearch() {
 
   return (
     <div className="container">
+      <Helmet>
+        <title>SNACRIS - UCC & Lien Search</title>
+      </Helmet>
       <div className="row mb-1">
         <div
           className="alert alert-info col-12 col-lg-12 d-flex flex-column align-items-start justify-content-start mb-1 p-1"
