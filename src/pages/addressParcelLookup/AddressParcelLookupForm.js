@@ -134,6 +134,7 @@ function AddressParcelLookupForm({ searchFor, setAlert }) {
             onChange={handleAddressChange}
             id="address-street-name"
             required={true}
+            enableAutocomplete={true}
           />
           <Unit
             value={addressFields.unit}
